@@ -1,24 +1,22 @@
-@if $import-reset {
+@if $u-isImport-reset {
   html{
-    @include html-font;
-    height: 100%; overflow: auto; color: $r-color;
+    @include um-root__font;
+    height: 100%; overflow: auto; color: $u-color;
   }
   
   body{
-    @include c-mp;
-    font-size: all($rs-default);
+    margin: 0; padding: 0; font-size: uf-to-all($u-fontSize-default);
   }
   
   dl, ol, ul{
-    @include c-mp;
-    list-style-type: none;
+    margin: 0; padding: 0; list-style-type: none;
   }
   
   dd{
     margin-left: 0;
   }
   
-  @include h-css;
+  @include um-h1from6;
   
   p{
     margin: 0;
@@ -59,7 +57,7 @@
   }
   
   input, textarea, [contenteditable], [contenteditable='true']{
-    @include placeholder;
+    @include um-placeholder;
   }
   
   input, button, textarea{
@@ -73,7 +71,7 @@
   // Class
   [class^='icon-'], [class*=' icon-']{
     @include before(null){
-      @include el-icon();
+      @include um-icon();
     }
   }
 }

@@ -1,0 +1,21 @@
+@mixin test-not-mixin{
+  z-index: 1;
+}
+
+@include describe('The um-not mixin =>'){
+  @include it(':not 伪类调用'){
+    @include assert{
+      @include output{
+        @include um-not(':first-child', ':last-child'){
+          @include test-not-mixin;
+        }
+      }
+      
+      @include contains{
+        &:not(:first-child):not(:last-child){
+          @include test-not-mixin;
+        }
+      }
+    }
+  }
+}

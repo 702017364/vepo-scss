@@ -1,0 +1,8 @@
+@include describe('The uf-to-all function =>'){
+  @include it('单位转换（总接口）'){
+    @include assert-equal(
+      uf-to-all(16),
+      1rem
+    );
+  }
+}

@@ -12,6 +12,33 @@
 </head>
 <body>
   <div class="test-box">
+    <div class="um-effect-arrow"></div>
+  </div>
+  <div class="test-box">
+    <div class="um-effect-triangle-equil"></div>
+  </div>
+  <div class="test-box">
+    <div class="um-effect-triangle"></div>
+  </div>
+  <div class="test-box">
+    <div class="um-quick-relative"></div>
+  </div>
+  <div class="test-box">
+    <div class="uf-calc"></div>
+  </div>
+  <div class="text-box">
+    <div class="libsass3-5-0" custom-value="abc"></div>
+  </div>
+  <div class="test-box">
+    <div class="css3var"></div>
+  </div>
+  <div class="test-box">
+    <div class="define-prop-box">
+      <div id="DefineProp">dom defineProperty</div>
+      <div id="DefineProps">dom definePropertys</div>
+    </div>
+  </div>
+  <div class="test-box">
     <div class="of-calcs-test"></div>
   </div>
   <div class="test-box">
@@ -62,10 +89,12 @@
       </div>
     </div>
     <script>
-      const $i = document.createElement('i');
-      const $text = document.createTextNode('JS 插入的内容');
-      $i.appendChild($text);
-      document.querySelector('.jitter-blur-box').appendChild($i);
+      (function(){
+        var $i = document.createElement('i');
+        var $text = document.createTextNode('JS 插入的内容');
+        $i.appendChild($text);
+        document.querySelector('.jitter-blur-box').appendChild($i);
+      })();
     </script>
   </div>
   <div class="test-box">
@@ -80,58 +109,17 @@
     </ul>
   </div>
   <div class="test-box">
-    <div class="vmin"></div>
-  </div>
-  <div class="test-box">
-    <div class="elb"></div>
-  </div>
-  <div class="test-box">
-    <div class="elt"></div>
-  </div>
-  <div class="test-box">
-    <div class="vertical-middle"></div>
-    <div class="vertical-middle"></div>
-    <style>
-      .vertical-middle {
-        width: 50px;
-        height: 100px;
-        position: relative;
-        display: inline-block;
-        box-shadow: inset 0 0 0 1px #000;
-      }
-
-      .vertical-middle:after {
-        width: 20%;
-        padding-top: 20%;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        content: '';
-        transform: translate(-50%, -50%);
-        background-color: currentColor;
-      }
-
-      .vertical-middle:nth-child(2):after {
-        margin-top: -3px;
-      }
-    </style>
-  </div>
-  <div class="test-box">
-    <div id="ScrollPanel" class="scroll-panel">
-      <div class="scroll-panel-content">禁止滚动传递(在ie中如果滚动太快的话，滚动还是传递出去，更好的想法可以禁止滚动，然后在通过js模拟出滚动)</div>
+    <div class="vertical-middle-box">
+      <div class="vertical-middle"></div>
+      <div class="vertical-middle"></div>
     </div>
-    <style>
-      .scroll-panel {
-        width: 100px;
-        height: 200px;
-        overflow: auto;
-      }
-
-      .scroll-panel-content {
-        height: 500px;
-        background: linear-gradient(#fff, #555);
-      }
-    </style>
+  </div>
+  <div class="test-box">
+    <div class="scroll-panel-box">
+        <div id="ScrollPanel" class="scroll-panel">
+          <div class="scroll-panel-content">禁止滚动传递(在ie中如果滚动太快的话，滚动还是传递出去，更好的想法可以禁止滚动，然后在通过js模拟出滚动)</div>
+        </div>
+    </div>
     <script>
       $('#ScrollPanel').on('mousewheel', function (e) {
         if (e.originalEvent.wheelDelta > 0) {
@@ -148,5 +136,4 @@
   </div>
   <script src="./jscss/index.js"></script>
 </body>
-
 </html>

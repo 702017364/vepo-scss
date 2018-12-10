@@ -1,10 +1,10 @@
+#@vope/scss
+
 ## npm 命令
 ```bash
 
 # 运行开发环境
 npm run gulp
-# 清除编译出的文件
-npm run gulp:clean
 # 发布（无 map 文件）
 npm run gulp:build
 # 测试（将 scss 文件的入口更改为 test.scss）
@@ -13,1063 +13,843 @@ npm run gulp:test
 npm run gulp:client
 # 运行发布环境（会生成 map 文件）
 npm run gulp:server
+# 运行测试开发环境
+npm run gulp:mocha
+# 运行测试
+npm run test
 
 ```
 
 ## API
 
-#### SCSS API
+### function.array
+- uf-reverse
+  ```bash
+  # 将数据的元素顺序进行反转
+  # @param  $list               [List]   -- 要反转的数组
+  # @return                     [List]
+  ```
 
-  ##### function.array
-  - ofreverse
-    ```bash
-    # 将数据的元素顺序进行反转
-    # @param  $list               [Array]   -- 要取反的数组
-    # @return                     [Array]
-    ```
+- uf-is-list
+  ```bash
+  # 检测类型是否为 list
+  # @param  $value              [Object]
+  # @return                     [Boolean]
+  ```
 
-  - is-list
-    ```bash
-    # 检测类型是否为 list
-    # @param  $value              [Object]
-    # @return                     [Boolean]
-    ```
+- uf-concat
+  ```bash
+  # 返回两个数组的组合数组
+  # @param  $args...            [List]
+  # @return                     [List]
+  ```
 
-  - of-concat
-    ```bash
-    # 返回两个数组的组合数组
-    # @param  $list1              [List]
-    # @param  $list2              [List]
-    # @return                     [List]
-    ```
+### function.number
+- uf-is-number
+  ```bash
+  # 检测类型是否为 number
+  # @param  $value              [Object]
+  # @return                     [Boolean]
+  ```
 
-  ##### function.number
-  - is-number
-    ```bash
-    # 检测类型是否为 number
-    # @param  $value              [Object]
-    # @return                     [Boolean]
-    ```
+- uf-is-rational__division
+  ```bash
+  # 检测除法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+  # @param  $a                  [Number]  -- 被除数
+  # @param  $b                  [Number]  -- 除数
+  # @return                     [Boolean]
+  ```
 
-  - is-rational-division
-    ```bash
-    # 检测除法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-    # @param  $a                  [Number]  -- 被除数
-    # @param  $b                  [Number]  -- 除数
-    # @return                     [Boolean]
-    ```
+- uf-is-rational__multiplication
+  ```bash
+  # 检测乘法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+  # @param  $a                  [Number]  -- 被乘数
+  # @param  $b                  [Number]  -- 乘数
+  # @return                     [Boolean]
+  ```
 
-  - is-rational-multiplication
-    ```bash
-    # 检测乘法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-    # @param  $a                  [Number]  -- 被乘数
-    # @param  $b                  [Number]  -- 乘数
-    # @return                     [Boolean]
-    ```
+- uf-is-rational__number
+  ```bash
+  # 检测其倒数是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+  # @param  $a                  [Number]  -- 要求倒的数
+  # @return                     [Boolean]
+  ```
 
-  - is-rational-number
-    ```bash
-    # 检测其倒数是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-    # @param  $a                  [Number]  -- 要求倒的数
-    # @return                     [Boolean]
-    ```
+### function.boolean
+- uf-is-empty
+  ```bash
+  # 判断值是否为空
+  # @param  $value              [Object]  -- 要判断的值
+  # @return                     [Boolean]
+  ```
 
-  ##### function.boolean
-  - isempty
-    ```bash
-    # 判断值是否为空
-    # @param  $value              [Object]  -- 要判断的值
-    # @return                     [Boolean]
-    ```
+- uf-is-px
+  ```bash
+  # 判断单位是否是 px
+  # @param  $value              [Number]  -- 要判断的值
+  # @return                     [Boolean]
+  ```
 
-  - ispx
-    ```bash
-    # 判断单位是否是 px
-    # @param  $value              [Number]  -- 要判断的值
-    # @return                     [Boolean]
-    ```
-
-  - is_cssnext
-    ```bash
-    # 判断是否开启 cssnext 的 pollfill 功能
-    # @param  $name               [String]  -- 要进行判断的属性值
-    # @return                     [Boolean]
-    ```
-
-  - is-boolean
-    ```bash
-    # 检测类型是否为 Boolean
-    # @param  $value              [Object]
-    # @retuen                     [Boolean]
-    ```
+- uf-is-boolean
+  ```bash
+  # 检测类型是否为 Boolean
+  # @param  $value              [Object]
+  # @retuen                     [Boolean]
+  ```
   
-  ##### function.calc
-  - ofcalc
-    ```bash
-    # 将一个复杂的 calc 计算优化（简化）
-    # @param  $list               [Array]   -- 要进行计算的值列表
-    # @param  $base       {1}     [Number]  -- 对列表进行乘（或除）的乘数（或除数）
-    # @param  $dir        {0}     [Number]  -- 0 表示对列表进行除法运算，1 表示对列表进行乘法运算
-    # @param  $simplify   {false} [Boolean] -- 当合并后的计算列表包含不同值且 $base 不为 1 时，是否要清除 $base （$simplify = false 为不清除，保留输出）
-    # @param  $str        {''}    [String]  -- 字符串（ofcalc 运算结果）
-    # @return                     [Number, String]
-    ```
+### function.math
+- uf-round
+  ```bash
+  # 四舍五入指定小数位数的数字（如果输入负值，则对整数部分进行相应长度做四舍五入）
+  # @param  $value              [Number]  -- 需要处理的值
+  # @param  $pow        {0}     [Number]  -- 位数
+  # @return                     [Number]
+  ```
 
-  - ofcalc-array
-    ```bash
-    # ofcalc 数组版
-    # @param  $list               [Array]   -- 要进行计算的值列表
-    # @param  $base       {1}     [Number]  -- 对列表进行乘（或除）的乘数（或除数）
-    # @param  $dir        {0}     [Number]  -- 0 表示对列表进行除法运算，1 表示对列表进行乘法运算
-    # @param  $simplify   {false} [Boolean] -- 当合并后的计算列表包含不同值且 $base 不为 1 时，是否要清除 $base （$simplify = false 为不清除，保留输出）
-    # @return                     [Number, String]
-    ```
+- uf-to-num
+  ```bash
+  # 将 String 型数字转成 Number
+  # @param  $str                [String]  -- 字符型数字
+  # @return                     [Number]
+  ```
 
-  - ofcalc-string
-    ```bash
-    # ofcalc 字符版
-    # @param  $str                [String]  -- 字符串（ofcalc 运算结果）
-    # @param  $list       {()}    [Array]   -- 新增进行计算的值列表
-    # @param  $base       {null}  [Number]  -- 更改列表进行乘（或除）的乘数（或除数）
-    # @param  $dir        {null}  [Number]  -- 更改对列表进行的运算（0 表示对列表进行除法运算，1 表示对列表进行乘法运算）
-    # @param  $simplify   {false} [Boolean] -- 当合并后的计算列表包含不同值且 $base 不为 1 时，是否要清除 $base （$simplify = false 为不清除，保留输出）
-    # @return                     [Number, String]
-    ```
+- uf-to-num__unit
+  ```bash
+  # 将 String 型数字（可带单位）转成 Number（带单位）
+  # @param  $str                [String]  -- 字符型数字（可带单位，如果不带单位或不是有效的单位，将自动变成单位 px）
+  # @return                     [Number]
+  ```
 
-  - calc-output
-    ```bash
-    # 对一个数组中包含的每个元素进行统一的 calc 计算
-    # @param  $list               [Array]   -- 要进行计算的值列表
-    # @param  $base               [Number]  -- 对列表进行乘（或除）的乘数（或除数）
-    # @param  $dir                [Number]  -- 0 表示对列表进行除法运算，1 表示对列表进行乘法运算
-    # @param  $simplify           [Boolean] -- 当合并后的计算列表包含不同值且 $base 不为 1 时，是否要清除 $base （$simplify = false 为不清除，保留输出）
-    # @return                     [Number, String]
-    ```
+### function.operat
+- uf-dir
+  ```bash
+  # 获取全局 $u-quartet-table 中的属性值
+  # @param  $prop       {''}    [String]  -- 属性名（默认或者无效属性都会返回 $u-quartet）
+  # @return                     [List]
+  ```
+
+- uf-negate__prop
+  ```bash
+  # 属性取反（在获取到的数组中，取得传入模式的反模式对应的角标值）
+  # @param  $mode       {1}     [Number]  -- 要取反的模式（角标）
+  # @param  $prop       {''}    [String]  -- 属性名（默认或者无效属性都会返回 $u-quartet）
+  # @return                     [String]
+  ```
+
+- uf-negate
+  ```bash
+  # 对传入的模式（值）进行取反
+  # @param  $mode               [Number]  -- 要取反的模式（值）
+  # @param  $range              [Number]  -- 取反模式的范围
+  # @return                     [Number]
+  ```
+
+- uf-uuid
+  ```bash
+  # 产生一个 uuid
+  # @param  $space      {'A'}   [String]  -- uuid 的前缀（添加前缀是因为很多场合不能以数字开头）
+  # @return                     [String]
+  ```
+
+### function.string
+- uf-string-split
+  ```bash
+  # 字符串分割（对 $separator 进行处理）
+  # @param  $string             [String]  -- 要分割的字符串
+  # @param  $separator          [String]  -- 分隔符
+  # @return                     [List]
+  ```
   
-  - calc-join
-    ```bash
-    # 将数组中包含的元素拼接成 calc 形式
-    # @param  $list               [Array]   -- 要进行输出的值列表
-    # @param  $base               [Number]  -- 对列表进行乘（或除）的乘数（或除数）  
-    # @param  $dir                [Number]  -- 0 表示对列表进行除法运算，1 表示对列表进行乘法运算
-    # @return                     [String]
-    ```
+- uf-string-split__for
+  ```bash
+  # 字符串分割（将分割的字符串加入数组中）
+  # @param  $list               [List]   -- 数组
+  # @param  $string             [String]  -- 要分割的字符串
+  # @param  $separator          [String]  -- 分隔符
+  # @return                     [List]
+  ```
 
-  - calc-simplify
-    ```bash
-    # 对一个数组中包含的每个元素进行乘法（或除法）运算
-    # @param  $list               [Array]   -- 要进行运算的值列表
-    # @param  $base               [Number]  -- 对列表进行乘（或除）的乘数（或除数）
-    # @param  $dir                [Number]  -- 0 表示对列表进行除法运算，1 表示对列表进行乘法运算
-    # @return                     [Array]
-    ```
+- uf-is-string
+  ```bash
+  # 检测类型是否为 string
+  # @param  $value              [Object]
+  # @return                     [Boolean]
+  ```
 
-  - calc-dir
-    ```bash
-    # 判断一个值是表示乘法还是除法运算
-    # @param  $dir                [Number]  -- 0 表示对列表进行除法运算，1 表示对列表进行乘法运算
-    # @return                     [Boolean]
-    ```
+### function.style
+- bgurl
+  ```bash
+  # background-image 值的简写模式
+  # @param  $name       {$u-image-sprite}           [String]  -- 图片路径
+  # @param  $dpr        {$u-view-dpr}        [Number]  -- dpr
+  # @return                     [String]
+  ```
 
-  - calc-category
-    ```bash
-    # 对数据中的每个元素进行按单位分类
-    # @param  $list               [Array]   -- 要进行分类的数组
-    # @return                     [Map]
-    ```
+- uf-compose
+  ```bash
+  # 属性拼接
+  # @param  $far                [String]  -- 要被拼接的属性
+  # @param  $prev       {''}    [String]  -- 拼接属性的前缀
+  # @param  $next       {''}    [String]  -- 拼接属性的后缀
+  # @return                     [String]
+  ```
 
-  - calc-merge
-    ```bash
-    # 将集合中值为数组的项进行合并
-    # @param  $map                [Map]     -- 要进行合并的集合
-    # @return                     [Map]
-    ```
+- of-line
+  ```bash
+  # 通过该方法对单位为 rem 的 line-height 进行优化（由于计算问题 + 浏览器对 line-height 使用去尾处理，造成部分 line-height 会比实际想要的值少 1px）（备注：其实最好的方法应该是避免使用如 14、15、17 这种会造成计算不尽的值作为根元素的 font-size）
+  # @param  $value              [Number]  -- 需要优化的 line-height
+  # @return                     [String]
+  ```
 
-  - calc-sum-var
-    ```bash
-    # 对列表的元素进行 css4 var 求和
-    # @param  $list               [Array]   -- 要进行运算的数组
-    # @return                     [String]
-    ```
-
-  - calc-sum
-    ```bash
-    # 对列表的元素进行常规求和运算
-    # @param  $list               [Array]   -- 要进行运算的数组
-    # @return                     [Number]
-    ```
-
-  - calc-filter
-    ```bash
-    # 将集合中值为 0 的项过滤掉，并输出值列表
-    # @param  $map                [Map]     -- 要进行处理的集合
-    # @return                     [Array]
-    ```
-    
-  - ofcalc-resolve
-    ```bash
-    # 将 ofcalc 运算结果进行反解析
-    # @param  $calc               [String]     -- 字符串（ofcalc 运算结果）
-    # @return                     [Map]
-    ```
-
-  - ofcalc-resolve-baseAndDir
-    ```bash
-    # 方法 ofcalc-resolve 的辅助，提取出 calc 中 base 和 dir
-    # @param  $splits             [Array]     -- ofcalc 运算结果拆分处理后的数组
-    # @return                     [Map]
-    ```
-
-  - ofcalc-resolve-lists
-    ```bash
-    # 方法 ofcalc-resolve 的辅助，提取出 calc 中进行加（或减）运算的数字
-    # @param  $splits             [Array]     -- ofcalc 运算结果拆分处理后的数组
-    # @return                     [Array]
-    ```
+### function.vector
+- uf-to-all
+  ```bash
+  # 单位转换（总接口）
+  # @param  $value              [Number]  -- 要进行单位转换值
+  # @param  $base       {$u-fontSize-root}             [Number]  -- 转换单位时进行计算的基数
+  # @param  $dpr        {$u-view-dpr}        [Number]  -- dpr
+  # @return                     [Number, String]
+  ```
   
-  ##### function.math
-  - ofround
-    ```bash
-    # 四舍五入指定小数位数的数字（如果输入负值，则对整数部分进行相应长度做四舍五入）
-    # @param  $value              [Number]  -- 需要处理的值
-    # @param  $pow        {0}     [Number]  -- 位数
-    # @return                     [Number]
-    ```
+- all
+  ```bash
+  # uf-to-all 方法的简写模式
+  # @return                     [Number, String]
+  ```
 
-  - ofnum
-    ```bash
-    # 将 String 型数字转成 Number
-    # @param  $str                [String]  -- 字符型数字
-    # @return                     [Number]
-    ```
+- uf-to-rem
+  ```bash
+  # px 转换成 rem
+  # @param  $value              [Number]  -- 要进行单位转换值
+  # @param  $base       {$u-fontSize-root}             [Number]  -- 转换单位时进行计算的基数
+  # @return                     [Number]
+  ```
 
-  - ofnum-unit
-    ```bash
-    # 将 String 型数字（可带单位）转成 Number（带单位）
-    # @param  $str                [String]  -- 字符型数字（可带单位，如果不带单位或不是有效的单位，将自动变成单位 px）
-    # @return                     [Number]
-    ```
+- uf-to-vmin
+  ```bash
+  # px 转换成 vmin
+  # @param  $value              [Number]  -- 要进行单位转换值
+  # @param  $base       {$u-view-vector}      [Number]    -- 设置取值向量（单位）
+  # @return                     [Number]
+  ```
+
+- uf-to-px
+  ```bash
+  # 将纯数值转换成 px
+  # @param  $value              [Number]  -- 要进行单位转换值
+  # @param  $base       {null}            -- 无效值（只是为了做响应 uf-to-all ）
+  # @return                     [Number]
+  ```
+
+- uf-font-size
+  ```bash
+  # 对 font-size 引用单位转换
+  # @param  $value              [Number]  -- 要进行单位转换值
+  # @return                     [Number]
+  ```
+
+- uf-less
+  ```bash
+  # 去除单位（变成纯数值）
+  # @param  $value              [Number]  -- 要去除单位的值
+  # @return                     [Number]
+  ```
+
+- uf-vector
+  ```bash
+  # 获取参数对应的单位向量
+  # @param  $value              [Number]  -- 要获取单位向量的值
+  # @return                     [Number]
+  ```
+
+### function.map
+- uf-icons
+  ```bash
+  # 简化创建 list 或 map 时的重复书写
+  # @param  $map                [List, Map]   -- 简写的数据
+  # @param  $before             [String]  -- 分项前面插入的值
+  # @param  $after              [String]  -- 分项后面插入的值
+  # @return                     [Map]
+  ```
+
+### function.calc
+- uf-calc-single
+  ```bash
+  # calc 单例表达式运算
+  # @param  $args               [Number, List]  -- 要运算的参数（列表）
+  # @param  $product    {1}     [Number]  -- 表示运算使用的倍数
+  # @param  $reply      {0}     [Number]  -- 表示运算使用的方式（1：乘法，2：除法）
+  # @param  $analysis   {false} [Boolean] -- 是否强制分解运算
+  # @return                     [Number, String]
+  ```
+
+- uf-calc
+  ```bash
+  # calc 多表达式运算（每个表达式就是一个独立的 uf-calc-single 集合，并且进行了加强，支持 String 类型的 calc 表达式，支持运算表达式中包含 var）
+  # 1、每个表达式就是一个独立的 uf-calc-single 集合
+  # 2、添加了 String 类型的 calc 表达式支持（在该情况下不支持传递其他参数）
+  # 3、添加了表达式中包含 var 的运算
+  # 4、分表达式设置的参数 $analysis 可能无效
+  ```
+
+### mixin.class
+- um-fast__dir
+  ```bash
+  # 简写样式，只对包含方向（top、right、bottom、left）的样式起作用
+  # @param  $mode       {'o'}   [String]  -- 方向（'x' 代表 x 轴方向，'y' 代表 y 轴方向，'o' 代表所有方向）
+  # @param  $value      {0}     [Number]  -- 要设置样式的值
+  # @param  $prop       {''}    [String]  -- 拼接时的前缀
+  # @param  $type       {''}    [String]  -- 拼接时的后缀
+  ```
+
+- um-v
+  ```bash
+  # 快速书写带有居中特性的定位
+  # @param  $mode       {'to'}  [String]  -- 使用何种方式进行居中定位（p 开头代表只使用定位居中，t 开头代表使用定位和位移进行混合居中，第二个字母含义可参照 mixin.um-fast__dir => $mode）
+  # @param  $p          {1}     [String]  -- position 的值（对应 $r-pos）
+  ```
+
+- um-ratio
+  ```bash
+  # 创建一个 width、height 相同的元素
+  # @param  $value      {$u-icon}             [Number]  -- width、height 的值
+  # @param  $mode       {1}     [Number]  -- 如何使用 height 的模式（-1 代表用 line-height 代替 height，0 代表对 line-height、height 都设置值，1 代表只设置 height）
+  ```
+
+- um-height
+  ```bash
+  # 对 height、line-heigth 设置相同值的简写模式
+  # @param  $value              [Number]  -- 行高
+  # @param  $row        {1}     [Number]  -- 高度的倍数
+  ```
+
+- um-icon
+  ```bash
+  # 设置一个行内 icon
+  # @param  $value      {$u-icon}             [Number]  -- icon 的大小
+  ```
+
+- um-clear__before
+  ```bash
+  # 可用于清除 first-child 元素上边距传递
+  ```
+
+- um-clear__after
+  ```bash
+  # 可用于清除子元素浮动造成父级高度塌陷
+  ```
+
+- um-placeholder
+  ```bash
+  # 设置 placeholder 的样式
+  # @param  $color      {$u-color-placeholder}     [Color] -- placeholder 文字颜色（非 Color 类型的值时将不做属性 color 的设置）
+  ```
+
+- um-transition
+  ```bash
+  # 基准过渡样式
+  # @param  $args       {$u-duration}         [List]  -- 参数列表
+  ```
   
-  ##### function.operat
-  - offar
-    ```bash
-    # 获取全局 $r-fars 中的属性值
-    # @param  $prop       {''}    [String]  -- 属性名（默认或者无效属性都会返回 $r-far）
-    # @return                     [Array]
-    ```
+- um-animation
+  ```bash
+  # 基准动画样式
+  # @param  $name               [String]  -- 动画名
+  # @param  $args       {$u-duration}         [List]  -- 除动画名称之外的参数
+  ```
 
-  - ofanti
-    ```bash
-    # 属性取反（在获取到的数组中，取得传入模式的反模式对应的角标值）
-    # @param  $mode       {1}     [Number]  -- 要取反的模式（角标）
-    # @param  $prop       {''}    [String]  -- 属性名（默认或者无效属性都会返回 $r-far）
-    # @return                     [String]
-    ```
-
-  - ofanti0
-    ```bash
-    # 对传入的模式（值）进行取反
-    # @param  $mode               [Number]  -- 要取反的模式（值）
-    # @param  $range              [Number]  -- 取反模式的范围
-    # @return                     [Number]
-    ```
-
-  - uuid
-    ```bash
-    # 产生一个 uuid
-    # @param  $space      {'A'}   [String]  -- uuid 的前缀（添加前缀是因为很多场合不能以数字开头）
-    # @return                     [String]
-    ```
-
-  ##### function.string
-  - str-split
-    ```bash
-    # 字符串分割（对 $separator 进行处理）
-    # @param  $string             [String]  -- 要分割的字符串
-    # @param  $separator          [String]  -- 分隔符
-    # @return                     [List]
-    ```
-    
-  - str-split-for
-    ```bash
-    # 字符串分割（将分割的字符串加入数组中）
-    # @param  $list               [Array]   -- 数组
-    # @param  $string             [String]  -- 要分割的字符串
-    # @param  $separator          [String]  -- 分隔符
-    # @return                     [List]
-    ```
-
-  - is-string
-    ```bash
-    # 检测类型是否为 string
-    # @param  $value              [Object]
-    # @return                     [Boolean]
-    ```
-
-  ##### function.style
-  - bgurl
-    ```bash
-    # background-image 值的简写模式
-    # @param  $name       {$r-sprite}           [String]  -- 图片路径
-    # @param  $dpr        {$browser-dpr}        [Number]  -- dpr
-    # @return                     [String]
-    ```
-
-  - ofpart
-    ```bash
-    # 避免 scss 由于变量（或运算）的原因将 '/' 识别成除法运算
-    # @param  $a                  [Object]  -- 变量 a
-    # @param  $b                  [Object]  -- 变量 b
-    # @return                     [String]
-    ```
-
-  - ofclass
-    ```bash
-    # 将字符串转换成 class 形式
-    # @param  $name               [String]  -- 要转成为 class 的字符串
-    # @return                     [String]
-    ```
-    
-  - prop-join
-    ```bash
-    # 属性拼接
-    # @param  $far                [String]  -- 要被拼接的属性
-    # @param  $prev       {''}    [String]  -- 拼接属性的前缀
-    # @param  $next       {''}    [String]  -- 拼接属性的后缀
-    # @return                     [String]
-    ```
-
-  - ofline
-    ```bash
-    # 通过该方法对单位为 rem 的 line-height 进行优化（由于计算问题 + 浏览器对 line-height 使用去尾处理，造成部分 line-height 会比实际想要的值少 1px）（备注：其实最好的方法应该是避免使用如 14、15、17 这种会造成计算不尽的值作为根元素的 font-size）
-    # @param  $value              [Number]  -- 需要优化的 line-height
-    # @return                     [String]
-    ```
-
-  ##### function.vector
-  - ofall
-    ```bash
-    # 单位转换（总接口）
-    # @param  $value              [Number]  -- 要进行单位转换值
-    # @param  $base       {$r-size}             [Number]  -- 转换单位时进行计算的基数
-    # @param  $dpr        {$browser-dpr}        [Number]  -- dpr
-    # @return                     [Number, String]
-    ```
-    
-  - all
-    ```bash
-    # ofall 方法的简写模式
-    # @return                     [Number, String]
-    ```
-
-  - ofrem
-    ```bash
-    # px 转换成 rem
-    # @param  $value              [Number]  -- 要进行单位转换值
-    # @param  $base       {$r-size}             [Number]  -- 转换单位时进行计算的基数
-    # @return                     [Number]
-    ```
-
-  - ofvmin
-    ```bash
-    # px 转换成 vmin
-    # @param  $value              [Number]  -- 要进行单位转换值
-    # @param  $base       {null}            -- 无效值（只是为了做响应 ofall ）
-    # @return                     [Number]
-    ```
-
-  - ofpx
-    ```bash
-    # 将纯数值转换成 px
-    # @param  $value              [Number]  -- 要进行单位转换值
-    # @param  $base       {null}            -- 无效值（只是为了做响应 ofall ）
-    # @return                     [Number]
-    ```
-
-  - ofsize
-    ```bash
-    # 对 font-size 引用单位转换
-    # @param  $value              [Number]  -- 要进行单位转换值
-    # @return                     [Number]
-    ```
-
-  - ofless
-    ```bash
-    # 去除单位（变成纯数值）
-    # @param  $value              [Number]  -- 要去除单位的值
-    # @return                     [Number]
-    ```
-
-  - ofvector
-    ```bash
-    # 获取参数对应的单位向量
-    # @param  $value              [Number]  -- 要获取单位向量的值
-    # @return                     [Number]
-    ```
-
-  ##### function.map
-  - icons
-    ```bash
-    # 简化创建 array 或 map 时的重复书写
-    # @param  $map                [List, Map]   -- 简写的数据
-    # @param  $before             [String]  -- 分项前面插入的值
-    # @param  $after              [String]  -- 分项后面插入的值
-    # @return                     [Map]
-    ```
+- um-ellipsis
+  ```bash
+  # 省略号效果
+  ```
   
-  ##### mixin.class
-  - hide-over
-    ```bash
-    # 重置 margin、padding
-    ```
+- um-omitted
+  ```bash
+  # 多行省略号效果
+  # @param  $lines      {3}     [Number]  -- 指定之后的行隐藏
+  ```
 
-  - c-h
-    ```bash
-    # 重置标题标签
-    ```
+- um-appearance
+  ```bash
+  # 清除默认设置
+  ```
 
-  - r-far
-    ```bash
-    # 简写样式，只对包含方向（top、right、bottom、left）的样式起作用
-    # @param  $mode       {'o'}   [String]  -- 方向（'x' 代表 x 轴方向，'y' 代表 y 轴方向，'o' 代表所有方向）
-    # @param  $value      {0}     [Number]  -- 要设置样式的值
-    # @param  $prop       {''}    [String]  -- 拼接时的前缀
-    # @param  $type       {''}    [String]  -- 拼接时的后缀
-    ```
+### mixin.function
+- IIFE
+  ```bash
+  # 一个运行样式的空 mixin 环境
+  ```
 
-  - v
-    ```bash
-    # 快速书写带有居中特性的定位
-    # @param  $mode       {'to'}  [String]  -- 使用何种方式进行居中定位（p 开头代表只使用定位居中，t 开头代表使用定位和位移进行混合居中，第二个字母含义可参照 mixin.r-far => $mode）
-    # @param  $p          {1}     [String]  -- position 的值（对应 $r-pos）
-    ```
+- content
+  ```bash
+  # 写入 content 的值
+  # @param  $content            [String]  -- content 的值
+  ```
 
-  - ratio
-    ```bash
-    # 创建一个 width、height 相同的元素
-    # @param  $value      {$r-icon}             [Number]  -- width、height 的值
-    # @param  $mode       {1}     [Number]  -- 如何使用 height 的模式（-1 代表用 line-height 代替 height，0 代表对 line-height、height 都设置值，1 代表只设置 height）
-    ```
+- before
+  ```bash
+  # 一个运行样式的 before 环境
+  # @param  $content    {''}    [String]  -- content 的值
+  ```
 
-  - height
-    ```bash
-    # 对 height、line-heigth 设置相同值的简写模式
-    # @param  $value              [Number]  -- 要设置的值
-    ```
+- after
+  ```bash
+  # 一个运行样式的 after 环境
+  # @param  $content    {''}    [String]  -- content 的值
+  ```
 
-  - el-icon
-    ```bash
-    # 设置一个行内 icon
-    # @param  $value      {$r-icon}             [Number]  -- icon 的大小
-    # @param  $is         {true}  [Boolean] -- 是否要继承 %PSEUDO-ICON 的样式
-    ```
+- um-keyframes
+  ```bash
+  # 优雅的书写 @keyframes
+  # @param  $name       {''}    [String]  -- keyframes 的名称（当 $name 的值为空时，会自动生成一个 uuid 作为 @keyframes 值）
+  # @param  $args       {$u-duration}         [List]  -- 除动画名称之外的参数
+  ```
 
-  - c-mtop
-    ```bash
-    # 清除 first-child 元素上边距传递
-    ```
+- um-quick-relative
+  ```bash
+  # 快速转换出相对值（em）
+  # @param  $font-size          [Number]  -- 字体大小
+  # @param  $props              [Object]  -- 要转换值的属性集合
+  # @param  $itself     {true}  [Boolean] -- 是否要设置 font-size 属性
+  # @param  $option     {$u-quick-relative}   [Map]   -- 配置
+  ```
 
-  - c-float
-    ```bash
-    # 清除子元素浮动造成父级高度塌陷
-    ```
+### mixin.scrollbar
+- scrollbar
+  ```bash
+  # 滚动条设置
+  ```
 
-  - placeholder
-    ```bash
-    # 设置 placeholder 的样式
-    # @param  $color      {$rc-placeholder}     [Color] -- placeholder 文字颜色
-    ```
+### mixin.effects
+- um-effect__arrow
+  ```bash
+  # 箭头制作
+  # @param  $size       {$u-fontSize-root}             [Number]  -- 箭头的大小
+  # @param  $weight     {2px}   [Number]  -- 箭头的厚度
+  # @param  $rotate     {45deg} [Number]  -- 箭头旋转的角度
+  ```
 
-  - transition
-    ```bash
-    # 基准过渡样式
-    # @param  $args       {$r-duration}         [List]  -- 参数列表
-    ```
-    
-  - animation
-    ```bash
-    # 基准动画样式
-    # @param  $name               [String]  -- 动画名
-    # @param  $args       {$r-duration}         [List]  -- 除动画名称之外的参数
-    ```
+- um-effect__triangle
+  ```bash
+  # 三角形制作
+  # @param  $edge               [Number]  -- 三角形底边的长度
+  # @param  $height     {$edge} [Number]  -- 三角形高度
+  # @param  $mode       {1}     [Number]  -- 三角形的模式（方向）
+  ```
+  
+- um-effect__triangle-equil
+  ```bash
+  # 等边三角形制作
+  # @param  $edge               [Number]  -- 三角形的边长
+  # @param  $mode       {1}     [Number]  -- 三角形的模式（方向）
+  ```
+  
+### mixin.functions.for
+- um-for-style
+  ```bash
+  # 提供一个循环功能，将集合中的数据设置到样式中
+  # @param  $key-value          [Map]     -- 数据
+  # @param  $prefix     {''}    [String]  -- 选择器前缀
+  # @param  $suffix     {''}    [String]  -- 选择器后缀
+  # @param  $lists      {background-position} [List]  -- 样式属性列表
+  # @param  $is         {false} [Boolean] -- 是否应用单位转换
+  ```
 
-  - hide-over
-    ```bash
-    # 隐藏多余的子元素
-    # @param  $n                  [Number]  -- 指定从该角标开始隐藏
-    ```
+### mixin.cssnext.not
+- um-not
+  ```bash
+  # :not 伪类（多 rule）
+  # @param  $args...            [String]  -- rule
+  ```
 
-  - ellipsis
-    ```bash
-    # 省略号效果
-    ```
-    
-  - omitted
-    ```bash
-    # 多行省略号效果
-    # @param  $lines      {3}     [Number]  -- 指定之后的行隐藏
-    ```
+### mixin.cssnext.matches
+- um-matches
+  ```bash
+  # :matches 伪类
+  # @param  $args...            [String]  -- rule
+  ```
 
-  - appearance
-    ```bash
-    # 清除默认设置
-    ```
-
-  ##### mixin.const
-  - html-font
-    ```bash
-    # 设置 html 标签的 font
-    ```
-
-  - h-css
-    ```bash
-    # 设置标题标签的样式
-    ```
-    
-  ##### mixin.function
-  - IIFE
-    ```bash
-    # 一个运行样式的空 mixin 环境
-    ```
-
-  - content
-    ```bash
-    # 写入 content 的值
-    # @param  $content            [String]  -- content 的值
-    ```
-
-  - before
-    ```bash
-    # 一个运行样式的 before 环境
-    # @param  $content    {''}    [String]  -- content 的值
-    ```
-
-  - after
-    ```bash
-    # 一个运行样式的 after 环境
-    # @param  $content    {''}    [String]  -- content 的值
-    ```
-
-  - color-weight
-    ```bash
-    # 在样式中对色值做亮度处理
-    # @param  $prop               [String]  -- css 属性
-    # @param  $color              [Color]   -- 色值
-    # @param  $weight             [Number]  -- 亮度值
-    ```
-
-  - colors-weight
-    ```bash
-    # 应用样式 color、background-color，并对色值做亮度处理
-    # @param  $colors             [Array]   -- 颜色的数组
-    # @param  $w1         {1}     [Number]  -- 对应样式 color 的颜色值的亮度
-    # @param  $w2         {1}     [Number]  -- 对应样式 background-color 的颜色值的亮度
-    ```
-
-  - keyframes
-    ```bash
-    # 优雅的书写 @keyframes
-    # @param  $name       {''}    [String]  -- keyframes 的名称（当 $name 的值为空时，会自动生成一个 uuid 作为 @keyframes 值）
-    # @param  $args       {$r-duration}         [List]  -- 除动画名称之外的参数
-    ```
-
-  ##### mixin.scrollbar
-  - scrollbar
-    ```bash
-    # 滚动条设置
-    ```
-
-  ##### mixin.effects
-  - arrow
-    ```bash
-    # 箭头制作
-    # @param  $size       {$r-size}             [Number]  -- 箭头的大小
-    # @param  $weight     {2px}   [Number]  -- 箭头的厚度
-    # @param  $is-pos     {true}  [Boolean] -- 是否应用定位居中
-    # @param  $rotate     {45deg} [Number]  -- 箭头旋转的角度
-    ```
-
-  - triangle
-    ```bash
-    # 三角形制作
-    # @param  $edge               [Number]  -- 三角形底边的长度
-    # @param  $height     {$edge} [Number]  -- 三角形高度
-    # @param  $mode       {1}     [Number]  -- 三角形的模式（方向）
-    ```
-    
-  - triangle-equil
-    ```bash
-    # 等边三角形制作
-    # @param  $edge               [Number]  -- 三角形的边长
-    # @param  $mode       {1}     [Number]  -- 三角形的模式（方向）
-    ```
-    
-  ##### mixin.functions.for
-  - for-style
-    ```bash
-    # 提供一个循环功能，将集合中的数据设置到样式中
-    # @param  $key-value          [Map]     -- 数据
-    # @param  $prefix     {''}    [String]  -- 选择器前缀
-    # @param  $suffix     {''}    [String]  -- 选择器后缀
-    # @param  $lists      {background-position} [Array]  -- 样式属性列表
-    # @param  $is         {false} [Boolean] -- 是否应用单位转换
-    ```
-    
-  - for-style-use
-    ```bash
-    # 建立对样式的具体应用规则
-    # @param  $prop               [String]  -- 样式属性
-    # @param  $value              [Object]  -- 样式值
-    # @param  $is                 [Boolean] -- 是否应用单位转换
-    ```
-
-  ##### mixin.functions.prefix
-  - prefix
-    ```bash
-    # 添加命名空间（选择器的一种生成方式）
-    # @param  $name               [String]  -- 连接用的名称
-    # @param  $prefix             [String]  -- 连接前缀
-    # @param  $mode       {1}     [Number]  -- 连接模式（1 表示选择器使用短横杠拼接，2 表示选择器使用父子关系连接）
-    # @param  $coon       {''}    [String]  -- 连接方式（$and 表示选择器属于本身，其他值表示选择器为子级模式）
-    ```
-    
-  - prefix-and
-    ```bash
-    # 添加命名空间（连接模式）
-    # @param  $name               [String]  -- 连接用的名称
-    # @param  $prefix             [String]  -- 连接前缀
-    # @param  $mode               [Number]  -- 连接模式（1 表示选择器使用短横杠拼接，2 表示选择器使用父子关系连接）
-    ```
-
-  - prefix-space
-    ```bash
-    # 添加命名空间（子集模式）
-    # @param  $name               [String]  -- 连接用的名称
-    # @param  $prefix             [String]  -- 连接前缀
-    # @param  $mode               [Number]  -- 连接模式（1 表示选择器使用短横杠拼接，2 表示选择器使用父子关系连接）
-    ```
-
-  - prefix-content
-    ```bash
-    # 添加命名空间（内容）
-    # @param  $name               [String]  -- 连接用的名称
-    # @param  $mode               [Number]  -- 连接模式（1 表示选择器使用短横杠拼接，2 表示选择器使用父子关系连接）
-    ```
-    
-  - prefix-splice
-    ```bash
-    # 添加命名空间（使用短横杠拼接）
-    # @param  $name               [String]  -- 连接用的名称
-    ```
-
-  - prefix-father
-    ```bash
-    # 添加命名空间（使用父子关系连接）
-    # @param  $name               [String]  -- 连接用的名称
-    ```
-
-  ##### mixin.cssnext.not
-  - not
-    ```bash
-    # :not 伪类（多 rule）
-    # @param  $args...            [String]  -- rule
-    ```
-
-  - not-pollfill
-    ```bash
-    # :not 伪类（多 rule）(pollfill)
-    # @param  $args...            [String]  -- rule
-    ```
-
-  ##### mixin.cssnext.matches
-  - matches
-    ```bash
-    # :matches 伪类
-    # @param  $args...            [String]  -- rule
-    ```
-
-  - matches-pollfill
-    ```bash
-    # :matches 伪类(pollfill)
-    # @param  $args...            [String]  -- rule
-    ```
-
-  ##### let.const
-  - $import-reset
-    ```bash
-    # 设置是否导入重置样式（即是否引用 reset.scss）
-    # @value  [Boolean]   [let]   {true}
-    ```
-
-  - $global-decNum
+### let
+  - $u-toFixed-length:
     ```bash
     # 设置计算时取值的小数长度（备注：scss 默认的取值长度为 5）
-    # @value  [Number]    [let]   {5}
-    ```
-    
-  - $global-major-line
-    ```bash
-    # 设置是否对 line-height 进行优化处理（备注：只对方法 ofline 起作用）
-    # @value  [Boolean]   [let]   {true}
+    # @value    [Number]    [const] {5}
     ```
 
-  - $global-cssnext
+  - $u-quartet
     ```bash
-    # 配置是否开启对应的 cssnext pollfill
-    # @value  [Map]       [const]
+    # 表示方位的四个值
+    # @value    [List]     [const] {-}
     ```
 
-  - $r-far
+  - $u-browser-default-fontSize
     ```bash
-    # 方向值，常用于方法 offar 的默认取值
-    # @value  [Array]     [const]
+    # 浏览器默认字体大小值
+    # @value    [Number]    [const] {16px}
     ```
 
-  - $r-pos
-    ```bash
-    # 定位属性值
-    # @value  [Array]     [const]
-    ```
-
-  - $browser-size
-    ```bash
-    # 设置浏览器默认字体大小
-    # @value  [Array]     [const]
-    ```
-
-  - $browser-width
-    ```bash
-    # 设置视窗单位的计算基础
-    # @value  [Number]    [let]   {375px}   -- 默认值来源为 iPhone 6 尺寸，目前来说，该值为不可更改类型
-    ```
-
-   - $browser-columns
-    ```bash
-    # 设置视窗单位的计算列数
-    # @value  [Number]    [const] {100}
-    ```
-
-  - $browser-ie-version
-    ```bash
-    # 设置要兼容的ie版本
-    # @value  [Number]    [let]   {9}
-    ```
-
-  - $browser-vars
-    ```bash
-    # css 中定义的变量属性值
-    # @value  [Array]     [const]
-    ```
-
-  - $browser-vector
-    ```bash
-    # 基础向量标识（备注：用于单位转换方法 all）
-    # @value  [Number]    [let]   {1rem}
-    ```
-
-  - $browser-dpr
-    ```bash
-    # dpr 值
-    # @value  [Number]    [let]   {1}
-    ```
-
-  - $browser-fixed
-    ```bash
-    # 设置固定值的集合
-    # @value  [Map]       [const]
-    ```
-
-  - $browser-fixed-size
-    ```bash
-    # 设置字体是否固定大小（备注：只对方法 ofsize 起作用）
-    # @value  [Boolean]   [let]   {false}
-    ```
-
-  - $r-devices
-    ```bash
-    # 设置设备参数
-    # @value  [Map]       [let]
-    ```
-
-  - $r-dpr
-    ```bash
-    # 对应不同 dpr 值的资源引用别名
-    # @value  [Map]       [const]
-    ```
-
-  - $r-vector
+  - $u-vector-table
     ```bash
     # 单位向量集合
-    # @value  [Map]       [const]
+    # @value    [Map]       [const] {-}
     ```
 
-  - $r-fars
-    ```bash
-    # 方向集合
-    # @value  [Map]       [const]
-    ```
-
-  - $r-fars-radius
-    ```bash
-    # 圆角方向
-    # @value  [Array]     [const]
-    ```
-
-   - $r-nums
+  - $u-nums
     ```bash
     # 0-9 的数字集合
-    # @value  [Map]       [const]
+    # @value    [Map]       [const] {-}
     ```
 
-  ##### let.chars
-  - $colon
+  - $u-isImport-reset
     ```bash
-    # 冒号（半角）
-    # @value    [String]    [const]
+    # 设置是否使用 reset.scss 中的重置样式
+    # @value    [Boolean]   [let]   {true}
     ```
 
-  - $colons
+  - $u-major-line
     ```bash
-    # 单（或双）冒号（半角）（备注：如果 $browser-ie-version 的值大于 8 则为双冒号，否则为单冒号）
-    # @value    [String]    [const]
+    # 设置是否对 line-height 进行优化处理（备注：只对方法 of-line 起作用）
+    # @value    [Boolean]   [let]   {true}
     ```
 
-  - $before
+  - $u-cssnext-pollfill__not
     ```bash
-    # 字符串 :before（备注：$colons 的值决定该值是单或双冒号）
-    # @value    [String]    [const]
+    # 设置是否开启伪元素 not 的 pollfill 处理
+    # @value    [Boolean]   [let]   {true}
     ```
 
-  - $after
+  - $u-cssnext-pollfill__matches
     ```bash
-    # 字符串 :after（备注：$colons 的值决定该值是单或双冒号）
-    # @value    [String]    [const]
+    # 设置是否开启伪元素 matches 的 pollfill 处理
+    # @value    [Boolean]   [let]   {true}
     ```
 
-  - $and
+  - $u-fixed__fontSize
     ```bash
-    # 字符 &
-    # @value    [String]    [const]
+    # 设置字体是否固定大小（备注：只对方法 ofsize 起作用）
+    # @value    [Boolean]   [let]   {false}
     ```
 
-  - $nbsp
+  - $u-browser-ie-version
     ```bash
-    # 空格（备注：按下space键产生的空格，即 &nbsp;）
-    # @value    [String]    [const]
+    # 设置要兼容的ie版本
+    # @value    [Number]    [let]   {9}
     ```
 
-  - $ensp
+  - $u-view-width
     ```bash
-    # 空格（备注：占据的宽度正好是1/2个中文宽度）
-    # @value    [String]    [const]
+    # 设置视窗单位的计算基础（慎重调整）
+    # @value    [Number]    [let]   {375px}   -- 默认值来源为 iPhone 6 尺寸
     ```
 
-  - $emsp
+  - $u-view-vector
     ```bash
-    # 空格（备注：占据的宽度正好是1个中文宽度）
-    # @value    [String]    [const]
+    # 全局设置 function uf-to-vmin 的第二个参数的默认值（返回值的单位）
+    # @value    [Number]    [let]   {1vmin}
     ```
 
-  - $thinsp
+  - $u-view-column
     ```bash
-    # 空格（备注：占据的宽度比较小）
-    # @value    [String]    [const]
+    # 设置视窗单位的计算列数（慎重调整）
+    # @value    [Number]    [let]   {100}
     ```
 
-  ##### let.sizes
-  - $r-size
+  - $u-view-dpr
     ```bash
-    # 设置 rem 的计算基础
-    # @value    [Number]    [let]   {16px}
+    # 默认 dpr 值
+    # @value    [Number]    [let]   {1}
     ```
 
-  - $rs-h1
+  - $u-view-dpr__name
     ```bash
-    # 设置标签 h1 的 font-size（备注：在 h-css 使用时有对该值进行方法 all 处理）
-    # @value    [Number]    [let]   {$r-size * 1.375}
+    # 多倍图标名称追加区分（相比1倍图标）
+    # @value    [Map]       [let]   {2: '@2x', 3: '@3x'}
     ```
 
-  - $rs-h2
+  - $u-vector
     ```bash
-    # 设置标签 h2 的 font-size（备注：在 h-css 使用时有对该值进行方法 all 处理）
-    # @value    [Number]    [let]   {$r-size * 1.25}
-    ```
-    
-  - $rs-h3
-    ```bash
-    # 设置标签 h3 的 font-size（备注：在 h-css 使用时有对该值进行方法 all 处理）
-    # @value    [Number]    [let]   {$r-size * 1.125}
+    # 基础向量标识（慎重调整）
+    # @value    [Number]    [let]   {1rem}
     ```
 
-  - $rs-h4
+  - $u-position-list
     ```bash
-    # 设置标签 h4 的 font-size（备注：在 h-css 使用时有对该值进行方法 all 处理）
-    # @value    [Number]    [let]   {$r-size * 1}
+    # position 的属性值（慎重修改）
+    # @value    [List]     [let]   {-}
     ```
 
-  - $rs-h5
+  - $u-family
     ```bash
-    # 设置标签 h5 的 font-size（备注：在 h-css 使用时有对该值进行方法 all 处理）
-    # @value    [Number]    [let]   {$r-size * .875}
+    # 基础字体
+    # @value    [String]    [let]   {'Microsoft YaHei'}
     ```
 
-  - $rs-h6
+  - $u-path
     ```bash
-    # 设置标签 h6 的 font-size（备注：在 h-css 使用时有对该值进行方法 all 处理）
-    # @value    [Number]    [let]   {$r-size * .75}
+    # 图片路径
+    # @value    [String]    [let]   {'images/'}
     ```
 
-  - $rs-default
-    ```bash
-    # font-size 的默认值（备注：目前只用于标签 body，在调用的地方有对该值进行方法 all 处理）
-    # @value    [Number]    [let]   {$r-size}
-    ```
-
-  - $h
-    ```bash
-    # 标签 h1-h6 的 font-size 集合
-    # @value    [Map]       [const]
-    ```
-
-  - $r-line
-    ```bash
-    # 设置标签 html 的行高
-    # @value    [Number]    [let]   {null}
-    ```
-
-  ##### let.colors
-  - $r-color
-    ```bash
-    # 基础色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-light
-    ```bash
-    # 亮色色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-dark
-    ```bash
-    # 暗色色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-warn
-    ```bash
-    # 警告色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-danger
-    ```bash
-    # 危险色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-hover
-    ```bash
-    # hover 色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-active
-    ```bash
-    # active 色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-disable
-    ```bash
-    # 禁用色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-bg
-    ```bash
-    # 基本背景色
-    # @value    [Color]     [let]
-    ```
-
-  - $rc-placeholder
-    ```bash
-    # placeholder 色值
-    # @value    [Color]     [let]
-    ```
-
-  - $rcb-hover
-    ```bash
-    # hover 色块
-    # @value    [Array]     [let]
-    ```
-
-  - $rcb-active
-    ```bash
-    # active 色块
-    # @value    [Array]     [let]
-    ```
-
-  - $rcb-disable
-    ```bash
-    # disable 色块
-    # @value    [Array]     [let]
-    ```
-
-  ##### let.default
-  - $r-path
-    ```bash
-    # 背景图片路径
-    # @value    [String]    [let]
-    ```
-
-  - $r-sprite
+  - $u-image-sprite
     ```bash
     # 雪碧图图片名
     # @value    [String]    [let]   {sprite.png}
     ```
 
-  - $r-family
+  - $u-duration
     ```bash
-    # 字体（备注：标签 html 有使用）
-    # @value    [String]    [let]
+    # 基础动画过渡时间
+    # @value    [Number]    [let]   {.3s}
     ```
 
-  - $r-duration
+  - $u-quartet-table
     ```bash
-    # 动画过渡时间
-    # @value    [Number]    [let]   {0.3s}
+    # 方向集合
+    # @value    [Map]       [let]   {radius: -}
     ```
 
-  - $r-icon
+  - $u-quick-relative
+    ```bash
+    # um-quick-relative 的参数 $option 默认配置
+    # @value    [Map]       [let]   {rem: false} /* rem：是否开启rem单位值的转换 */
+    ```
+
+  - $u-character-colon
+    ```bash
+    # 冒号（半角）
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-colons
+    ```bash
+    # 伪类使用的冒号（由设置的浏览器版本决定是单冒号还是双冒号）
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-before
+    ```bash
+    # 伪类 before
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-after
+    ```bash
+    # 伪类 after
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-and
+    ```bash
+    # 字符 &
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-nbsp
+    ```bash
+    # 空格（备注：按下space键产生的空格，即 &nbsp;）
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-ensp
+    ```bash
+    # 空格（备注：占据的宽度正好是1/2个中文宽度）
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-emsp
+    ```bash
+    # 空格（备注：占据的宽度正好是1个中文宽度）
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-character-thinsp
+    ```bash
+    # 空格（备注：占据的宽度比较小）
+    # @value    [String]    [const] {-}
+    ```
+
+  - $u-fontSize-root
+    ```bash
+    # 设置根元素的 font-size （该值会用于参与计算，只能使用 px 单位）
+    # @value    [Number]    [let]   {16px}
+    ```
+
+  - $u-lineHeight-root
+    ```bash
+    # 设置根元素的 line-height
+    # @value    [Number]    [let]   {null}
+    ```
+
+  - $u-fontSize-h1
+    ```bash
+    # 设置 h1 的 font-size
+    # @value    [Number]    [let]   {$u-fontSize-root * 1.375}
+    ```
+
+  - $u-fontSize-h2
+    ```bash
+    # 设置 h2 的 font-size
+    # @value    [Number]    [let]   {$u-fontSize-root * 1.25}
+    ```
+
+  - $u-fontSize-h3
+    ```bash
+    # 设置 h3 的 font-size
+    # @value    [Number]    [let]   {$u-fontSize-root * 1.125}
+    ```
+
+  - $u-fontSize-h4
+    ```bash
+    # 设置 h4 的 font-size
+    # @value    [Number]    [let]   {$u-fontSize-root * 1}
+    ```
+
+  - $u-fontSize-h5
+    ```bash
+    # 设置 h5 的 font-size
+    # @value    [Number]    [let]   {$u-fontSize-root * .875}
+    ```
+
+  - $u-fontSize-h6
+    ```bash
+    # 设置 h6 的 font-size
+    # @value    [Number]    [let]   {$u-fontSize-root * .75}
+    ```
+
+  - $u-fontSize-default
+    ```bash
+    # 设置 body 的 font-size
+    # @value    [Number]    [let]   {$u-fontSize-root}
+    ```
+    
+  - $u-color
+    ```bash
+    # 基础色值
+    # @value    [Color]     [let]   {#333}
+    ```
+
+  - $u-color-light
+    ```bash
+    # 亮色色值
+    # @value    [Color]     [let]   {#666}
+    ```
+
+  - $u-color-dark
+    ```bash
+    # 暗色色值
+    # @value    [Color]     [let]   {#000}
+    ```
+
+  - $u-color-warn
+    ```bash
+    # 警告色值
+    # @value    [Color]     [let]   {#ff0}
+    ```
+
+  - $u-color-danger
+    ```bash
+    # 危险色值
+    # @value    [Color]     [let]   {#f00}
+    ```
+
+  - $u-color-hover
+    ```bash
+    # hover 色值
+    # @value    [Color]     [let]   {#189cd8}
+    ```
+
+  - $u-color-active
+    ```bash
+    # active 色值
+    # @value    [Color]     [let]   {#189cd8}
+    ```
+
+  - $u-color-disabled
+    ```bash
+    # 禁用色值
+    # @value    [Color]     [let]   {#ccc}
+    ```
+
+  - $u-color-placeholder
+    ```bash
+    # placeholder 色值
+    # @value    [Color]     [let]   {#ddd}
+    ```
+
+  - $u-bgcolor
+    ```bash
+    # 基础背景色
+    # @value    [Color]     [let]   {#eee}
+    ```
+
+  - $u-icon
     ```bash
     # 图标的大小
-    # @value    [Number]    [let]
+    # @value    [Number]    [let]   {28px}
     ```
 
-  - $r-arrow
+  - $u-icon-arrow
     ```bash
-    # 箭头的大小（备注：在 arrow 使用时有对该值进行方法 all 处理）
+    # 箭头的大小
     # @value    [Number]    [let]   {8px}
     ```
 
-  ##### let.extend
-  - %EL-H
+  - %U-EL__H
     ```bash
-    # 重置类型标签 h1 的样式
+    # 重置 tag h1-h6 样式
     ```
 
-  - %PSEUDO-TABLE
+  - %U-PSEUDO__TABLE
     ```bash
     # 伪类清除浮动
     ```
 
-  - %PSEUDO-ICON
+  - %U-PSEUDO__ICON
     ```bash
-    # 设置 icon
+    # 伪类 icon 基础样式
     ```
 
-  - %APPEARANCE
+  - %U-APPEARANCE
     ```bash
-    # 重置标签原生样式
+    # 重置 tag 原生样式
     ```
+
+## Changlog
+#### 1.2.0
+  - 调整：删除 REAMDE.md 中 um-not__pollfill api
+  - 调整：删除 REAMDE.md 中 um-matches__pollfill api
+  - 调整：删除 REAMDE.md 中 um-root__font api
+  - 调整：删除 REAMDE.md 中 um-h1from6 api
+  - 调整：删除 mixin um-reset__p
+  - 调整：删除 mixin um-reset__h
+  - 调整：mixin um-height 添加第二个参数 $row，用于设置倍数，默认值为 1
+  - 调整：mixin um-icon 删除第二个参数 $is，并优化其两次对 $value 进行 px 转换
+  - 调整：优化 mixin um-placeholder，如果 $value 为非有效 Color 类型，将不设置 color 属性，只作为纯粹的对 @content 调用
+  - 调整：删除 um-hide__over
+  - 调整：将 um-h1-6 重命名为 um-h1from6
+  - 调整：mixin um-effect__arrow 删除第三个参数 $is-pos，并优化 $rotate 的判断及对值为不带单位的数字时，自动添加单位 deg
+  - 调整：优化 mixin um-effect__triangle，受全局变量影响，将会产生 ie8 和非 ie8 两种模式
+  - 调整：优化 function uf-concat，可以传入多个参数进行合并
+  - 调整：优化 function uf-is-px，参数 $value 可以是任意值
+  - 调整：删除 uf-part
+  - 调整：将 function uf-to-vmin 的第二个参数从 $base 改为 $vector，用于设置返回值向量（单位）
+  - 调整：添加全局变量 $u-view-vector，作为 function uf-to-vmin 的第二个参数的默认值
+  - 调整：添加 function uf-to-all，vmin vmax vh vw 单位的转换都可以通过调用 function uf-to-vmin 来实现
+  - 调整：调整 mixin um-quick-relative 的实现，将内部对 font-size 进行转换的函数由 function all 改成 function uf-font-size
+  - 调整：删除 gulp:clean 命令
+  - 修复：function uf-calc 合并 product 造成当输出仅有一个 CSS4 var 时不能正确的判断 product 是否为 1
+#### 1.1.1
+  - 调整：修改部分注释说明
+  - 调整：添加 scss 测试单元测试
+#### 1.1.0
+  - 调整：将方法 uf-is__list 重命名为 uf-is-list
+#### 1.0.5
+  - 调整：增强了 um-quick-relative 对 List 类型值的支持，同时添加参数 $option 对其进行配置
+#### 1.0.4
+  - 修复：um-quick-relative 只支持 px 单位（或无单位）的值进行转换，且对类似 z-index 这种不需要转换的属性进行排除，避免进行误操作
+#### 1.0.3
+  - 调整：将 uf-keyframe 重命名为 um-keyframes
+  - 修复：uf-to-all 方法无法正确调用子方法bug
+  - 调整：添加 mixin um-quick-relative，用于快速转换出相对单位（em）
+#### 1.0.2
+  - 修复：uf-calc 方法当输出只有一个 var 且 product 为 1 时，不应该带有 calc

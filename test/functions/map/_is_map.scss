@@ -1,0 +1,13 @@
+@include describe('The uf-is-map function =>'){
+  @include it('检测是否为 map 类型'){
+    @include assert-equal(
+      uf-is-map(
+        (
+          a: 'abc',
+          b: 'bdc',
+        )
+      ),
+      true
+    );
+  }
+}

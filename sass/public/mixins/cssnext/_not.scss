@@ -1,11 +1,19 @@
-/// :not 伪类（多 rule）
-@mixin not($args...){
-  @if is_cssnext('not') {
-    @include not-pollfill($args...){
+//  um-not
+//  -
+/// :not 伪类调用
+/// - 当全局变量 $u-cssnext-pollfill__not: true 时，使用降级处理，否则开启多值模式
+/// @param {String<List>} $args 选择器参数列表
+/// @example scss -
+///   @include um-not(':first-child', ':last-child'){
+///     z-index: 1;  
+///   }
+@mixin um-not($args...){
+  @if $u-cssnext-pollfill__not {
+    @include um-not__pollfill($args...){
       @content;
     };
   } @else if(length($args) == 1) {
-    @include not-pollfill($args){
+    @include um-not__pollfill($args){
       @content;
     };
   } @else {
@@ -13,12 +21,18 @@
   }
 };
 
-/// :not(pollfill)
-@mixin not-pollfill($args...){
+//  um-not__pollfill
+//  -
+/// :not 伪类多值模式兼容处理
+/// - 参数和实例参照 um-not
+/// @access private
+@mixin um-not__pollfill($args...){
   $not-rules: '';
+
   @each $value in $args {
     $not-rules: '#{$not-rules}:not(#{$value})';
   }
+  
   &#{$not-rules}{
     @content;
   }

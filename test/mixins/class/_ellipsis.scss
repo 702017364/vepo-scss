@@ -1,0 +1,13 @@
+@include describe('The um-ellipsis mixin =>'){
+  @include it('单行超出省略号效果'){
+    @include assert{
+      @include output{
+        @include um-ellipsis;
+      }
+
+      @include expect{
+        overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+      }
+    }
+  }
+}

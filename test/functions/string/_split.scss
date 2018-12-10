@@ -1,0 +1,10 @@
+$test-string_split-separator: '|';
+
+@include describe('The uf-string-split function =>'){
+  @include it('使用 #{$test-string_split-separator} 进行分割'){
+    @include assert-equal(
+      uf-string-split('abc|123|567', $test-string_split-separator),
+      'abc' '123' '567'
+    );
+  }
+}

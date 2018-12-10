@@ -1,0 +1,8 @@
+@include describe('The uf-to-num function =>'){
+  @include it('将字符串数字转成 Number 类型'){
+    @include assert-equal(
+      uf-to-num('2.73'),
+      2.73
+    );
+  }
+}

@@ -1,0 +1,15 @@
+$test-content-value: 'content';
+
+@include describe('The content mixin =>'){
+  @include it('设置 content 属性'){
+    @include assert{
+      @include output{
+        @include content($test-content-value);
+      }
+
+      @include expect{
+        content: $test-content-value;
+      }
+    }
+  }
+}

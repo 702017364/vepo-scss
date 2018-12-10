@@ -1,0 +1,15 @@
+$test-omitted-value: 3;
+
+@include describe('The um-ellipsis mixin =>'){
+  @include it('超出#{$test-omitted-value}行省略号效果'){
+    @include assert{
+      @include output{
+        @include um-omitted($test-omitted-value);
+      }
+
+      @include expect{
+        display: -webkit-box; -webkit-line-clamp: $test-omitted-value; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
+      }
+    }
+  }
+}

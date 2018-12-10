@@ -1,51 +1,60 @@
-/// bg-url简写
-@function bgurl($name: $r-sprite, $dpr: $browser-dpr){
-  $list: str-split($name, '.');
+//  bgurl
+//  -
+/// 背景图片简写（取值）设置
+/// @param {String} $name [$u-image-sprite] 图片名称
+/// @param {Number} $dpr [$u-view-dpr] dpi 设置
+/// @return {String} -
+@function bgurl($name: $u-image-sprite, $dpr: $u-view-dpr){
+  $list: uf-string-split($name, '.');
   $length: length($list);
-  $value: map-get($r-dpr, $dpr);
-  @if $length > 1 and not(isempty($value)) {
+  $value: map-get($u-view-dpr__name, $dpr);
+  @if $length > 1 and not(uf-is-empty($value)) {
     $str: '';
     @for $i from 1 through $length - 1 {
       $str: $str + nth($list, $i);
     }
     $name: $str + $value + '.' + nth($list, $length);
   }
-  @return unquote('url(#{$r-path}#{$name})');
+  @return unquote('url(#{$u-path}#{$name})');
 }
 
-/// 避免 scss 由于变量的原因将 '/' 识别成除法运算
-@function ofpart($a, $b){
-  @return unquote('#{$a}/#{$b}');
-}
-
-/// to class
-@function ofclass($name){
-  @return unquote('.#{$name}');
-}
-
+//  uf-compose
+//  -
 /// 属性拼接
-@function prop-join($far, $prev: '', $next: ''){
+/// @param {String} $far 方位值
+/// @param {String} $prev [''] 属性前置值（使用 '-' 拼接成新属性）
+/// @param {String} $next [''] 属性后置值（使用 '-' 拼接成新属性）
+/// @return {String} -
+@function uf-compose($far, $prev: '', $next: ''){
   $prev: if(
-    isempty($prev),
+    uf-is-empty($prev),
     '',
     $prev + '-'
   );
   $next: if(
-    isempty($next),
+    uf-is-empty($next),
     '',
     '-' + $next
   );
   @return $prev + $far + $next;
 }
 
-/// 优化 line-height 取值
-@function ofline($value){
-  @if $global-major-line and ofvector($value) == 1rem {
-    $px: ofless($value) * $r-size;
-    $max: ofround($px, 1);
+//  of-line
+//  -
+/// 优化 line-height 值
+/// - 会对 $value 进行 px 转换
+/// - 满足优化条件：
+/// -   1、$value 单位为 px 或者 rem
+/// -   2、$value 还原值（如果单位为 rem 时，转换为 px 单位）不能被 $u-fontSize-root 除尽
+/// @param {Number} $value -
+/// @return {Number} -
+@function of-line($value){
+  @if $u-major-line and uf-vector($value) == 1rem {
+    $px: uf-less($value) * $u-fontSize-root;
+    $max: uf-round($px, 1);
     @if $max > $px {
-      $list: str-split(
-        unquote('#{ofless($px)}'),
+      $list: uf-string-split(
+        unquote('#{uf-less($px)}'),
         '.'
       );
       $dec-length: str-length(nth($list, 2));

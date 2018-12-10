@@ -1,0 +1,17 @@
+$test-round-pow: 2;
+
+@include describe('The uf-round function =>'){
+  @include it('保留#{$test-round-pow}位小数（4舍）'){
+    @include assert-equal(
+      uf-round(2.733, $test-round-pow), 
+      2.73
+    );
+  }
+
+  @include it('保留#{$test-round-pow}位小数（5入）'){
+    @include assert-equal(
+      uf-round(2.735, $test-round-pow), 
+      2.74
+    );
+  }
+}

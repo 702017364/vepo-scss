@@ -1,0 +1,28 @@
+@include describe('The uf-calc__mergeExpsDataByUnit function =>'){
+  @include it('通过单位对表达式列表项进行合并'){
+    @include assert-equal(
+      uf-calc__mergeExpsDataByUnit(
+        (
+          exp: -2px 4vh 5px -2vh,
+          product: 2,
+          reply: 0,
+        )
+        (
+          exp: 2px 4% 5ch 50%,
+          product: 3,
+          reply: 0,
+        )
+      ),
+      (
+        exp: 3px 2vh,
+        product: 2,
+        reply: 0,
+      )
+      (
+        exp: 2px 54% 5ch,
+        product: 3,
+        reply: 0,
+      )
+    );
+  }
+}

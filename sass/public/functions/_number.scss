@@ -1,27 +1,45 @@
-/// 检测类型是否为 number
-@function is-number($value){
+//  uf-is-number
+//  -
+/// 检测是否为 number 类型
+/// @param {Object} $value -
+/// @return {Boolean} -
+@function uf-is-number($value){
   @return type-of($value) == 'number';
 }
 
-/// 检测除法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-@function is-rational-division($a, $b){
-  $a: ofless($a);
-  $b: ofless($b);
+//  uf-is-rational__division
+//  -
+/// 检测运算（除法）结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+/// @param {Number} $a 被除数
+/// @param {Number} $b 除数
+/// @return {Boolean} -
+@function uf-is-rational__division($a, $b){
+  $a: uf-less($a);
+  $b: uf-less($b);
   $operation-result: unquote('#{$a / $b}');
-  $operation-result: ofnum($operation-result);
+  $operation-result: uf-to-num($operation-result);
   @return $a / $operation-result == $b;
 }
 
-/// 检测乘法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-@function is-rational-multiplication($a, $b){
-  $a: ofless($a);
-  $b: ofless($a);
+//  uf-is-rational__multiplication
+//  -
+/// 检测运算（乘法）结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+/// @param {Number} $a 被乘数
+/// @param {Number} $b 乘数
+/// @return {Boolean} -
+@function uf-is-rational__multiplication($a, $b){
+  $a: uf-less($a);
+  $b: uf-less($a);
   $operation-result: unquote('#{$a * $b}');
-  $operation-result: ofnum($operation-result);
+  $operation-result: uf-to-num($operation-result);
   @return $a * $b == $operation-result;
 }
 
-/// 检测其倒数是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-@function is-rational-number($value){
-  @return is-rational-division(1, $value);
+//  uf-is-rational__number
+//  -
+/// 检测运算（倒数）结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+/// @param {Number} $value 求倒值
+/// @return {Boolean} -
+@function uf-is-rational__number($value){
+  @return uf-is-rational__division(1, $value);
 }

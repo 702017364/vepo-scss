@@ -1,0 +1,13 @@
+@include describe('The um-transition mixin =>'){
+  @include it('设置 transition'){
+    @include assert{
+      @include output{
+        @include um-transition($u-duration);
+      }
+
+      @include expect{
+        transition: $u-duration;
+      }
+    }
+  }
+}

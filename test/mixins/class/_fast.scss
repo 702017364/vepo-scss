@@ -1,0 +1,37 @@
+@include describe('The um-fast__dir mixin =>'){
+  @include it('设置right、left值'){
+    @include assert{
+      @include output{
+        @include um-fast__dir(x);
+      }
+
+      @include expect{
+        right: 0; left: 0;
+      }
+    }
+  }
+
+  @include it('设置top、bottom值'){
+    @include assert{
+      @include output{
+        @include um-fast__dir(y);
+      }
+
+      @include expect{
+        top: 0; bottom: 0;
+      }
+    }
+  }
+
+  @include it('复杂设置'){
+    @include assert{
+      @include output{
+        @include um-fast__dir(o, 2px, border, width);
+      }
+
+      @include expect{
+        border-right-width: 2px; border-left-width: 2px; border-top-width: 2px; border-bottom-width: 2px;
+      }
+    }
+  }
+}

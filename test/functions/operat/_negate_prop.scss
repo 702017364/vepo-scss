@@ -1,0 +1,8 @@
+@include describe('The uf-negate__prop function =>'){
+  @include it('获取 top 的相反属性（index 表示）'){
+    @include assert-equal(
+      uf-negate__prop(1),
+      3
+    );
+  }
+}

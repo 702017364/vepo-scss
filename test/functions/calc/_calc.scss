@@ -1,0 +1,26 @@
+@include describe('The uf-calc function =>'){
+  @include it('一个数字的运算'){
+    @include assert-equal(
+      uf-calc(2),
+      2px
+    );
+  }
+
+  @include it('多种格式运算'){
+    @include assert-equal(
+      uf-calc(
+        (1px 2em),
+        -3vh,
+        --a,
+        (
+          exp: (5vw 2px),
+        ),
+        (
+          exp: (3%, 4px),
+          product: 2,
+        ),
+      ),
+      'calc(5px + 2em - 3vh + var(--a) + 5vw + 1.5%)'
+    );
+  }
+}

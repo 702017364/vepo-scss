@@ -1,0 +1,37 @@
+@mixin test-matches-mixin{
+  z-index: 1;
+}
+
+@include describe('The um-matches mixin =>'){
+  @include it(':matches 伪类调用'){
+    @include assert{
+      @include output(false){
+        @include um-matches('.abc', '.bcd'){
+          @include test-matches-mixin;
+        }
+      }
+
+      @include contains(false){
+        .abc, .bcd{
+          @include test-matches-mixin;
+        }
+      }
+    }
+  }
+
+  @include it(':matches 伪类调用 => 以空格开头表示包含'){
+    @include assert{
+      @include output{
+        @include um-matches(' .abc', ' .bcd'){
+          @include test-matches-mixin;
+        }
+      }
+      
+      @include contains{
+        .abc, .bcd{
+          @include test-matches-mixin;
+        }
+      }
+    }
+  }
+}

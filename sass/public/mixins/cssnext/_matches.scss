@@ -1,11 +1,19 @@
-/// :matches 伪类
-@mixin matches($args...){
-  @if is_cssnext('matches') {
-    @include matches-pollfill($args...){
+//  um-matches
+//  -
+/// :matches 伪类调用
+/// - 当全局变量 $u-cssnext-pollfill__matches: true 时，使用降级处理，否则使用伪类 :matches
+/// @param {String<List>} $args 选择器参数列表
+/// @example scss -
+///   @include um-matches('.a', '.b'){
+///     z-index: 1;  
+///   }
+@mixin um-matches($args...){
+  @if $u-cssnext-pollfill__matches {
+    @include um-matches__pollfill($args...){
       @content;
     }
   } @else if(length($args) == 1) {
-    @include not-pollfill($args){
+    @include um-not__pollfill($args){
       @content;
     };
   } @else {
@@ -15,13 +23,19 @@
   }
 }
 
-/// :matches(pollfill)
-@mixin matches-pollfill($args...){
+//  um-matches__pollfill
+//  -
+/// :matches 伪类兼容处理
+/// - 参数和实例参照 um-matches
+/// @access private
+@mixin um-matches__pollfill($args...){
   $matches-rules: '';
+
   @for $i from 1 through length($args) {
     @if $i > 1 {
       $matches-rules: '#{$matches-rules} ,';
     }
+    
     $matches-rules: '#{$matches-rules}#{&}#{nth($args, $i)}';
   }
   @at-root #{$matches-rules}{

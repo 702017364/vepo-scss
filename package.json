@@ -1,18 +1,24 @@
 {
+  "name": "@vope/scss",
+  "description": "增加scss的功能",
+  "version": "1.2.0",
   "dependencies": {},
   "scripts": {
     "gulp": "gulp --rf --sourceMap",
-    "gulp:clean": "gulp clean-jscss",
     "gulp:build": "gulp --produce",
     "gulp:test": "gulp --$test --rf --sourceMap",
     "gulp:client": "npm run gulp",
-    "gulp:server": "gulp --rf --produce --sourceMap "
+    "gulp:server": "gulp --rf --produce --sourceMap",
+    "gulp:uncss": "gulp uncss",
+    "gulp:mocha": "gulp mocha",
+    "test": "mocha"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/register": "^7.0.0",
     "browser-sync": "^2.26.3",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.0.0",
@@ -23,9 +29,27 @@
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.1",
     "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify": "^3.0.1",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2",
+    "gulp-uncss": "^1.0.6",
     "gulp-util": "^3.0.8",
-    "node-sass": "^4.10.0"
-  }
+    "mocha": "^6.0.2",
+    "node-sass": "^4.11.0",
+    "sass-true": "^4.0.0"
+  },
+  "main": "sass/main.scss",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/702017364/vepo-scss.git"
+  },
+  "keywords": [
+    "scss",
+    "function"
+  ],
+  "author": "vope",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/702017364/vepo-scss/issues"
+  },
+  "homepage": "https://github.com/702017364/vepo-scss#readme"
 }

@@ -1,0 +1,8 @@
+@include describe('The uf-calc__CSS4_var-product function =>'){
+  @include it('格式化 CSS4 var 中的 product'){
+    @include assert-equal(
+      uf-calc__CSS4_var-product('var(--a)' '6'),
+      6
+    );
+  }
+}

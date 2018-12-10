@@ -1,0 +1,14 @@
+@include describe('The uf-calc__categoryOfUnit function =>'){
+  @include it('根据单位对表达式进行分类'){
+    @include assert-equal(
+      uf-calc__categoryOfUnit((
+        exp: 2px 5vh 4px 2% 10%
+      )),
+      (
+        px: 2px 4px,
+        vh: 5vh,
+        '%': 2% 10%, 
+      )
+    );
+  }
+}

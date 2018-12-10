@@ -1,0 +1,8 @@
+@include describe('The uf-is-empty function =>'){
+  @include it('验证值是否为空'){
+    @include assert-equal(
+      uf-is-empty(''), 
+      true
+    );
+  }
+}

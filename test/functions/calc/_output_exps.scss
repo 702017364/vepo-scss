@@ -1,0 +1,19 @@
+@include describe('The uf-calc__outputExps function =>'){
+  @include it('输入表达式列表输出计算结果'){
+    @include assert-equal(
+      uf-calc__outputExps(
+        (
+          exp: 3px 3vh,
+          product: 3,
+          reply: 0,
+        )
+        (
+          exp: .3px .3vh,
+          product: 10,
+          reply: 1,
+        )
+      ),
+      'calc((3px + 3vh) / 3 + (0.3px + 0.3vh) * 10)'
+    );
+  }
+}

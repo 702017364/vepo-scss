@@ -1,6 +1,11 @@
-/// 字符串分割（对 $separator 进行处理）
-@function str-split($string, $separator){
-  @if isempty($separator) {
+//  uf-string-split
+//  -
+/// 字符串分割
+/// @param {String} $string -
+/// @param {String} $separator 分隔符
+/// @return {List} -
+@function uf-string-split($string, $separator){
+  @if uf-is-empty($separator) {
     $list: ();
     @return append(
       $list,
@@ -9,13 +14,19 @@
   } @else if type-of($separator) != string {
     $separator: unquote('#{$separator}');
   }
-  @return str-split-for((), $string, $separator);
+  @return uf-string-split__for((), $string, $separator);
 }
 
-/// 字符串分割
-@function str-split-for($list, $string, $separator){
+//  uf-string-split__for
+//  -
+/// 字符串分割（分割好后的子串加入到列表中）
+/// @param {List} $list -
+/// @param {String} $string -
+/// @param {String} $separator 分隔符
+/// @return {List} -
+@function uf-string-split__for($list, $string, $separator){
   $index: str-index($string, $separator);
-  @if isempty($index) {
+  @if uf-is-empty($index) {
     @return append(
       $list,
       $string
@@ -29,11 +40,15 @@
       $string,
       $index + str-length($separator)
     );
-    @return str-split-for($list, $string, $separator);
+    @return uf-string-split__for($list, $string, $separator);
   }
 }
 
-/// 检测类型是否为 string
-@function is-string($value){
+//  uf-is-string
+//  -
+/// 检测是否为 String 类型
+/// @param {Object} $value -
+/// @return {Boolean} -
+@function uf-is-string($value){
   @return type-of($value) == 'string';
 }

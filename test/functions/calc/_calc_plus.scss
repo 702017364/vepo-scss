@@ -1,0 +1,11 @@
+@include describe('The uf-calc__analysisCalcByPlus function =>'){
+  @include it('使用连接符对列表内表达式进行分割'){
+    @include assert-equal(
+      uf-calc__analysisCalcByPlus('(2px + 3ch) / 3', ' / '),
+      (
+        '(2px + 3ch)'
+        '3'
+      )
+    );
+  }
+}

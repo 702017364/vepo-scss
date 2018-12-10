@@ -1,0 +1,13 @@
+@include describe('The um-appearance mixin =>'){
+  @include it('清除浏览器默认设置'){
+    @include assert{
+      @include output{
+        @include um-appearance;
+      }
+
+      @include expect{
+        @extend %U-APPEARANCE;
+      }
+    }
+  }
+}

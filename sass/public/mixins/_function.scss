@@ -1,62 +1,185 @@
-@import 'functions/prefix';
 @import 'functions/for';
 
-/// 立即执行
+//  IIFE
+//  -
+/// @content调用
+/// @example scss -
+///   @include IIFE{
+///     z-index: 1; 
+///   }
 @mixin IIFE{
   @content;
 }
 
-/// 写入 content
+//  content
+//  -
+/// 设置 content 属性
+/// @example scss -
+///   @include content('content');
 @mixin content($content){
   @if $content != null {
     content: $content;
   }
 }
 
-/// before
+//  before
+//  -
+/// 设置伪元素 before 的 content 属性
+/// @param {String} $content [''] 属性值
+/// @example scss -
+///   @include before;
 @mixin before($content: ''){
-  &#{$before}{
+  &#{$u-character-before}{
     @include content($content);
     @content;
   }
 }
 
-/// after
+//  after
+//  -
+/// 设置伪元素 after 的 content 属性
+/// @param {String} $content [''] 属性值
+/// @example scss -
+///   @include after;
 @mixin after($content: ''){
-  &#{$after}{
+  &#{$u-character-after}{
     @include content($content);
     @content;
   }
 }
 
-/// 颜色加权
-@mixin color-weight($prop, $color, $weight){
-  @if $weight > 1 {
-    #{$prop}: darken($color, ($weight - 1) * 100%);
-  } @else {
-    #{$prop}: lighten($color, (1 - $weight) * 100%);
-  }
-}
-
-/// 色块分解加权
-@mixin colors-weight($colors, $w1: 1, $w2: 1){
-  $color: nth($colors, 1);
-  $bgcolor: nth($colors, 2);
-  @include color-weight(color, $color, $w1);
-  @include color-weight(background-color, $bgcolor, $w2);
-}
-
-/// 优雅的书写 @keyframes
-@mixin keyframes($name: '', $args: $r-duration){
-  @if isempty($name) {
-    $uuid: uuid();
-    @include keyframes($uuid){
+//  um-keyframes
+//  -
+/// @keyframes简写模式
+/// - 当 $name 为空的时候会自动分配一个 uuid 作为其值
+/// @param {String} $name [''] 属性值
+/// @param {List} $args [$u-duration] 其他属性值设置
+/// @example scss -
+///   @include um-keyframes(abc){
+///     0%{
+///       opacity: 0;
+///     }
+///     100%{
+///       opacity: 1;
+///     }
+///   }
+@mixin um-keyframes($name: '', $args: $u-duration){
+  @if uf-is-empty($name) {
+    $uuid: uf-uuid();
+    @include um-keyframes($uuid){
       @content;
     }
-    @include animation($uuid, $args);
+    @include um-animation($uuid, $args);
   } @else {
     @keyframes #{$name}{
       @content;
     }
+  }
+}
+
+//  um-quick-relative
+//  -
+/// 将传入的属性集合对于的值进行 em 转换，生成一个相对 font-size 的一个环境
+/// - 当 $name 为空的时候会自动分配一个 uuid 作为其值
+/// @param {Number} $font-size 字体大小
+/// @param {Map} $props 要进行转换的属性集合
+/// @param {Boolean} $itself [true] 是否要在 mixin 中设置 font-size 属性
+/// @param {Map} $option [$u-quick-relative] mixin 配置
+/// @param {Boolean} $option.rem [false] 设置是否对 rem 为单位的值进行转换
+/// @example scss -
+///   @include um-quick-relative(
+///     20px,
+///     (width: 20px, height: 1rem, z-index: 1),
+///     true,
+///     (rem: true)
+///   );
+@mixin um-quick-relative($font-size, $props, $itself: true, $option: $u-quick-relative){
+  $this-unit: uf-vector($font-size);
+
+  @if($this-unit == 1rem){ //如果单位为rem，则转成px
+    $font-size: $font-size / 1rem * $u-fontSize-root;
+  }
+
+  $this-is-px: uf-is-px($font-size);
+
+  @if $itself {
+    font-size: uf-font-size($font-size);
+  }
+
+  $this-excludes:
+    box-flex,
+    box-flex-group,
+    box-ordinal-group,
+    column-count,
+    column-span,
+    flex,
+    flex-grow,
+    flex-shrink,
+    font-weight,
+    grid,
+    grid-area,
+    grid-column,
+    grid-column-start,
+    grid-column-end,
+    grid-row,
+    grid-row-start,
+    grid-row-end,
+    nav-index, 
+    opacity,
+    order,
+    tab-size, 
+    z-index,
+    zoom; //设置不需要进行转换的属性集（避免传入不需要转换的属性）
+  $this-excludes-size: length($this-excludes);
+
+  @each $key, $value in $props {
+    $this-value: $value;    
+    $this-need: true;
+    $this-type: type-of($value);
+    $this-is-list: $this-type == 'list';
+
+    @if $this-type == 'number' or $this-is-list { //如果值满足类型要求才进行判断，否则不需要进行转换
+      $i: 1;
+      
+      @while $i <= $this-excludes-size { //使用@while优化性能
+        @if $key == nth($this-excludes, $i) {
+          $i: $this-excludes-size + 1;
+          $this-need: false;
+        } @else {
+          $i: $i + 1;
+        }
+      }
+    } @else{
+      $this-need: false;
+    }
+    
+    @if $this-need{
+      $this-list: if($this-is-list, $this-value, ($this-value, ));
+      
+      @for $i from 1 through length($this-list) {
+        $this-item: nth($this-list, $i);
+        $this-item: uf-to-px($this-item);
+        $this-vector: uf-vector($this-item);
+
+        @if(map-get($option, rem) == true and $this-vector == 1rem) { //rem转成px
+          $this-item: $this-item / 1rem * $u-fontSize-root;
+          $this-vector: 1px;
+        }
+        
+        @if $this-is-px and $this-vector == 1px { //转换的条件需要满足：1、字体单位为px；2、当前属性值的单位为px（转换后）
+          @if $this-item != 0 {
+            $this-item: $this-item / $font-size * 1em;
+          }
+        } @else {
+          $this-item: all($this-item);
+        }
+
+        $this-list: set-nth($this-list, $i, $this-item);
+      }
+
+      $this-value: if($this-is-list, $this-list, nth($this-list, 1));
+    }
+
+    #{$key}: $this-value;
   }
 }

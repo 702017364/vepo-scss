@@ -9,13 +9,59 @@
   });
 })();
 
+(() => {
+  const element1 = document.getElementById('DefineProp');
+  const prop = '$-data-value';
+  let cache;
+  Object.defineProperty(element1, prop, {
+    configurable: true,
+    enumerable: false,
+    get(){
+      return cache;
+    },
+    set(value){
+      if(value !== cache){
+        console.log(`绑定的值更新为：${value}`);
+        cache = value;
+      }
+    },
+  });
+
+  element1[prop] = 5;
+  console.log(`最新绑定值为：${element1[prop]}`);
+
+  const element2 = document.getElementById('DefineProps');
+  Object.defineProperties(element2, {
+    'data-value1': {
+      value: 10,
+      writable: true,
+      enumerable: false,
+      configurable: true,
+    },
+    'data-value2': {
+      enumerable: false,
+      configurable: true,
+      get(){
+        return this['data-value1'];
+      },
+      set(value){
+        this['data-value1'] = value;
+      },
+    },
+  });
+
+  console.log(`data-value2初始值：${element2['data-value2']}`);
+  element2['data-value2'] = 15;
+  console.log(`data-value2更新值：${element2['data-value2']}`);
+})();
+
 //设置复选框的不确定状态
 (() => {
   document.getElementById('indeterminate').indeterminate = true;
 })();
 
 /*
-  给定两个非空链表来表示两个非负整数。位数按照逆序方式存储，它们的每个节点只存储单个数字。将两数相加返回一个新的链表。
+  给定两个非空链表来表示两个非负整数。位数按照逆序方式存储，它们的每个节点只存储单个数字。将两数相加返回一个新链表。
 
   你可以假设除了数字 0 之外， 这两个数字都不会以零开头。
 

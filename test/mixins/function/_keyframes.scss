@@ -1,0 +1,29 @@
+$test-keyframes-name: abc;
+
+@include describe('The um-keyframes mixin =>'){
+  @include it('定义一个 keyframes'){
+    @include assert{
+      @include output{
+        @include um-keyframes($test-keyframes-name){
+          0%{
+            opacity: 0;
+          }
+          100%{
+            opacity: 1;
+          }
+        };
+      }
+
+      @include expect{
+        @keyframes #{$test-keyframes-name}{
+          0%{
+            opacity: 0;
+          }
+          100%{
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+@include describe('The uf-uuid function =>'){
+  @include it('产生一个 uuid'){
+    @include assert-equal(
+      uf-uuid() == uf-uuid(),
+      false
+    );
+  }
+}

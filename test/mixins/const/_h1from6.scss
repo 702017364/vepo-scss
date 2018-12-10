@@ -1,0 +1,41 @@
+@include describe('The um-h1from6 mixin =>'){
+  @include it('针对 h1-h6 标签做 font-size 重置'){
+    @include assert{
+      @include output(false){
+        @include um-h1from6;
+      }
+
+      @include contains(false){
+        h1{
+          font-size: all($u-fontSize-h1);
+          @extend %U-EL__H;
+        }
+
+        h2{
+          font-size: all($u-fontSize-h2);
+          @extend %U-EL__H;
+        }
+
+        h3{
+          font-size: all($u-fontSize-h3);
+          @extend %U-EL__H;
+        }
+
+        h4{
+          font-size: all($u-fontSize-h4);
+          @extend %U-EL__H;
+        }
+
+        h5{
+          font-size: all($u-fontSize-h5);
+          @extend %U-EL__H;
+        }
+
+        h6{
+          font-size: all($u-fontSize-h6);
+          @extend %U-EL__H;
+        }
+      }
+    }
+  }
+}

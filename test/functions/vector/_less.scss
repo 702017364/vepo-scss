@@ -1,0 +1,8 @@
+@include describe('The uf-less function =>'){
+  @include it('去除单位'){
+    @include assert-equal(
+      uf-less(16px),
+      16
+    );
+  }
+}

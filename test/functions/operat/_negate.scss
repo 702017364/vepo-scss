@@ -1,0 +1,11 @@
+$test-negate-range: 4;
+
+@include describe('The uf-negate function =>'){
+
+  @include it('获取数字 +2 对应的值，范围为 #{$test-negate-range}'){
+    @include assert-equal(
+      uf-negate(1, $test-negate-range),
+      3
+    );
+  }
+}

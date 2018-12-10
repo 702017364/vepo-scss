@@ -1,5 +1,9 @@
-/// 数组取反
-@function ofreverse($list){
+//  uf-reverse
+//  -
+/// 反转数组
+/// @param {List} $list 进行反转的数组
+/// @return {List} 反转后的数组
+@function uf-reverse($list){
   $array: ();
   $num: length($list);
   @for $i from 1 through $num {
@@ -11,18 +15,50 @@
   @return $array;
 }
 
+//  uf-is-list
+//  -
 /// 检测类型是否为 list
-@function is-list($value){
+/// @param {Object} $value 检测值
+/// @return {Boolean} 是否为 list 类型
+@function uf-is-list($value){
   @return type-of($value) == 'list';
 }
 
-/// concat（返回两个数组的组合数组）
-@function of-concat($list1, $list2){
-  @each $value in $list2 {
-    $list1: append(
-      $list1,
-      $value
-    );
+//  uf-concat
+//  -
+/// 合并多个数组
+/// - 当不传任何参数时，返回一个空数组
+/// - 当参数类型不为 list 时，将会被转换成长度为 1 的数组
+/// @param {Object<List>} $args 要合并的参数集合
+/// @return {List} 合并后的数组
+@function uf-concat($args...){
+  $length: length($args);
+
+  @if $length == 0 {
+    @return ();
+  } @else if $length == 1 {
+    @return nth($args, 1);
+  } @else {
+    $i: 2;
+    $list: nth($args, 1);
+
+    @while($i <= $length) {
+      $item: nth($args, $i);
+      
+      @if uf-is-list($item) == false {
+        $item: ($item, );
+      }
+
+      @each $value in $item {
+        $list: append(
+          $list,
+          $value,
+        );
+      }
+
+      $i: $i + 1;
+    }
+
+    @return $list;
   }
-  @return $list1;
 }

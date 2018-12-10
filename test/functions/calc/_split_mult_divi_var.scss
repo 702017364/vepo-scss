@@ -1,0 +1,12 @@
+@include describe('The uf-calc__CSS4_var-splitWithMult_Divi function =>'){
+  @include it('使用乘/除连接符对表达式进行分割解析'){
+    @include assert-equal(
+      uf-calc__CSS4_var-splitWithMult_Divi('(2px + 4vh) / 2'),
+      (
+        exp: '(2px + 4vh)',
+        product: 2,
+        reply: 0,
+      )
+    );
+  }
+}

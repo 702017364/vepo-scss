@@ -1,0 +1,11 @@
+@include describe('The uf-calc__unit-mergeDataOrCreateArray function =>'){
+  @include it('检测 Map 中是否存在数据，如果存在则合并数据，否则创建一个 List 并赋值'){
+    @include assert-equal(
+      uf-calc__unit-mergeDataOrCreateArray((exp: 4px), product, 1),
+      (
+        exp: 4px,
+        product: 1,
+      )
+    );
+  }
+}

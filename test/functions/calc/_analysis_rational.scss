@@ -1,0 +1,18 @@
+@include describe('The uf-calc__analysisOfRational function =>'){
+  @include it('分解重组有理数表达式'){
+    @include assert-equal(
+      uf-calc__analysisOfRational(
+        (
+          exp: 2px 4ch,
+          product: 2,
+          reply: 0,
+        )
+      ),
+      (
+        exp: 1px 2ch,
+        product: 1,
+        reply: 1,
+      )
+    );
+  }
+}

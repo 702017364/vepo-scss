@@ -1,0 +1,16 @@
+@include describe('The uf-calc__analysis2fill function =>'){
+  @include it('填补切割造成的左括号缺失'){
+    @include assert-equal(
+      uf-calc__analysis2fill(
+        '2px'
+        '-5px + 6vh + 7%) / 4'
+        'var(--a) + 7%) * '
+      ),
+      (
+        unquote('2px')
+        unquote('(-5px + 6vh + 7%) / 4')
+        unquote('(var(--a) + 7%) * ')
+      )
+    );
+  }
+}

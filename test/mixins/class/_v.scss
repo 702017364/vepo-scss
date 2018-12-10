@@ -1,0 +1,25 @@
+@include describe('The um-v mixin =>'){
+  @include it('绝对定位外边距水平居中'){
+    @include assert{
+      @include output{
+        @include um-v(px);
+      }
+
+      @include expect{
+        position: absolute; right: 0; left: 0; margin: 0 auto;
+      }
+    }
+  }
+
+  @include it('绝对定位translate水平居中'){
+    @include assert{
+      @include output{
+        @include um-v(tx);
+      }
+
+      @include expect{
+        position: absolute; right: 50%; transform: translateX(50%); transform-style: preserve-3d;
+      }
+    }
+  }
+}

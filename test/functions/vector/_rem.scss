@@ -1,0 +1,8 @@
+@include describe('The uf-to-rem function =>'){
+  @include it('单位转 rem'){
+    @include assert-equal(
+      uf-to-rem(16),
+      1rem
+    );
+  }
+}

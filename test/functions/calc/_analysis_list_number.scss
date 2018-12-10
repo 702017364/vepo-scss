@@ -1,0 +1,14 @@
+@include describe('The uf-calc__analysis2listOfNumber function =>'){
+  @include it('将表达式分解成数组'){
+    @include assert-equal(
+      uf-calc__analysis2listOfNumber(
+        (
+          exp: '2px + 4ch',
+        )
+      ),
+      (
+        exp: 2px 4ch,
+      )
+    );
+  }
+}

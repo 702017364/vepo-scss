@@ -1,0 +1,17 @@
+$test-effects_arrow-size: 1em;
+$test-effects_arrow-weight: 2px;
+$test-effects_arrow-rotate: 45deg;
+
+@include describe('The um-effect__arrow mixin =>'){
+  @include it('向右的箭头'){
+    @include assert{
+      @include output{
+        @include um-effect__arrow($test-effects_arrow-size, $test-effects_arrow-weight, $test-effects_arrow-rotate);
+      }
+
+      @include expect{
+        width: $test-effects_arrow-size; height: $test-effects_arrow-size; line-height: $test-effects_arrow-size; transform: rotate($test-effects_arrow-rotate); border: solid; border-width: $test-effects_arrow-weight $test-effects_arrow-weight 0 0; box-sizing: border-box;
+      }
+    }
+  }
+}

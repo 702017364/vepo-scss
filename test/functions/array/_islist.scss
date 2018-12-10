@@ -1,0 +1,15 @@
+@include describe('The uf-is-list function =>'){
+  @include it('检测类型是 list 类型'){
+    @include assert-equal(
+      uf-is-list(2 3 4), 
+      true
+    );
+  }
+
+  @include it('检测类型不是 list 类型'){
+    @include assert-equal(
+      uf-is-list(2), 
+      false
+    );
+  }
+}

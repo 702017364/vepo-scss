@@ -1,0 +1,24 @@
+$test-after-value: '';
+
+@mixin test-after-mixin{
+  z-index: 1;
+}
+
+@include describe('The after mixin =>'){
+  @include it('设置伪元素 after 的 content 属性'){
+    @include assert{
+      @include output{
+        @include after($test-after-value){
+          @include test-after-mixin;
+        };
+      }
+
+      @include contains{
+        &#{$u-character-after}{
+          content: $test-after-value;
+          @include test-after-mixin;
+        }
+      }
+    }
+  }
+}

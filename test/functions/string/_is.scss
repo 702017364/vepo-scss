@@ -1,0 +1,8 @@
+@include describe('The uf-is-string function =>'){
+  @include it('检测是否为 String 类型'){
+    @include assert-equal(
+      uf-is-string(start),
+      true
+    );
+  }
+}

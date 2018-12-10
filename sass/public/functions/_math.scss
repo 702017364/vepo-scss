@@ -1,68 +1,96 @@
-/// 保留 $pow 位小数
-@function ofround($value, $pow: 0){
+//  uf-round
+//  -
+/// 对指定长度后的小数进行四舍五入
+/// @param {Number} $value 进行运算的值
+/// @param {Number} $pow [0] 保留小数的长度
+/// @return {Number} -
+@function uf-round($value, $pow: 0){
   $mul: pow(10, $pow);
+
   @return round($value * $mul) / $mul;
 }
 
+//  uf-to-num
+//  -
 /// 将 String 型数字转成 Number
-@function ofnum($str){
+/// @param {String} $str 进行转换的字符串
+/// @return {Number}
+/// @throw 不是一个有效的 Number
+@function uf-to-num($str){
   $sum: 0;
   $length: str-length($str);
   $point-index: str-index($str, '.');
   $size: if(
-    isempty($point-index),
+    uf-is-empty($point-index),
     $length,
     $point-index - 1
   );
   $point-count: 0;
   $error: '不是一个有效的 Number';
   $dir: 1;
+
   @for $i from 1 through $length {
     $char: str-slice($str, $i, $i);
+
     @if $i == 1 and $char == '+' {
       $dir: 1;
     } @else if $i == 1 and $char == '-' {
       $dir: -1;
     } @else if $char == '.' {
       $point-count: $point-count + 1;
+
       @if $point-count >= 2 {
         @error $error;
       }
+
       $size: $point-index;
     } @else {
-      $value: map-get($r-nums, $char);
-      @if isempty($value) {
+      $value: map-get($u-nums, $char);
+
+      @if uf-is-empty($value) {
         @error $error;
       }
+
       $sum: $sum + $value * pow(10, $size - $i);
     }
   }
+
   @return $sum * $dir;
 }
 
+//  uf-to-num__unit
+//  -
 /// 将 String 型数字（可带单位）转成 Number（带单位）
-@function ofnum-unit($str){
+/// @param {String} $str 进行转换的字符串
+/// @return {Number}
+/// @throw 不是一个有效的 Number
+@function uf-to-num__unit($str){
   $length: str-length($str);
   $index: -1;
   $i: $length;
+
   @while $i > 0 {
     $item: str-slice($str, $i, $i);
-    @if isempty(map-get($r-nums, $item)) {
+
+    @if uf-is-empty(map-get($u-nums, $item)) {
       $i: $i - 1;
     } @else {
       $index: $i;
       $i: 0;
     }
   }
+
   $vertor: map-get(
-    $r-vector,
+    $u-vector-table,
     str-slice(
       $str, 
       $index + 1
     )
   );
-  @if isempty($vertor) {
+
+  @if uf-is-empty($vertor) {
     $vertor: 1px;
   }
-  @return ofnum(str-slice($str, 1, $index)) * $vertor;
+  
+  @return uf-to-num(str-slice($str, 1, $index)) * $vertor;
 }

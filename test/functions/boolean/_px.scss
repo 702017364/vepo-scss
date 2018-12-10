@@ -1,0 +1,15 @@
+@include describe('The uf-is-px function =>'){
+  @include it('验证值单位是否为 px'){
+    @include assert-equal(
+      uf-is-px(4px), 
+      true
+    );
+  }
+
+  @include it('字符串将返回 false'){
+    @include assert-equal(
+      uf-is-px('4px'), 
+      false
+    );
+  }
+}

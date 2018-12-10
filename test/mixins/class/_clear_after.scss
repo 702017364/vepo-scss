@@ -1,0 +1,15 @@
+@include describe('The um-clear__after mixin =>'){
+  @include it('清除子元素设置浮动对父元素的影响'){
+    @include assert{
+      @include output{
+        @include um-clear__after;
+      }
+
+      @include contains{
+        @include after(null){
+          @extend %U-PSEUDO__TABLE;
+        }
+      }
+    }
+  }
+}

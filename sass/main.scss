@@ -1,2 +1,6 @@
 @import 'public/index';
 @import 'skin/index';
+
+.a{
+  width: uf-calc-single(--b, 2, 1); height: uf-calc-single(--b, .75, 1);
+}

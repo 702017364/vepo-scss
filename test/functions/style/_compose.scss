@@ -1,0 +1,8 @@
+@include describe('The uf-compose function =>'){
+  @include it('属性拼接'){
+    @include assert-equal(
+      uf-compose(top, border, width),
+      border-top-width
+    );
+  }
+}

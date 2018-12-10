@@ -1,0 +1,16 @@
+$test-height-value: 1em;
+$test-height-row: 3;
+
+@include describe('The um-height mixin =>'){
+  @include it('高度为行高的#{$test-height-row}倍'){
+    @include assert{
+      @include output{
+        @include um-height($test-height-value, $test-height-row);
+      }
+      
+      @include expect{
+        height: $test-height-value * $test-height-row; line-height: $test-height-value;
+      }
+    }
+  }
+}

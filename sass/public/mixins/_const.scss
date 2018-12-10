@@ -1,15 +1,36 @@
-@mixin html-font{
-  $size: $r-size / $browser-size * 100%;
+//  um-root__font
+//  -
+/// 针对 :root 设置 font
+/// @access private
+/// @example scss -
+///   @include um-root__font;
+@mixin um-root__font{
+  $size: $u-fontSize-root / $u-browser-default-fontSize * 100%;
   $size-line: if(
-    isempty($r-line),
+    uf-is-empty($u-lineHeight-root),
     $size,
-    ofpart($size, $r-line)
+    unquote('#{$size}/#{$u-lineHeight-root}')
   );
-  font: $size-line $r-family;
+  font: $size-line $u-family;
 }
 
-@mixin h-css{
-  @include for-style($h, $lists: font-size, $is: true){
-    @extend %EL-H;
+//  um-h1from6
+//  -
+/// 针对 h1-h6 标签做重置
+/// @access private
+/// @example scss -
+///   @include um-h1from6;
+@mixin um-h1from6{
+  $this-list: (
+    h1: $u-fontSize-h1,
+    h2: $u-fontSize-h2,
+    h3: $u-fontSize-h3,
+    h4: $u-fontSize-h4,
+    h5: $u-fontSize-h5,
+    h6: $u-fontSize-h6
+  );
+
+  @include um-for-style($this-list, $lists: font-size, $is: true){
+    @extend %U-EL__H;
   };
 }

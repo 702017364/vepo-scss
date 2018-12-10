@@ -1,5 +1,9 @@
-/// is empty
-@function isempty($value){
+//  uf-is-empty
+//  -
+/// 检测值是否为空
+/// @param {Object} $value 检测值
+/// @return {Boolean} 是否为空值
+@function uf-is-empty($value){
   @return if(
     $value == null or $value == '',
     true,
@@ -7,25 +11,24 @@
   );
 }
 
-/// is px
-@function ispx($value){
+//  uf-is-empty
+//  -
+/// 检测值单位是否为 px
+/// @param {Object} $value 检测值
+/// @return {Boolean} 单位是否为 px
+@function uf-is-px($value){
   @return if(
-    unit($value) == 'px',
+    type-of($value) == number and unit($value) == 'px',
     true,
     false
   );
 }
 
-/// is cssnext-pollfill
-@function is_cssnext($name){
-  @return if(
-    map-get($global-cssnext, $name) == true,
-    true,
-    false
-  );
-}
-
+//  uf-is-boolean
+//  -
 /// 检测类型是否为 Boolean
-@function is-boolean($value){
+/// @param {Object} $value 检测值
+/// @return {Boolean} 是否为 bool 类型
+@function uf-is-boolean($value){
   @return type-of($value) == 'bool';
 }

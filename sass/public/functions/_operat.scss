@@ -1,22 +1,36 @@
-/// 获取 far
-@function offar($prop: ''){
-  $far: map-get($r-fars, $prop);
+//  uf-dir
+//  -
+/// 获取方向值
+/// @param {String} $prop [''] -
+/// @return {List} -
+@function uf-dir($prop: ''){
+  $far: map-get($u-quartet-table, $prop);
   @return if(
-    isempty($far),
-    $r-far,
+    uf-is-empty($far),
+    $u-quartet,
     $far
   );
 }
 
-/// 属性取反
-@function ofanti($mode: 1, $prop: ''){
-  $far: offar($prop);
+//  uf-dir
+//  -
+/// 取反值（属性）
+/// @param {Number} $mode [1] -
+/// @param {String} $prop [''] -
+/// @return {Number} -
+@function uf-negate__prop($mode: 1, $prop: ''){
+  $far: uf-dir($prop);
   $length: length($far);
-  @return ofanti0($mode, $length);
+  @return uf-negate($mode, $length);
 }
 
-/// 取反
-@function ofanti0($mode, $range){
+//  uf-negate
+//  -
+/// 取反值
+/// @param {Number} $mode -
+/// @param {Number} $range -
+/// @return {Number} -
+@function uf-negate($mode, $range){
   $value: ($mode + 2) % $range;
   @return if(
     $value == 0,
@@ -25,8 +39,12 @@
   );
 }
 
-/// uuid
-@function uuid($space: 'A'){
+//  uf-uuid
+//  -
+/// 获取一个 uuid
+/// @param {String} $space ['A'] -
+/// @return {String} -
+@function uf-uuid($space: 'A'){
   $num: random();
   $id: str-slice(unquote('#{$num}'), 3);
   @return unquote('#{$space}#{$id}');

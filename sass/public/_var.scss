@@ -1,0 +1,124 @@
+/* setting (const) */
+$u-toFixed-length: 5;
+$u-quartet: top right bottom left;
+$u-browser-default-fontSize: 16px;
+$u-vector-table: (
+  '%': 1%,
+  'em': 1em,
+  'ex': 1ex,
+  'ch': 1ch,
+  'rem': 1rem,
+  'vw': 1vw,
+  'vh': 1vh,
+  'vmax': 1vmax,
+  'vmin': 1vmin,
+  'cm': 1cm,
+  'mm': 1mm,
+  'q': 1q,
+  'in': 1in,
+  'pt': 1pt,
+  'pc': 1pc,
+  'px': 1px,
+  'deg': 1deg,
+  'grad': 1grad,
+  'rad': 1rad,
+  'turn': 1turn,
+  's': 1s,
+  'ms': 1ms,
+  'Hz': 1Hz,
+  'kHz': 1kHz,
+);
+$u-nums: ();
+@for $i from 0 through 9 {
+  $u-nums: map-merge(
+    $u-nums,
+    ('#{$i}': $i),
+  );
+}
+
+/* setting (switch) */
+$u-isImport-reset: true !default;
+$u-major-line: true !default;
+$u-cssnext-pollfill__not: true !default;
+$u-cssnext-pollfill__matches: true !default;
+$u-fixed__fontSize: false !default;
+
+/* setting (browser、view) */
+$u-browser-ie-version: 9 !default;
+$u-view-width: 375px !default;
+$u-view-vector: 1vmin !default;
+$u-view-column: 100 !default;
+$u-view-dpr: 1 !default;
+$u-view-dpr__name: (
+  2: '@2x',
+  3: '@3x',
+) !default;
+$u-vector: 1rem !default;
+
+/* setting (css) */
+$u-position-list: absolute relative fixed !default;
+$u-family: 'Microsoft YaHei' !default;
+$u-path: unquote('images/') !default;
+$u-image-sprite: unquote('sprite.png') !default;
+$u-duration: .3s !default;
+$u-quartet-table: (
+  radius: top-left top-right bottom-right bottom-left,
+) !default;
+$u-quick-relative: (
+  rem: false,
+) !default;
+
+/* character */
+$u-character-colon: unquote(':');
+$u-character-colons: if($u-browser-ie-version > 8, unquote('::'), $u-character-colon);
+$u-character-before: $u-character-colons + before;
+$u-character-after: $u-character-colons + after;
+$u-character-and: unquote('&');
+$u-character-nbsp: '\0020';
+$u-character-ensp: '\2002';
+$u-character-emsp: '\2003';
+$u-character-thinsp: '\2009';
+
+/* default (font) */
+$u-fontSize-root: 16px !default;
+$u-lineHeight-root: null !default;
+$u-fontSize-h1: $u-fontSize-root * 1.375 !default;
+$u-fontSize-h2: $u-fontSize-root * 1.25 !default;
+$u-fontSize-h3: $u-fontSize-root * 1.125 !default;
+$u-fontSize-h4: $u-fontSize-root * 1 !default;
+$u-fontSize-h5: $u-fontSize-root * .875 !default;
+$u-fontSize-h6: $u-fontSize-root * .75 !default;
+$u-fontSize-default: $u-fontSize-root !default;
+
+/* color */
+$u-color: #333 !default;
+$u-color-light: #666 !default;
+$u-color-dark: #000 !default;
+$u-color-warn: #ff0 !default;
+$u-color-danger: #f00 !default;
+$u-color-hover: #189cd8 !default;
+$u-color-active: #189cd8 !default;
+$u-color-disabled: #ccc !default;
+$u-color-placeholder: #ddd !default;
+$u-bgcolor: #eee !default;
+
+/* size */
+$u-icon: 28px !default;
+$u-icon-arrow: 8px !default;
+
+/* extend */
+%U-EL__H{
+  margin-top: 0; margin-bottom: 0; font-weight: 400;
+}
+
+%U-PSEUDO__TABLE{
+  width: 100%; content: ''; display: table; clear: both;
+}
+
+%U-PSEUDO__ICON{
+  content: $u-character-thinsp; display: inline-block; vertical-align: inherit;
+}
+
+%U-APPEARANCE{
+  -moz-appearance: normal; -webkit-appearance: normal; appearance: normal;
+}

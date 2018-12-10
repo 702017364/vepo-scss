@@ -1,0 +1,8 @@
+@include describe('The uf-vector function =>'){
+  @include it('返回单位向量'){
+    @include assert-equal(
+      uf-vector(16px),
+      1px
+    );
+  }
+}

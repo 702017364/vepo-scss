@@ -1,0 +1,15 @@
+@include describe('The uf-dir function =>'){
+  @include it('默认取值'){
+    @include assert-equal(
+      uf-dir(),
+      $u-quartet
+    );
+  }
+
+  @include it('获取 radius'){
+    @include assert-equal(
+      uf-dir(radius),
+      map-get($u-quartet-table, radius)
+    );
+  }
+}

@@ -1,0 +1,36 @@
+$test-vmin-value: 75;
+
+@include describe('The uf-to-vmin function =>'){
+  @include it('单位转 vmin'){
+    @include assert-equal(
+      uf-to-vmin($test-vmin-value),
+      20vmin
+    );
+  }
+
+  @include it('单位转 vmax'){
+    @include assert-equal(
+      uf-to-vmin($test-vmin-value, 1vmax),
+      20vmax
+    );
+  }
+
+  @include it('单位转 vh'){
+    @include assert-equal(
+      uf-to-vmin($test-vmin-value, 1vh),
+      20vh
+    );
+  }
+
+  @include it('单位转 vw'){
+    $this-vector: $u-view-vector;
+    $u-view-vector: 1vw !global;
+
+    @include assert-equal(
+      uf-to-vmin($test-vmin-value),
+      20vw
+    );
+
+    $u-view-vector: $this-vector !global;
+  }
+}

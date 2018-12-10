@@ -1,0 +1,8 @@
+@include describe('The uf-reverse function =>'){
+  @include it('对数组进行反转'){
+    @include assert-equal(
+      uf-reverse((1 2 3 4)),
+      (4 3 2 1)
+    );
+  }
+}

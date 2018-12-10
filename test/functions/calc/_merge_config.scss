@@ -1,0 +1,18 @@
+@include describe('The uf-calc__mergeConfig function =>'){
+  @include it('合并选项'){
+    @include assert-equal(
+      uf-calc__mergeConfig(
+        (
+          exp: 3% 5vw,
+        )
+      ), 
+      (
+        product: 1,
+        reply: 0,
+        analysis: false,
+        exp: 3% 5vw,
+      ),
+      $inspect: true,
+    );
+  }
+}

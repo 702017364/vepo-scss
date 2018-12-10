@@ -1,0 +1,15 @@
+$test-animation-name: abc;
+
+@include describe('The um-animation mixin =>'){
+  @include it('设置 animation'){
+    @include assert{
+      @include output{
+        @include um-animation($test-animation-name, $u-duration);
+      }
+
+      @include expect{
+        animation: $test-animation-name $u-duration;
+      }
+    }
+  }
+}

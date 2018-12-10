@@ -1,0 +1,72 @@
+$test-for_style-data1: (
+  a: 20px 10px,
+  b: 4px 2px,
+);
+
+$test-for_style-data2: (
+  a: (10px 10px) .5,
+  b: (20px 20px) .6,
+);
+
+$test-for_style-props: (
+  background-position,
+  opacity,
+);
+
+@mixin test-for_style-mixin{
+  z-index: 1;
+}
+
+@mixin test-for_style-mixin2($key){
+  @include test-for_style-mixin;
+  @for $i from 1 through length($test-for_style-props) {
+    #{nth($test-for_style-props, $i)}: test-for_style-func($test-for_style-data2, $key, $i);
+  }
+}
+
+@function test-for_style-func($data, $key, $index){
+  $value: map-get($data, $key);
+  @return nth($value, $index);
+}
+
+@include describe('The um-for-style mixin =>'){
+  @include it('对每个规则设置background-position'){
+    @include assert{
+      @include output(false){
+        @include um-for-style($test-for_style-data1){
+          @include test-for_style-mixin;
+        }
+      }
+
+      @include contains(false){
+        a{
+          @include test-for_style-mixin;
+          background-position: map-get($test-for_style-data1, a);
+        }
+        b{
+          @include test-for_style-mixin;
+          background-position: map-get($test-for_style-data1, b);
+        }
+      }
+    }
+  }
+
+  @include it('一个复杂的设置'){
+    @include assert{
+      @include output(false){
+        @include um-for-style($test-for_style-data2, '.icon-', ':first-child', $test-for_style-props){
+          @include test-for_style-mixin;
+        }
+      }
+
+      @include contains(false){
+        .icon-a:first-child{
+          @include test-for_style-mixin2(a);
+        }
+        .icon-b:first-child{
+          @include test-for_style-mixin2(b);
+        }
+      }
+    }
+  }
+}

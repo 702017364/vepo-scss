@@ -1,0 +1,8 @@
+@include describe('The uf-to-num__unit function =>'){
+  @include it('将字符串数字（带单位）转成 Number 类型'){
+    @include assert-equal(
+      uf-to-num__unit('2.73px'),
+      2.73px
+    );
+  }
+}

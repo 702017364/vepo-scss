@@ -1,0 +1,36 @@
+$test-quick_relative-size: 20px;
+$test-quick_relative-props: (
+  width: 20px,
+  height: 1rem,
+  z-index: 1,
+);
+$test-quick_relative-itself: true;
+$test-quick_relative-option: (
+  rem: true,
+);
+
+@include describe('The um-quick-relative mixin =>'){
+  @include it('将值快速转换成 em 为单位'){
+    @include assert{
+      @include output{
+        @include um-quick-relative($test-quick_relative-size, $test-quick_relative-props, $test-effects_arrow-rotate, $test-quick_relative-option);
+      }
+
+      @include expect{
+        $this-width: map-get($test-quick_relative-props, width) / $test-quick_relative-size * 1em;
+        $this-height: if(
+          map-get($test-quick_relative-option, rem),
+          map-get($test-quick_relative-props, height) / 1rem * $u-fontSize-root,
+          map-get($test-quick_relative-props, height)
+        ) / $test-quick_relative-size * 1em;
+        $this-zindex: map-get($test-quick_relative-props, z-index);
+
+        @if $test-quick_relative-itself{
+          font-size: all($test-quick_relative-size);
+        }
+
+        width: $this-width; height: $this-height; z-index: $this-zindex;
+      }
+    }
+  }
+}

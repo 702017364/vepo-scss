@@ -1,0 +1,34 @@
+$test-placeholder-color: #ccc;
+
+@mixin test-placeholder-mixin{
+  font-size: 1em;
+}
+
+@include describe('The um-placeholder mixin =>'){
+  @include it('兼容设置 placeholder'){
+    @include assert{
+      @include output{
+        @include um-placeholder($test-placeholder-color){
+          @include test-placeholder-mixin;
+        }
+      }
+
+      @include contains{
+        &::-webkit-input-placeholder{
+          color: $test-placeholder-color;
+          @include test-placeholder-mixin;
+        }
+
+        &::-moz-placeholder{
+          opacity: 1 !important; color: $test-placeholder-color;
+          @include test-placeholder-mixin;
+        }
+
+        &:-ms-input-placeholder{
+          color: $test-placeholder-color;
+          @include test-placeholder-mixin;
+        }
+      }
+    }
+  }
+}

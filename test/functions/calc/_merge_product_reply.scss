@@ -1,0 +1,38 @@
+@include describe('The uf-calc__mergeExpByProductAndReply function =>'){
+  @include it('根据 product 和 reply 合并相同项'){
+    @include assert-equal(
+      uf-calc__mergeExpByProductAndReply(
+        (
+          exp: 2px 3vh,
+          product: .5,
+          reply: 1,
+        )
+        (
+          exp: 2% 3vh,
+          product: 2,
+          reply: 0,
+        )
+        (
+          exp: 2% 4vw,
+          product: 2,
+          reply: 0,
+        )
+        (
+          exp: 2% 4vw,
+          product: 3,
+          reply: 0,
+        )
+      ), 
+      (
+        exp: 2px 3vh 2% 3vh 2% 4vw,
+        product: .5,
+        reply: 1,
+      )
+      (
+        exp: 2% 4vw,
+        product: 3,
+        reply: 0,
+      )
+    );
+  }
+}

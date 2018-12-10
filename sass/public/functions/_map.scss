@@ -1,14 +1,23 @@
-/// 简化重复书写
-@function icons($map, $before: '', $after: ''){
+//  uf-icons
+//  -
+/// 格式化数据
+/// @param {Map|List} $map -
+/// @param {String} $before [''] 添加到数据之前（$before + $content 模式）
+/// @param {String} $after [''] 添加到数据之后（$after + $content 模式）
+/// @return {Map} -
+/// @throw $map 不是一个有效的类型
+@function uf-icons($map, $before: '', $after: ''){
   $new-map: ();
   $map-type: type-of($map);
+
   @if $map-type == 'list' {
     @each $value in $map {
       $new-map: map-merge($new-map, (
         $value: $value
       ));
     }
-    $new-map: icons($new-map, $before, $after);
+
+    $new-map: uf-icons($new-map, $before, $after);
   } @else if $map-type == 'map' {
     @each $key, $value in $map {
       $new-map: map-merge($new-map, (
@@ -18,10 +27,15 @@
   } @else {
     @error '$map 不是一个有效的类型';
   }
+  
   @return $new-map;
 }
 
-/// 判断类型为 map
-@function is-map($value){
+//  uf-is-map
+//  -
+/// 检测是否为 map 类型
+/// @param {Object} $value -
+/// @return {Boolean} -
+@function uf-is-map($value){
   @return type-of($value) == 'map';
 }

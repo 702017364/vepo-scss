@@ -1,0 +1,155 @@
+$gcalc-bridg-plus: ' + ';
+$gcalc-bridg-minus: ' - ';
+$gcalc-bridg-multiply: ' * ';
+$gcalc-bridg-division: ' / ';
+
+// calc single 运算
+@function fcalc-single($list, $multiple: 1, $mode: 0){
+  @return fcalc((
+    exp: $list,
+    multiple: $multiple,
+    mode: $mode,
+  ));
+}
+
+// calc 运算
+@function fcalc($list...){
+  @if length($list) == 0 {
+    @return 0;
+  }
+
+  $list: fcalc-normaliztion($list);
+
+  @return $list;
+}
+
+// 格式化表达式
+@function fcalc-normaliztion($list){
+  $this-list: ();
+
+  @each $value in $list {
+    $this-type: type-of($value);
+
+    @if $this-type == number {
+      $this-list: append($this-list, (
+        exp: ($value,),
+      ));
+    } @else if $this-type == 'string' {
+      $this-list: uf-concat($this-list, fcalc-normaliztion2str($value));
+    } @else if $this-type == 'list' {
+      $this-list: uf-concat($this-list, fcalc-normaliztion($value));
+    } @else if $this-type == 'map' {
+      $this-list: uf-concat($this-list, fcalc-normaliztion2map($value));
+    } @else {
+      @error '#{$value} 不是一个有效的 calc 表达式';
+    }
+  }
+
+  @return $this-list;
+}
+
+// 格式化 string 类型的表达式
+@function fcalc-normaliztion2str($value){
+  @if fcalc-has-operator($value) {
+    @if fcalc-is-calc($value) {
+      $value: fcalc-ast($value);
+    } @else {
+      @error '#{$value} 不是一个有效的字符串 calc 表达式';
+    }
+  } @else {
+    $value: fcalc-var-normaliztion($value);
+
+    $value: (
+      exp: $value,
+    );
+  }
+
+  @if type-of($value) == list {
+    @return $value;
+  }
+
+  @return ($value, );
+}
+
+// 对字符串表达式进行抽象语法树解析
+@function fcalc-ast($value){
+  $value: str-slice($value, 6, -2);
+  @return ();
+}
+
+// @function fcalc-ast-
+
+// 格式化 map 类型的表达式
+@function fcalc-normaliztion2map($map){
+  $this-exp: map-get($map, exp);
+  $this-multiple: map-get($map, multiple);
+  $this-mode: map-get($map, mode);
+  $this-list: ();
+
+  @each $value in fcalc-normaliztion($this-exp) {
+    $this-item-multiple: map-get($value, multiple) or 1;
+    $this-item-mode: map-get($value, mode) or 1;
+
+    @if $this-item-mode == 0 {
+      @if $this-mode == 0 {
+        //$this-item-multiple * $this-multiple
+      } @else {
+        //$this-item-multiple / $this-multiple
+      }
+    } @else {
+      // $this-item-multiple ($this-mode == 0 ? / : *) $this-multiple
+      // $this-item-multiple: ofcalc-single($this-item-multiple, $this-multiple, $this-mode);
+    }
+
+    $value: map-merge($value, (
+      multiple: $this-item-multiple,
+      mode: $this-item-mode,
+    ));
+    $this-list: append($this-list, $value);
+  }
+
+  @return $this-list;
+}
+
+// 检测是否为 calc 表达式
+@function fcalc-is-calc($value){
+  @return type-of($value) == string 
+    and str-length($value) > 6 
+    and str-slice($value, 1, 5) == 'calc(' 
+    and str-slice($value, -1) == ')';
+}
+
+// 检测是否为 CSS4 var
+@function fcalc-is-var($value, $licit: true){
+  $this4string: type-of($value) == string;
+
+  @if $licit {
+    @return $this4string
+      and str-length($value) > 7
+      and str-slice($value, 1, 6) == 'var(--'
+      and str-slice($value, -1) == ')';
+  }
+
+  @return $this4string
+    and str-length($value) > 2
+    and str-slice($value, 1, 2) == '--';
+}
+
+// 格式化 CSS4 var
+@function fcalc-var-normaliztion($value){
+  @if fcalc-is-var($value, false) {
+    @return unquote('var(#{$value})');
+  }
+
+  @return $value;
+}
+
+// 检测字符串是否含有运算符
+@function fcalc-has-operator($value){
+  @return type-of($value)
+    and (str-index($value, $gcalc-bridg-plus) != null 
+      or str-index($value, $gcalc-bridg-minus) != null
+      or str-index($value, $gcalc-bridg-multiply) != null
+      or str-index($value, $gcalc-bridg-division) != null
+    );
+}

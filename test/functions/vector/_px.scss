@@ -1,0 +1,8 @@
+@include describe('The uf-to-px function =>'){
+  @include it('数字 => px'){
+    @include assert-equal(
+      uf-to-px(16),
+      16px
+    );
+  }
+}

@@ -1,75 +1,109 @@
-/// 重置（css => m、p）
-@mixin c-mp{
-  margin: 0; padding: 0;
-}
-
-/// 重置（el => h）
-@mixin c-h{
-  @extend %EL-H;
-}
-
-/// 简写 top、right、bottom、left
-@mixin r-far($mode: o, $value: 0, $prop: '', $type: ''){
+//  um-fast__dir
+//  -
+/// 快捷输出方位属性（top、right、bottom、left）及值
+/// - mixin 内有对 $value 进行 px 转换
+/// @param {x|y|o} $mode [o] 方位设置
+/// - x：设置横向属性（right、left）
+/// - y：设置纵向属性（top、bottom）
+/// - o：设置横向和纵向属性（top、right、bottom、left）
+/// @param {Number} $value [0] 属性值
+/// @param {String} $prop [''] 方位前导值（拼接成一个新属性）
+/// @param {String} $type [''] 方位后导值（拼接成一个新属性）
+/// @example scss -
+///   @include um-matches(o, 2px, border, width);
+@mixin um-fast__dir($mode: o, $value: 0, $prop: '', $type: ''){
   @if type-of($value) == number {
-    $value: ofpx($value);
+    $value: uf-to-px($value);
   }
   @if type-of($mode) == number {
     $prev: $prop;
     $next: $type;
+
     @if $prop == 'radius' {
       $next: $prop;
       $prev: border;
     } @else if $prop == '' {
       $next: '';
     }
-    $key: prop-join(
-      nth(offar($prop), $mode),
+
+    $key: uf-compose(
+      nth(uf-dir($prop), $mode),
       $prev,
       $next
     );
+
     #{$key}: $value;
   } @else if $mode == x {
-    @include r-far(2, $value, $prop, $type);
-    @include r-far(4, $value, $prop, $type);
+    @include um-fast__dir(2, $value, $prop, $type);
+    @include um-fast__dir(4, $value, $prop, $type);
   } @else if $mode == y {
-    @include r-far(1, $value, $prop, $type);
-    @include r-far(3, $value, $prop, $type);
+    @include um-fast__dir(1, $value, $prop, $type);
+    @include um-fast__dir(3, $value, $prop, $type);
   } @else if $mode == o {
-    @include r-far(x, $value, $prop, $type);
-    @include r-far(y, $value, $prop, $type);
+    @include um-fast__dir(x, $value, $prop, $type);
+    @include um-fast__dir(y, $value, $prop, $type);
   }
 }
 
-/// 定位居中
-@mixin v($mode: to, $p: 1){
-  $pos: nth($r-pos, $p);
+//  um-v
+//  -
+/// 快捷输出定位居中方式
+/// @param {tx|ty|to|px|py|po} $mode [to] 居中方式
+/// - tx：使用 translateX 设置水平居中
+/// - ty：使用 translateY 设置垂直居中
+/// - to：使用 translate 设置水平和垂直居中
+/// - px：使用 margin 设置水平居中
+/// - py：使用 margin 设置垂直居中
+/// - po：使用 margin 设置水平和垂直居中
+/// @param {1|2|3} $p [1] 定位方式（值对应关系会根据全局变量 $u-position-list 覆盖而改变）
+/// - 1：position 值为 absolute
+/// - 2：position 值为 relative
+/// - 3：position 值为 fixed
+/// @example scss -
+///   @include um-v(tx);
+@mixin um-v($mode: to, $p: 1){
+  $pos: nth($u-position-list, $p);
+
   position: $pos;
+
   @if $mode == px {
-    @include r-far(x);
+    @include um-fast__dir(x);
     margin: 0 auto;
   } @else if $mode == py {
-    @include r-far(y);
+    @include um-fast__dir(y);
     margin: auto 0;
   } @else if $mode == po {
-    @include r-far(o);
+    @include um-fast__dir(o);
     margin: auto;
   } @else if $mode == tx {
-    @include r-far(2, 50%);
+    @include um-fast__dir(2, 50%);
     transform: translateX(50%); transform-style: preserve-3d;
   } @else if $mode == ty {
-    @include r-far(3, 50%);
+    @include um-fast__dir(3, 50%);
     transform: translateY(50%); transform-style: preserve-3d;
   } @else if $mode == to {
-    @include r-far(2, 50%);
-    @include r-far(3, 50%);
+    @include um-fast__dir(2, 50%);
+    @include um-fast__dir(3, 50%);
     transform: translate(50%, 50%); transform-style: preserve-3d;
   }
 }
 
-/// 等比设值
-@mixin ratio($value: $r-icon, $mode: 1){
-  $value: ofpx($value);
+//  um-ratio
+//  -
+/// 快捷输出相同的宽高
+/// - mixin 内有对 $value 进行 px 转换
+/// @param {Number} $value [$u-icon] 属性值
+/// @param {负数|0|正数} $mode 属性模式
+/// - -1（负数）：高度属性为 line-height
+/// - 0：高度属性为 height 和 line-height
+/// - 1（正数）：高度属性为 height
+/// @example scss -
+///   @include um-ratio;
+@mixin um-ratio($value: $u-icon, $mode: 1){
+  $value: uf-to-px($value);
+
   width: $value;
+
   @if $mode >= 0 {
     height: $value;
   }
@@ -78,79 +112,129 @@
   }
 }
 
-@mixin height($value){
-  $value: ofpx($value);
-  height: $value; line-height: ofline($value);
+//  um-height
+//  -
+/// 快捷输出高度为行高的倍数
+/// - mixin 有做 line-height 值优化
+/// @param {Number} $value 属性值
+/// @param {Number} $row [1] 倍数
+/// @example scss -
+///   @include um-height(1em);
+@mixin um-height($value, $row: 1){
+  $value: uf-to-px($value);
+
+  height: $value * $row; line-height: of-line($value);
 }
 
-/// 行内 icon
-@mixin el-icon($value: $r-icon, $is: true){
-  $value: ofpx($value);
-  @include ratio($value, 0);
-  @if $is == true {
-    @extend %PSEUDO-ICON;
-  }
+//  um-icon
+//  -
+/// 快捷输出一个字符空格占位元素样式
+/// - mixin 内有对 $value 进行 px 转换
+/// @param {Number} $value [$u-icon] 属性值
+/// @example scss -
+///   @include um-icon(1em);
+@mixin um-icon($value: $u-icon){
+  @include um-ratio($value, 0);
+  @extend %U-PSEUDO__ICON;
 }
 
+//  um-icon
+//  -
 /// 清除 first-child 上边距影响
-@mixin c-mtop{
+/// @example scss -
+///   @include um-clear__before;
+@mixin um-clear__before{
   @include before(null){
-    @extend %PSEUDO-TABLE;
+    @extend %U-PSEUDO__TABLE;
   }
 }
 
-/// 清除浮动影响
-@mixin c-float{
+//  um-icon
+//  -
+/// 清除子元素设置浮动对父元素的影响
+/// @example scss -
+///   @include um-clear__after;
+@mixin um-clear__after{
   @include after(null){
-    @extend %PSEUDO-TABLE;
+    @extend %U-PSEUDO__TABLE;
   }
 }
 
-/// 设置 placeholder
-@mixin placeholder($color: $rc-placeholder){
+//  um-placeholder
+//  -
+/// 兼容设置 placeholder 样式
+/// - 当 $color 为无效的颜色值时，将不设置 color 属性
+/// @param {Color} $color [$u-color-placeholder] 属性值
+/// @example scss -
+///   @include um-placeholder(#ccc);
+@mixin um-placeholder($color: $u-color-placeholder){
+  $is-color: type-of($color);
+
   &::-webkit-input-placeholder{
+    @if $is-color {
       color: $color;
-      @content;
+    }
+    @content;
   }
   &::-moz-placeholder{
+    @if $is-color {
       opacity: 1 !important; color: $color;
-      @content;
+    }
+    @content;
   }
   &:-ms-input-placeholder{
+    @if $is-color {
       color: $color;
-      @content;
-  }
-}
-
-/// 基准过渡
-@mixin transition($args: $r-duration){
-  transition: $args;
-}
-
-/// 基准动画
-@mixin animation($name, $args: $r-duration){
-  animation: $name $args;
-}
-
-/// 隐藏多余元素
-@mixin hide-over($n){
-  &:nth-child(n + #{$n}){
-    display: none;
+    }
     @content;
   }
 }
 
-/// 省略号
-@mixin ellipsis{
+//  um-transition
+//  -
+/// transition 设置
+/// @param {Array} $args [$u-duration] 属性值
+/// @example scss -
+///   @include um-transition(.3s);
+@mixin um-transition($args: $u-duration){
+  transition: $args;
+}
+
+//  um-animation
+//  -
+/// animation 设置
+/// @param {String} $name 动画名称
+/// @param {Array} $args [$u-duration] 其他属性值
+/// @example scss -
+///   @include um-animation(abc, .3s);
+@mixin um-animation($name, $args: $u-duration){
+  animation: $name $args;
+}
+
+//   um-ellipsis
+//  -
+/// 单行超出省略号效果
+/// @example scss -
+///   @include um-ellipsis;
+@mixin um-ellipsis{
   overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 }
 
-/// 多行省略号
-@mixin omitted($lines: 3){
+//  um-omitted
+//  -
+/// 多行超出省略号效果
+/// @param {Number} $lines [3] 行数
+/// @example scss -
+///   @include um-omitted(2);
+@mixin um-omitted($lines: 3){
   display: -webkit-box; -webkit-line-clamp: $lines; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
 }
 
-/// 清除默认设置
-@mixin appearance{
-  @extend %APPEARANCE;
+//  um-appearance
+//  -
+/// 清除浏览器默认设置
+/// @example scss -
+///   @include um-appearance;
+@mixin um-appearance{
+  @extend %U-APPEARANCE;
 }
