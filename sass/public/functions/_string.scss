@@ -1,0 +1,39 @@
+/// 字符串分割（对 $separator 进行处理）
+@function str-split($string, $separator){
+  @if isempty($separator) {
+    $list: ();
+    @return append(
+      $list,
+      $string
+    );
+  } @else if type-of($separator) != string {
+    $separator: unquote('#{$separator}');
+  }
+  @return str-split-for((), $string, $separator);
+}
+
+/// 字符串分割
+@function str-split-for($list, $string, $separator){
+  $index: str-index($string, $separator);
+  @if isempty($index) {
+    @return append(
+      $list,
+      $string
+    );
+  } @else {
+    $list: append(
+      $list,
+      str-slice($string, 0, $index - 1)
+    );
+    $string: str-slice(
+      $string,
+      $index + str-length($separator)
+    );
+    @return str-split-for($list, $string, $separator);
+  }
+}
+
+/// 检测类型是否为 string
+@function is-string($value){
+  @return type-of($value) == 'string';
+}

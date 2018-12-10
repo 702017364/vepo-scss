@@ -1,0 +1,57 @@
+/// bg-url简写
+@function bgurl($name: $r-sprite, $dpr: $browser-dpr){
+  $list: str-split($name, '.');
+  $length: length($list);
+  $value: map-get($r-dpr, $dpr);
+  @if $length > 1 and not(isempty($value)) {
+    $str: '';
+    @for $i from 1 through $length - 1 {
+      $str: $str + nth($list, $i);
+    }
+    $name: $str + $value + '.' + nth($list, $length);
+  }
+  @return unquote('url(#{$r-path}#{$name})');
+}
+
+/// 避免 scss 由于变量的原因将 '/' 识别成除法运算
+@function ofpart($a, $b){
+  @return unquote('#{$a}/#{$b}');
+}
+
+/// to class
+@function ofclass($name){
+  @return unquote('.#{$name}');
+}
+
+/// 属性拼接
+@function prop-join($far, $prev: '', $next: ''){
+  $prev: if(
+    isempty($prev),
+    '',
+    $prev + '-'
+  );
+  $next: if(
+    isempty($next),
+    '',
+    '-' + $next
+  );
+  @return $prev + $far + $next;
+}
+
+/// 优化 line-height 取值
+@function ofline($value){
+  @if $global-major-line and ofvector($value) == 1rem {
+    $px: ofless($value) * $r-size;
+    $max: ofround($px, 1);
+    @if $max > $px {
+      $list: str-split(
+        unquote('#{ofless($px)}'),
+        '.'
+      );
+      $dec-length: str-length(nth($list, 2));
+      $dec-value: pow(10, $dec-length * -1);
+      $value: $value + $dec-value;
+    }
+  }
+  @return $value;
+}

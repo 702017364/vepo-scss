@@ -1,0 +1,16 @@
+//extend-only
+%EL-H{
+  margin-top: 0; margin-bottom: 0; font-weight: 400;
+}
+
+%PSEUDO-TABLE{
+  width: 100%; content: ''; display: table; clear: both;
+}
+
+%PSEUDO-ICON{
+  content: $thinsp; display: inline-block; vertical-align: inherit;
+}
+
+%APPEARANCE{
+  -moz-appearance:none; -webkit-appearance:none; appearance:none;
+}

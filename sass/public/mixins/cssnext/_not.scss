@@ -1,0 +1,25 @@
+/// :not 伪类（多 rule）
+@mixin not($args...){
+  @if is_cssnext('not') {
+    @include not-pollfill($args...){
+      @content;
+    };
+  } @else if(length($args) == 1) {
+    @include not-pollfill($args){
+      @content;
+    };
+  } @else {
+    @warn 'Unimplemented configuration => :not';
+  }
+};
+
+/// :not(pollfill)
+@mixin not-pollfill($args...){
+  $not-rules: '';
+  @each $value in $args {
+    $not-rules: '#{$not-rules}:not(#{$value})';
+  }
+  &#{$not-rules}{
+    @content;
+  }
+}

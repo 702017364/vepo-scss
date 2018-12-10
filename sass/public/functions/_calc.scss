@@ -1,0 +1,323 @@
+/// 优化 calc
+@function ofcalc($list, $base: 1, $dir: 0, $simplify: false, $str: ''){
+  @if isempty($str) {
+    @return ofcalc-array($list, $base, $dir, $simplify);
+  } @else {
+    @return ofcalc-string($str, $list, $base, $dir, $simplify);
+  }
+}
+
+/// ofcalc 数组版
+@function ofcalc-array($list, $base: 1, $dir: 0, $simplify: false){
+  $map: calc-category($list);
+  $map: calc-merge($map);
+  @return calc-output(
+    calc-filter($map),
+    $base,
+    $dir,
+    $simplify
+  );
+}
+
+/// ofcalc 字符版
+@function ofcalc-string($str, $list: (), $base: null, $dir: null, $simplify: false){
+  $map: ofcalc-resolve($str);
+  $base-map: (
+    base: map-get($map, base)
+  );
+  @if not isempty($base) {
+    $base-map: map-merge(
+      $base-map,
+      (base: $base)
+    );
+  }
+  $dir-map: (
+    dir: map-get($map, dir)
+  );
+  @if not isempty($dir) {
+    $dir-map: map-merge(
+      $dir-map,
+      (dir: $dir)
+    );
+  }
+  $array: map-get($map, list);
+  @each $item in $list {
+    $array: append($array, $item);
+  }
+  @return ofcalc-array(
+    $array,
+    map-get($base-map, base),
+    map-get($dir-map, dir),
+    $simplify
+  );
+}
+
+/// 输出
+@function calc-output($list, $base, $dir, $simplify){
+  $length: length($list);
+  @if $length == 0 {
+    @return 0;
+  } @else if $length == 1 {
+    $list: calc-simplify($list, $base, $dir);
+    $first: nth($list, 1);
+    @return if(
+      type-of($first) == 'number',
+      $first,
+      if(
+        isempty(str-index($first, ' ')),
+        unquote($first),
+        unquote('calc(#{$first})')
+      )
+    );
+  } @else if $simplify == true {
+    @return calc-join(
+      calc-simplify($list, $base, $dir),
+      1,
+      $dir
+    );
+  } @else {
+    @return calc-join(
+      $list,
+      $base,
+      $dir
+    );
+  }
+}
+
+/// 拼接
+@function calc-join($list, $base, $dir){
+  $str: null;
+  $length: length($list);
+  @for $i from 1 through $length {
+    $value: nth($list, $i);
+    @if type-of($value) == 'string' {
+      @if $i == 1 {
+        $str: $value;
+      } @else {
+        $str: '#{$str} + #{$value}';
+      }
+    } @else {
+      @if $i == 1 {
+        $str: $value;
+      } @else if $value > 0 {
+        $str: '#{$str} + #{$value}';
+      } @else {
+        $str: '#{$str} - #{abs($value)}';
+      }
+    }
+  }
+  @return if(
+    $base == 1,
+    unquote('calc(#{$str})'),
+    unquote('calc((#{$str}) #{if(calc-dir($dir), '/', '*')} #{$base})')
+  );
+}
+
+/// 简化运算次数
+@function calc-simplify($list, $base, $dir){
+  $array: ();
+  $mul: calc-dir($dir);
+  @each $value in $list {
+    $is_number: type-of($value) == 'number';
+    $array: append(
+      $array,
+      if(
+        $mul,
+        if(
+          $is_number, 
+          $value / $base, 
+          if(
+            $base == 1,
+            unquote($value),
+            unquote('#{$value} / #{$base}')
+          )
+        ),
+        if(
+          $is_number,
+          $value * $base,
+          if(
+            $base == 1,
+            unquote($value),
+            unquote('#{$value} * #{$base}')
+          )
+        )
+      )
+    );
+  }
+  @return $array;
+}
+
+/// 确认是否为除法
+@function calc-dir($dir){
+  @if $dir == 0 or $dir == true {
+    @return true;
+  } @else {
+    @return false;
+  }
+}
+
+/// 以单位进行分类
+@function calc-category($list){
+  $map: ();
+  @each $value in $list {
+    $type: type-of($value);
+    $key: '' !default;
+    $array: '' !default;
+    @if $type == 'string' {
+      //如果是字符串则进行 css4 变量名分类
+      @if str-slice($value, 1, 3) == 'var' {
+        $value: str-slice($value, 5, str-length($value) - 1);
+      }
+      @if str-slice($value, 1, 2) == '--' {
+        $key: $value;
+        $array: ($value);
+      }
+    } @else if $type == 'number' {
+      //如果是数字则进行单位分类
+      $key: unit($value);
+      $array: ();
+      @if map-has-key($map, $key){
+        $array: map-get($map, $key);
+        $array: append($array, $value);
+      } @else {
+        $array: ($value);
+      }
+    }
+    @if isempty($key) == false {
+      $map: map-merge(
+        $map,
+        ($key: $array)
+      );
+    }
+  }
+  @return $map;
+}
+
+/// 合并同单位的项
+@function calc-merge($map){
+  @each $key, $list in $map {
+    $sum: 0 !default;
+    @if str-slice($key, 1, 2) == '--' {
+      //如果为 css4 变量则使用变量求和方法
+      $sum: 'var(#{calc-sum-var($list)})';
+    } @else {
+      //否则使用常规求和方法
+      $sum: calc-sum($list);
+    }
+    $map: map-merge(
+      $map,
+      ($key: $sum)
+    );
+  }
+  @return $map;
+}
+
+/// css4 var 求和
+@function calc-sum-var($list){
+  @return nth($list, 1);
+}
+
+/// 常规求和
+@function calc-sum($list){
+  $sum: 0;
+  @each $value in $list {
+    $sum: $sum + $value;
+  }
+  @return $sum;
+}
+
+/// 将集合转成数组并过滤值为0的项
+@function calc-filter($map){
+  $array: ();
+  @each $key, $value in $map {
+    @if $value != 0 {
+      $array: append($array, $value);
+    }
+  }
+  @return $array;
+}
+
+/// 将 ofcalc 运算结果进行反解析
+@function ofcalc-resolve($calc){
+  $calc-str: 'calc(';
+  $separ-str: ') ';
+  $type: type-of($calc);
+  $map: ();
+  @if $type == number {
+    $map: map-merge(
+      $map,
+      (
+        base: 1,
+        dir: 1,
+        list: ($calc, )
+      )
+    );
+  } @else if str-index($calc, $calc-str) == 1 {
+    $value: str-slice($calc, str-length($calc-str) + 1, str-length($calc) - 1);
+    $value-split: str-split($value, $separ-str);
+    $map: map-merge(
+      $map,
+      ofcalc-resolve-baseAndDir($value-split)
+    );
+    $map: map-merge(
+      $map,
+      (list: ofcalc-resolve-lists($value-split))
+    );
+  } @else {
+    @error '不是有效的 calc 格式';
+  }
+  @return $map;
+}
+
+/// 方法 ofcalc-resolve 的辅助，提取出 calc 中 base 和 dir
+@function ofcalc-resolve-baseAndDir($splits){
+  $map: () !default;
+  @if length($splits) == 2 {
+    $dir-base: str-split(
+      nth($splits, 2),
+      ' '
+    );
+    $map: (
+      base: ofnum(
+        nth($dir-base, 2)
+      ),
+      dir: if(
+        nth($dir-base, 1) == '/',
+        0,
+        1
+      )
+    );
+  } @else {
+    $map: (
+      base: 1,
+      dir: 0
+    );
+  }
+  @return $map;
+}
+
+/// 方法 ofcalc-resolve 的辅助，提取出 calc 中进行加（或减）运算的数字
+@function ofcalc-resolve-lists($splits){
+  $value: nth($splits, 1);
+  $value: if(
+    length($splits) == 2,
+    str-slice($value, 2),
+    $value
+  );
+  $list: str-split(
+    $value,
+    ' '
+  );
+  $mul: 1;
+  $array: ();
+  @each $item in $list {
+    @if $item == '+' {
+      $mul: 1;
+    } @else if $item == '-' {
+      $mul: -1;
+    } @else {
+      $array: append($array, ofnum-unit($item) * $mul);
+    }
+  }
+  @return $array;
+}

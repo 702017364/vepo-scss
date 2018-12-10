@@ -1,0 +1,16 @@
+//color
+$r-color: #333 !default;            //基础色值
+$rc-light: #006EFF !default;        //亮色色值
+$rc-dark: #999 !default;            //暗色色值
+$rc-warn: #000 !default;            //警告色值
+$rc-danger: #000 !default;          //危险色值
+$rc-hover: #189CD8 !default;        //hover色值
+$rc-active: #ededed !default;       //active色值
+$rc-disable:  #000 !default;        //禁用色值
+$rc-bg: #eee !default;              //基本背景色
+$rc-placeholder: #ccc !default;     //placeholder色值
+
+//color blocks
+$rcb-hover: $rc-hover #fff !default;        //选中色块
+$rcb-active: $rc-active #000 !default;      //当前色块
+$rcb-disable: $rc-disable #000 !default;    //禁用色块

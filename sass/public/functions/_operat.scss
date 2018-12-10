@@ -1,0 +1,33 @@
+/// 获取 far
+@function offar($prop: ''){
+  $far: map-get($r-fars, $prop);
+  @return if(
+    isempty($far),
+    $r-far,
+    $far
+  );
+}
+
+/// 属性取反
+@function ofanti($mode: 1, $prop: ''){
+  $far: offar($prop);
+  $length: length($far);
+  @return ofanti0($mode, $length);
+}
+
+/// 取反
+@function ofanti0($mode, $range){
+  $value: ($mode + 2) % $range;
+  @return if(
+    $value == 0,
+    $range,
+    $value
+  );
+}
+
+/// uuid
+@function uuid($space: 'A'){
+  $num: random();
+  $id: str-slice(unquote('#{$num}'), 3);
+  @return unquote('#{$space}#{$id}');
+}

@@ -1,0 +1,15 @@
+@mixin html-font{
+  $size: $r-size / $browser-size * 100%;
+  $size-line: if(
+    isempty($r-line),
+    $size,
+    ofpart($size, $r-line)
+  );
+  font: $size-line $r-family;
+}
+
+@mixin h-css{
+  @include for-style($h, $lists: font-size, $is: true){
+    @extend %EL-H;
+  };
+}

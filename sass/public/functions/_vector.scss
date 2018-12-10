@@ -1,0 +1,78 @@
+/// 单位转换（总接口）
+@function ofall($value, $base: $r-size, $dpr: $browser-dpr){
+  $name: of + unit($browser-vector);
+  $value: ofpx($value);
+  @if function_exists($name) {
+    $value: call(get-function($name), $value, $base);
+    @return $value / $dpr;
+  } @else {
+    @return $value;
+  }
+}
+
+/// 单位转换（总接口简写）
+@function all($args...){
+  @return ofall($args...);
+}
+
+/// 单位转 rem
+@function ofrem($value, $base: $r-size){
+  $vector: ofvector(1rem);
+  $value: ofpx($value);
+  @return if(
+    ispx($value),
+    ofround($value / $base * $vector, $global-decNum),
+    $value
+  );
+}
+
+/// 单位转 vmin
+@function ofvmin($value, $base: null){
+  $vector: if(
+    isempty($base),
+    1vmin,
+    ofvector($browser-vector)
+  );
+  $value: ofpx($value);
+  @return if(
+    ispx($value),
+    $value / $browser-width * 100 * $vector,
+    $value
+  );
+}
+
+/// 数字 => px
+@function ofpx($value, $base: null){
+  @return if(
+    $value != 0 and unit($value) == '',
+    $value * ofvector(1px),
+    $value
+  );
+}
+
+/// font-size
+@function ofsize($value){
+  $value: ofpx($value);
+  @return if(
+    map-get($browser-fixed, size),
+    $value,
+    all($value)
+  );
+}
+
+/// 去除单位
+@function ofless($value){
+  @return if(
+    unitless($value),
+    $value,
+    $value / ofvector($value)
+  );
+}
+
+/// 返回单位向量
+@function ofvector($value){
+  @return map-get(
+    $r-vector,
+    unit($value)
+  );
+}

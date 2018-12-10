@@ -1,0 +1,28 @@
+/// 数组取反
+@function ofreverse($list){
+  $array: ();
+  $num: length($list);
+  @for $i from 1 through $num {
+    $array: append(
+      $array,
+      nth($list, $num - $i + 1)
+    );
+  }
+  @return $array;
+}
+
+/// 检测类型是否为 list
+@function is-list($value){
+  @return type-of($value) == 'list';
+}
+
+/// concat（返回两个数组的组合数组）
+@function of-concat($list1, $list2){
+  @each $value in $list2 {
+    $list1: append(
+      $list1,
+      $value
+    );
+  }
+  @return $list1;
+}

@@ -1,0 +1,26 @@
+@mixin scrollbar{
+  &::-webkit{
+    &-scrollbar{
+      width: all(12); border-radius: all(6); background: linear-gradient(rgba(#f00, .3), rgba(#f00, .5));
+      &-button{
+        height: all(12); border-radius: all(6); background-color: #f00;
+      }
+      &-track{
+        width: 2px; background-color: #0f0;
+        &-piece{
+          background-color: rgba(#00f, .5);
+        }
+      }
+      &-thumb{
+        border-radius: all(6); box-shadow: inset 0 0 0 2px #000; background-color: #f00;
+        &:window-inactive{
+          background-color: rgba(#f00, .5);
+        }
+      }
+      &-corner{}
+    }
+    &-resizer{
+
+    }
+  }
+}

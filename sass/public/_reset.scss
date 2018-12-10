@@ -1,0 +1,79 @@
+@if $import-reset {
+  html{
+    @include html-font;
+    height: 100%; overflow: auto; color: $r-color;
+  }
+  
+  body{
+    @include c-mp;
+    font-size: all($rs-default);
+  }
+  
+  dl, ol, ul{
+    @include c-mp;
+    list-style-type: none;
+  }
+  
+  dd{
+    margin-left: 0;
+  }
+  
+  @include h-css;
+  
+  p{
+    margin: 0;
+  }
+  
+  iframe, img, fieldset{
+    border-width: 0;
+  }
+  
+  table{
+    border-spacing: 0; border-collapse: collapse;
+  }
+  
+  td, th{
+    padding: 0;
+  }
+  
+  i, em{
+    font-style: normal;
+  }
+  
+  hr{
+    margin: 1em 0; border-width: 1px solid; color: inherit;
+  }
+  
+  a, input, button, select, textarea, [tab-index]{
+    &:focus{
+      outline: none;
+    }
+  }
+  
+  a{
+    text-decoration: none; color: inherit;
+  }
+  
+  main{
+    display: block;
+  }
+  
+  input, textarea, [contenteditable], [contenteditable='true']{
+    @include placeholder;
+  }
+  
+  input, button, textarea{
+    font: inherit;
+  }
+  
+  textarea{
+    resize: none;
+  }
+  
+  // Class
+  [class^='icon-'], [class*=' icon-']{
+    @include before(null){
+      @include el-icon();
+    }
+  }
+}

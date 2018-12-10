@@ -1,0 +1,156 @@
+/// 重置（css => m、p）
+@mixin c-mp{
+  margin: 0; padding: 0;
+}
+
+/// 重置（el => h）
+@mixin c-h{
+  @extend %EL-H;
+}
+
+/// 简写 top、right、bottom、left
+@mixin r-far($mode: o, $value: 0, $prop: '', $type: ''){
+  @if type-of($value) == number {
+    $value: ofpx($value);
+  }
+  @if type-of($mode) == number {
+    $prev: $prop;
+    $next: $type;
+    @if $prop == 'radius' {
+      $next: $prop;
+      $prev: border;
+    } @else if $prop == '' {
+      $next: '';
+    }
+    $key: prop-join(
+      nth(offar($prop), $mode),
+      $prev,
+      $next
+    );
+    #{$key}: $value;
+  } @else if $mode == x {
+    @include r-far(2, $value, $prop, $type);
+    @include r-far(4, $value, $prop, $type);
+  } @else if $mode == y {
+    @include r-far(1, $value, $prop, $type);
+    @include r-far(3, $value, $prop, $type);
+  } @else if $mode == o {
+    @include r-far(x, $value, $prop, $type);
+    @include r-far(y, $value, $prop, $type);
+  }
+}
+
+/// 定位居中
+@mixin v($mode: to, $p: 1){
+  $pos: nth($r-pos, $p);
+  position: $pos;
+  @if $mode == px {
+    @include r-far(x);
+    margin: 0 auto;
+  } @else if $mode == py {
+    @include r-far(y);
+    margin: auto 0;
+  } @else if $mode == po {
+    @include r-far(o);
+    margin: auto;
+  } @else if $mode == tx {
+    @include r-far(2, 50%);
+    transform: translateX(50%); transform-style: preserve-3d;
+  } @else if $mode == ty {
+    @include r-far(3, 50%);
+    transform: translateY(50%); transform-style: preserve-3d;
+  } @else if $mode == to {
+    @include r-far(2, 50%);
+    @include r-far(3, 50%);
+    transform: translate(50%, 50%); transform-style: preserve-3d;
+  }
+}
+
+/// 等比设值
+@mixin ratio($value: $r-icon, $mode: 1){
+  $value: ofpx($value);
+  width: $value;
+  @if $mode >= 0 {
+    height: $value;
+  }
+  @if $mode <= 0 {
+    line-height: $value;
+  }
+}
+
+@mixin height($value){
+  $value: ofpx($value);
+  height: $value; line-height: ofline($value);
+}
+
+/// 行内 icon
+@mixin el-icon($value: $r-icon, $is: true){
+  $value: ofpx($value);
+  @include ratio($value, 0);
+  @if $is == true {
+    @extend %PSEUDO-ICON;
+  }
+}
+
+/// 清除 first-child 上边距影响
+@mixin c-mtop{
+  @include before(null){
+    @extend %PSEUDO-TABLE;
+  }
+}
+
+/// 清除浮动影响
+@mixin c-float{
+  @include after(null){
+    @extend %PSEUDO-TABLE;
+  }
+}
+
+/// 设置 placeholder
+@mixin placeholder($color: $rc-placeholder){
+  &::-webkit-input-placeholder{
+      color: $color;
+      @content;
+  }
+  &::-moz-placeholder{
+      opacity: 1 !important; color: $color;
+      @content;
+  }
+  &:-ms-input-placeholder{
+      color: $color;
+      @content;
+  }
+}
+
+/// 基准过渡
+@mixin transition($args: $r-duration){
+  transition: $args;
+}
+
+/// 基准动画
+@mixin animation($name, $args: $r-duration){
+  animation: $name $args;
+}
+
+/// 隐藏多余元素
+@mixin hide-over($n){
+  &:nth-child(n + #{$n}){
+    display: none;
+    @content;
+  }
+}
+
+/// 省略号
+@mixin ellipsis{
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+
+/// 多行省略号
+@mixin omitted($lines: 3){
+  display: -webkit-box; -webkit-line-clamp: $lines; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
+}
+
+/// 清除默认设置
+@mixin appearance{
+  @extend %APPEARANCE;
+}

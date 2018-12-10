@@ -1,0 +1,33 @@
+/// data.forEach => css 列表
+@mixin for-style($key-value, $prefix: '', $suffix: '', $lists: background-position, $is: false){
+  $length: length($lists);
+  @each $key, $value in $key-value {
+    #{$prefix + $key + $suffix}{
+      @if $length == 0 {
+        @debug '$lists is empty';
+      } @else if $length == 1 {
+        @include for-style-use(nth($lists, 1), $value, $is);
+      } @else {
+        @for $i from 1 through $length {
+          @if length($value) >= $i {
+            @include for-style-use(nth($lists, $i), nth($value, $i), $is);
+          }
+        }
+      }
+      @content;
+    }
+  }
+}
+
+/// 建立对样式的具体应用规则
+@mixin for-style-use($prop, $value, $is){
+  @if $prop == background-image {
+    #{$prop}: bgurl($value);
+  } @else {
+    @if type-of($value) == number and $is {
+      #{$prop}: all($value);
+    } @else {
+      #{$prop}: $value;
+    }
+  }
+}

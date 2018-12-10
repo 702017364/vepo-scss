@@ -1,0 +1,62 @@
+@import 'functions/prefix';
+@import 'functions/for';
+
+/// 立即执行
+@mixin IIFE{
+  @content;
+}
+
+/// 写入 content
+@mixin content($content){
+  @if $content != null {
+    content: $content;
+  }
+}
+
+/// before
+@mixin before($content: ''){
+  &#{$before}{
+    @include content($content);
+    @content;
+  }
+}
+
+/// after
+@mixin after($content: ''){
+  &#{$after}{
+    @include content($content);
+    @content;
+  }
+}
+
+/// 颜色加权
+@mixin color-weight($prop, $color, $weight){
+  @if $weight > 1 {
+    #{$prop}: darken($color, ($weight - 1) * 100%);
+  } @else {
+    #{$prop}: lighten($color, (1 - $weight) * 100%);
+  }
+}
+
+/// 色块分解加权
+@mixin colors-weight($colors, $w1: 1, $w2: 1){
+  $color: nth($colors, 1);
+  $bgcolor: nth($colors, 2);
+  @include color-weight(color, $color, $w1);
+  @include color-weight(background-color, $bgcolor, $w2);
+}
+
+/// 优雅的书写 @keyframes
+@mixin keyframes($name: '', $args: $r-duration){
+  @if isempty($name) {
+    $uuid: uuid();
+    @include keyframes($uuid){
+      @content;
+    }
+    @include animation($uuid, $args);
+  } @else {
+    @keyframes #{$name}{
+      @content;
+    }
+  }
+}

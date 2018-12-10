@@ -1,0 +1,68 @@
+/// 保留 $pow 位小数
+@function ofround($value, $pow: 0){
+  $mul: pow(10, $pow);
+  @return round($value * $mul) / $mul;
+}
+
+/// 将 String 型数字转成 Number
+@function ofnum($str){
+  $sum: 0;
+  $length: str-length($str);
+  $point-index: str-index($str, '.');
+  $size: if(
+    isempty($point-index),
+    $length,
+    $point-index - 1
+  );
+  $point-count: 0;
+  $error: '不是一个有效的 Number';
+  $dir: 1;
+  @for $i from 1 through $length {
+    $char: str-slice($str, $i, $i);
+    @if $i == 1 and $char == '+' {
+      $dir: 1;
+    } @else if $i == 1 and $char == '-' {
+      $dir: -1;
+    } @else if $char == '.' {
+      $point-count: $point-count + 1;
+      @if $point-count >= 2 {
+        @error $error;
+      }
+      $size: $point-index;
+    } @else {
+      $value: map-get($r-nums, $char);
+      @if isempty($value) {
+        @error $error;
+      }
+      $sum: $sum + $value * pow(10, $size - $i);
+    }
+  }
+  @return $sum * $dir;
+}
+
+/// 将 String 型数字（可带单位）转成 Number（带单位）
+@function ofnum-unit($str){
+  $length: str-length($str);
+  $index: -1;
+  $i: $length;
+  @while $i > 0 {
+    $item: str-slice($str, $i, $i);
+    @if isempty(map-get($r-nums, $item)) {
+      $i: $i - 1;
+    } @else {
+      $index: $i;
+      $i: 0;
+    }
+  }
+  $vertor: map-get(
+    $r-vector,
+    str-slice(
+      $str, 
+      $index + 1
+    )
+  );
+  @if isempty($vertor) {
+    $vertor: 1px;
+  }
+  @return ofnum(str-slice($str, 1, $index)) * $vertor;
+}

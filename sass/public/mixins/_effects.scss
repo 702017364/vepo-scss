@@ -1,0 +1,38 @@
+/// 箭头 icon 制作
+@mixin arrow($size: $r-arrow, $weight: 2px, $is-pos: true, $rotate: 45deg){
+  @include ratio(all($size), 0);
+  @if $is-pos {
+    @include v(py);
+  }
+  @if $rotate != null {
+    transform: rotate($rotate);
+  }
+  border: solid; border-width: $weight $weight 0 0; box-sizing: border-box;
+}
+
+/// 三角形（border）
+@mixin triangle($edge, $height: $edge, $mode: 1){
+  $anti1: ofanti($mode + 1);
+  $anti2: ofanti($anti1);
+  $div1: 2 - $mode % 2;
+  $div2: 2 - $anti1 % 2;
+  $values: (
+    $edge,
+    $height
+  );
+  $edge: nth($values, $div2) / $div1;
+  $height: nth($values, $div1) / $div2;
+
+  @include ratio(0);
+  border: solid; border-width: $edge $height;
+  @include r-far($anti1, transparent, border, color);
+  @include r-far($anti2, transparent, border, color);
+  @include r-far($mode, 0, border, width);
+}
+
+/// 等边三角形
+@mixin triangle-equil($edge, $mode: 1){
+  $value: ofless($edge);
+  $height: sqrt(pow($value, 2) - pow($value / 2, 2)) * ofvector($edge);
+  @include triangle($edge, $height, $mode);
+}

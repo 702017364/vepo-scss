@@ -1,0 +1,27 @@
+/// 检测类型是否为 number
+@function is-number($value){
+  @return type-of($value) == 'number';
+}
+
+/// 检测除法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+@function is-rational-division($a, $b){
+  $a: ofless($a);
+  $b: ofless($b);
+  $operation-result: unquote('#{$a / $b}');
+  $operation-result: ofnum($operation-result);
+  @return $a / $operation-result == $b;
+}
+
+/// 检测乘法运算结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+@function is-rational-multiplication($a, $b){
+  $a: ofless($a);
+  $b: ofless($a);
+  $operation-result: unquote('#{$a * $b}');
+  $operation-result: ofnum($operation-result);
+  @return $a * $b == $operation-result;
+}
+
+/// 检测其倒数是否为有理数（该有理数的定义为是否在 sass 的取值范围）
+@function is-rational-number($value){
+  @return is-rational-division(1, $value);
+}

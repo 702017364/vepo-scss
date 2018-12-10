@@ -1,0 +1,30 @@
+/// :matches 伪类
+@mixin matches($args...){
+  @if is_cssnext('matches') {
+    @include matches-pollfill($args...){
+      @content;
+    }
+  } @else if(length($args) == 1) {
+    @include not-pollfill($args){
+      @content;
+    };
+  } @else {
+    &:matches(#{$args}){
+      @content;
+    }
+  }
+}
+
+/// :matches(pollfill)
+@mixin matches-pollfill($args...){
+  $matches-rules: '';
+  @for $i from 1 through length($args) {
+    @if $i > 1 {
+      $matches-rules: '#{$matches-rules} ,';
+    }
+    $matches-rules: '#{$matches-rules}#{&}#{nth($args, $i)}';
+  }
+  @at-root #{$matches-rules}{
+    @content;
+  }
+}

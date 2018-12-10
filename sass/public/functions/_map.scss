@@ -1,0 +1,27 @@
+/// 简化重复书写
+@function icons($map, $before: '', $after: ''){
+  $new-map: ();
+  $map-type: type-of($map);
+  @if $map-type == 'list' {
+    @each $value in $map {
+      $new-map: map-merge($new-map, (
+        $value: $value
+      ));
+    }
+    $new-map: icons($new-map, $before, $after);
+  } @else if $map-type == 'map' {
+    @each $key, $value in $map {
+      $new-map: map-merge($new-map, (
+        $key: unquote('#{$before}#{$value}#{$after}')
+      ));
+    }
+  } @else {
+    @error '$map 不是一个有效的类型';
+  }
+  @return $new-map;
+}
+
+/// 判断类型为 map
+@function is-map($value){
+  @return type-of($value) == 'map';
+}

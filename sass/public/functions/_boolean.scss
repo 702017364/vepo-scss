@@ -1,0 +1,31 @@
+/// is empty
+@function isempty($value){
+  @return if(
+    $value == null or $value == '',
+    true,
+    false
+  );
+}
+
+/// is px
+@function ispx($value){
+  @return if(
+    unit($value) == 'px',
+    true,
+    false
+  );
+}
+
+/// is cssnext-pollfill
+@function is_cssnext($name){
+  @return if(
+    map-get($global-cssnext, $name) == true,
+    true,
+    false
+  );
+}
+
+/// 检测类型是否为 Boolean
+@function is-boolean($value){
+  @return type-of($value) == 'bool';
+}
