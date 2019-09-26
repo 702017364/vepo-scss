@@ -1,8 +1,0 @@
-@include describe('The uf-calc__conn-plus-minus function =>'){
-  @include it('返回加/减号连接符'){
-    @include assert-equal(
-      uf-calc__conn-plus-minus(1), 
-      ' + '
-    );
-  }
-}

@@ -1,8 +1,17 @@
-@include describe('The uf-vector function =>'){
-  @include it('返回单位向量'){
+@include describe('The fvector function =>'){
+  $this-value: 3px;
+  @include it('返回 #{$this-value} 的向量'){
     @include assert-equal(
-      uf-vector(16px),
+      fvector($this-value),
       1px
+    );
+  }
+
+  $this-value: 2.1vw;
+  @include it('返回 #{$this-value} 的向量'){
+    @include assert-equal(
+      fvector($this-value),
+      1vw
     );
   }
 }

@@ -1,0 +1,15 @@
+@include describe('The mc-float mixin =>'){
+  @include it('清除子元素设置浮动对父元素的影响'){
+    @include assert{
+      @include output{
+        @include mc-float;
+      }
+
+      @include contains{
+        @include after(null){
+          @extend %epseudo-table;
+        }
+      }
+    }
+  }
+}

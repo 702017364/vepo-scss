@@ -1,36 +1,31 @@
-$test-vmin-value: 75;
+$test-viewport-value: 75;
 
-@include describe('The uf-to-vmin function =>'){
-  @include it('单位转 vmin'){
+@include describe('The f2viewport function =>'){
+  @include it('将 #{$test-viewport-value} 转换成 vmin 单位的值'){
     @include assert-equal(
-      uf-to-vmin($test-vmin-value),
+      f2viewport($test-viewport-value, 1vmin),
       20vmin
     );
   }
 
-  @include it('单位转 vmax'){
+  @include it('将 #{$test-viewport-value} 转换成 vmax 单位的值'){
     @include assert-equal(
-      uf-to-vmin($test-vmin-value, 1vmax),
+      f2viewport($test-viewport-value, 1vmax),
       20vmax
     );
   }
 
-  @include it('单位转 vh'){
+  @include it('将 #{$test-viewport-value} 转换成 vh 单位的值'){
     @include assert-equal(
-      uf-to-vmin($test-vmin-value, 1vh),
+      f2viewport($test-viewport-value, 1vh),
       20vh
     );
   }
 
-  @include it('单位转 vw'){
-    $this-vector: $u-view-vector;
-    $u-view-vector: 1vw !global;
-
+  @include it('将 #{$test-viewport-value} 转换成 vw 单位的值'){
     @include assert-equal(
-      uf-to-vmin($test-vmin-value),
+      f2viewport($test-viewport-value, 1vw),
       20vw
     );
-
-    $u-view-vector: $this-vector !global;
   }
 }

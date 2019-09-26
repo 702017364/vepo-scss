@@ -2,11 +2,11 @@
   z-index: 1;
 }
 
-@include describe('The um-not mixin =>'){
-  @include it(':not 伪类调用'){
+@include describe('The mnot mixin =>'){
+  @include it('多重选择器'){
     @include assert{
       @include output{
-        @include um-not(':first-child', ':last-child'){
+        @include mnot(':first-child', ':last-child'){
           @include test-not-mixin;
         }
       }

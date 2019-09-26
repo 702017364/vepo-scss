@@ -1,0 +1,22 @@
+
+@include describe('The finverse-index function =>'){
+  $this-value: 3;
+  $this-range: 4;
+
+  @include it('在范围 #{$this-range} 内，获取数字 #{$this-value} 对立的数字'){
+    @include assert-equal(
+      finverse-index($this-value, $this-range),
+      1
+    );
+  }
+
+  $this-value: 3;
+  $this-range: 6;
+
+  @include it('在范围 #{$this-range} 内，获取数字 #{$this-value} 对立的数字'){
+    @include assert-equal(
+      finverse-index($this-value, $this-range),
+      6
+    );
+  }
+}

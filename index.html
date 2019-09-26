@@ -1,138 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Sass => test</title>
+  <title>@vope/scss 实例</title>
   <link rel="stylesheet" href="jscss/Index.css" />
-  <script src="libs/jquery/jquery.min.js"></script>
   <script src="./jscss/date.js"></script>
 </head>
 <body>
-  <div class="test-box">
-    <div class="um-effect-arrow"></div>
-  </div>
-  <div class="test-box">
-    <div class="um-effect-triangle-equil"></div>
-  </div>
-  <div class="test-box">
-    <div class="um-effect-triangle"></div>
-  </div>
-  <div class="test-box">
-    <div class="um-quick-relative"></div>
-  </div>
-  <div class="test-box">
-    <div class="uf-calc"></div>
-  </div>
-  <div class="text-box">
-    <div class="libsass3-5-0" custom-value="abc"></div>
-  </div>
-  <div class="test-box">
-    <div class="css3var"></div>
-  </div>
-  <div class="test-box">
-    <div class="define-prop-box">
-      <div id="DefineProp">dom defineProperty</div>
-      <div id="DefineProps">dom definePropertys</div>
+  <div class="test-list">
+    <div class="test-box ui-list">
+      <span>['left', 'rect', 'both', 'square', 'circle', 'nameplate']</span>
     </div>
-  </div>
-  <div class="test-box">
-    <div class="of-calcs-test"></div>
-  </div>
-  <div class="test-box">
-    <div class="cssnext">
-      <input id="indeterminate" type="checkbox" />
-      <span>复选框的不确定状态</span>
-    </div>
-  </div>
-  <div class="test-box">
-    <div id="ScrollTranslate" class="scroll-translate">
-      <table class="table-transition">
-        <thead>
-          <tr>
-            <th>序号</th>
-            <th>姓名</th>
-            <th>性别</th>
-          </tr>
-        </thead>
-        <tbody id="TableTransition"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="test-box">
-    <div class="parabola-test">
-      <div class="parabola-box"></div>
-    </div>
-  </div>
-  <div class="test-box">
-    <ul id="Counters" class="counter-none"></ul>
-  </div>
-  <div class="test-box">
-    <div class="css-color"></div>
-  </div>
-  <div class="test-box">
-    <div class="css-animation">
-      <div class="css-animation-button">
-        <span>切换</span>
-        <p></p>
-      </div>
-      <input type="text" />
-      <button id="GetAnimation">获取</button>
-    </div>
-  </div>
-  <div class="test-box">
-    <div class="jitter-blur">
-      <div class="jitter-blur-box">
-        <p>测试</p>
+    <div class="test-box" span="6">
+      <div class="ui-concave">
+        <div class="ui-concave-shadow"></div>
+        <div class="ui-concave-bgimage"></div>
+        <div class="ui-concave-svg"></div>
       </div>
     </div>
-    <script>
-      (function(){
-        var $i = document.createElement('i');
-        var $text = document.createTextNode('JS 插入的内容');
-        $i.appendChild($text);
-        document.querySelector('.jitter-blur-box').appendChild($i);
-      })();
-    </script>
-  </div>
-  <div class="test-box">
-    <div class="ofline"></div>
-  </div>
-  <div class="test-box">
-    <ul class="for-style">
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
-  </div>
-  <div class="test-box">
-    <div class="vertical-middle-box">
-      <div class="vertical-middle"></div>
-      <div class="vertical-middle"></div>
+    <div class="test-box" span="6">
+      <ul class="css-filter">
+        <li></li>
+        <li></li>
+      </ul>
     </div>
-  </div>
-  <div class="test-box">
-    <div class="scroll-panel-box">
-        <div id="ScrollPanel" class="scroll-panel">
-          <div class="scroll-panel-content">禁止滚动传递(在ie中如果滚动太快的话，滚动还是传递出去，更好的想法可以禁止滚动，然后在通过js模拟出滚动)</div>
+    <div class="test-box" span="3">
+      <div class="test-center">
+        <div class="ui-keyframes-var"></div>
+      </div>
+    </div>
+    <div class="test-box" span="2">
+      <div class="ui-pyramid test-center">
+        <ul class="ui-pyramid-items">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+    </div>
+    <div class="test-box" span="5">
+      <div class="test-center">
+        <div class="ui-rotate-triangle">
+          <div></div>
         </div>
+      </div>
     </div>
-    <script>
-      $('#ScrollPanel').on('mousewheel', function (e) {
-        if (e.originalEvent.wheelDelta > 0) {
-          if (this.scrollTop <= 0) {
-            return false;
-          }
-        } else {
-          if (this.scrollTop >= this.scrollHeight - this.clientHeight) {
-            return false;
-          }
-        }
-      });
-    </script>
+    <div class="test-box" span="2">
+      <div class="test-center">
+          <ul class="ui-spigot-items">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+      </div>
+    </div>
+    <div class="test-box" span="1">
+      <div class="mixin-arrow"></div>
+    </div>
+    <div class="test-box" span="1">
+      <div class="mixin-triangle-equil"></div>
+    </div>
+    <div class="test-box" span="1">
+      <div class="mixin-triangle"></div>
+    </div>
+    <div class="test-box" span="3">
+      <div class="mixin-quick"></div>
+    </div>
+    <div class="test-box" span="3">
+      <div class="libsass3-5-0" custom-value="abc"></div>
+    </div>
+    <div class="test-box" span="3">
+      <div class="cssnext"></div>
+    </div>
+    <div class="test-box" span="3">
+      <div class="function-calc"></div>
+    </div>
+    <div class="test-box" span="4">
+      <div id="ScrollTranslate" class="scroll-translate">
+        <table class="table-transition">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>姓名</th>
+              <th>性别</th>
+            </tr>
+          </thead>
+          <tbody id="TableTransition"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="test-box" span="2">
+      <div class="jitter-blur">
+        <div class="jitter-blur-box">
+          <p>抖动测试</p>
+        </div>
+      </div>
+    </div>
+    <div class="test-box" span="1">
+      <ul id="Counters" class="counter-none"></ul>
+    </div>
+    <div class="test-box" span="2">
+      <ul class="for-style">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
   </div>
   <script src="./jscss/index.js"></script>
 </body>

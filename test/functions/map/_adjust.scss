@@ -1,0 +1,35 @@
+@include describe('The fadjust function =>'){
+  @include it('格式化 map 数据'){
+    @include assert-equal(
+      fadjust(
+        (
+          key1: abc,
+          key2: 123,
+        ),
+        i-,
+        '.png',
+      ),
+      (
+        key1: unquote('i-abc.png'),
+        key2: unquote('i-123.png'),
+      )
+    );
+  }
+
+  @include it('格式化 list 数据'){
+    @include assert-equal(
+      fadjust(
+        (
+          abc
+          123
+        ),
+        i-,
+        '.png',
+      ),
+      (
+        abc: unquote('i-abc.png'),
+        123: unquote('i-123.png'),
+      )
+    );
+  }
+}

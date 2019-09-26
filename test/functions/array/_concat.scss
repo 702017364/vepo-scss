@@ -1,15 +1,22 @@
-@include describe('The uf-concat function =>'){
-  @include it('不传任何参数，返回一个空数组'){
+@include describe('The fconcat function =>'){
+  @include it('空参数'){
     @include assert-equal(
-      uf-concat(),
+      fconcat(),
       ()
+    );
+  }
+
+  @include it('一个不是 list 类型的参数'){
+    @include assert-equal(
+      fconcat(1px),
+      append((), 1px)
     );
   }
 
   @include it('多个数组进行合并'){
     @include assert-equal(
-      uf-concat((1 2), (a, b, c), (z x y)),
-      (1 2 a b c z x y)
+      fconcat((1 2), (a, b, c), f, (z x y)),
+      (1 2 a b c f z x y)
     );
   }
 }

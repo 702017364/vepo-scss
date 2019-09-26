@@ -1,8 +1,19 @@
-@include describe('The uf-to-px function =>'){
-  @include it('数字 => px'){
+@include describe('The f2px function =>'){
+  $this-value: 2;
+
+  @include it('给数字 #{$this-value} 添加上单位 px'){
     @include assert-equal(
-      uf-to-px(16),
-      16px
+      f2px($this-value),
+      2px
+    );
+  }
+
+  $this-value: 0;
+
+  @include it('f2px(#{$this-value}) 后还是 0'){
+    @include assert-equal(
+      f2px($this-value),
+      0
     );
   }
 }

@@ -1,0 +1,15 @@
+@include describe('The f4rational-reciprocal function =>'){
+  @include it('2 的倒数为有理数'){
+    @include assert-equal(
+      f4rational-reciprocal(2),
+      true
+    );
+  }
+
+  @include it('3 的倒数为无理数'){
+    @include assert-equal(
+      f4rational-reciprocal(3),
+      false
+    );
+  }
+}

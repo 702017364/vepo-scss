@@ -1,8 +1,0 @@
-@include describe('The uf-calc__outputExpToStringByAnalysis function =>'){
-  @include it('输入表达式参数输出计算结果（会进行 product 分解）'){
-    @include assert-equal(
-      uf-calc__outputExpToStringByAnalysis(3vh 4cm, 2, 0),
-      '1.5vh + 2cm'
-    );
-  }
-}

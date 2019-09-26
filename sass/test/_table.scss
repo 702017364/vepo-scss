@@ -1,0 +1,74 @@
+//表格单元格动画效果
+.table-transition{
+  --border-width: 1px;
+
+  width: 80%; margin: auto; padding: var(--border-width); border-collapse: separate; border-spacing: 0; line-height: 1.7; box-sizing: border-box;
+
+  > tbody{
+    > tr{
+      $this-args: .5s;
+
+      &:nth-child(2n){
+        @include mkeyframes($this-args){
+          0%{
+            transform: translate(-30%, 0); opacity: 0;
+          }
+          100%{
+            transform: translate(0, 0); opacity: 1;
+          }
+        }
+      }
+
+      &:nth-child(2n + 1){
+        @include mkeyframes($this-args){
+          0%{
+            transform: translate(30%, 0); opacity: 0;
+          }
+          100%{
+            transform: translate(0, 0); opacity: 1;
+          }
+        }
+      }
+
+      &:not(:last-child){
+        > td{
+          &:nth-child(2n){
+            @include mkeyframes($this-args){
+              0%{
+                transform: translate(0, 100%); opacity: 0;
+              }
+              100%{
+                transform: translate(0, 0); opacity: 1;
+              }
+            }
+          }
+          &:nth-child(2n + 1){
+            @include mkeyframes($this-args){
+              0%{
+                transform: translate(0, -100%); opacity: 0;
+              }
+              100%{
+                transform: translate(0, 0); opacity: 1;
+              }
+            }
+          }
+        }
+      }
+
+      @include mnot(':first-child', ':last-child', ':nth-child(5)'){
+        color: #f00;
+      }
+      
+      @include mmatches(':nth-child(2)', ':nth-child(3)'){
+        text-shadow: 0 0 .2em;
+
+        &:hover{
+          text-shadow: 0 0 .2em #000;
+        }
+      }
+    }
+  }
+  td, th{
+    box-shadow: 0 0 0 var(--border-width) #444; background-color: #fff;
+  }
+}

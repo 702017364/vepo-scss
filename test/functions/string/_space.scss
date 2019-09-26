@@ -1,0 +1,8 @@
+@include describe('The fspace function =>'){
+  @include it('一个空格的 Unicode 表示形式'){
+    @include assert-equal(
+      fspace(1),
+      '\0020'
+    );
+  }
+}

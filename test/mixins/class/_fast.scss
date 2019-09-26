@@ -1,36 +1,17 @@
-@include describe('The um-fast__dir mixin =>'){
-  @include it('设置right、left值'){
+@include describe('The mfast-pos mixin =>'){
+  @include it('高级应用'){
     @include assert{
       @include output{
-        @include um-fast__dir(x);
+        @include mfast-pos(
+          (1, 4),
+          0,
+          border,
+          width
+        );
       }
 
       @include expect{
-        right: 0; left: 0;
-      }
-    }
-  }
-
-  @include it('设置top、bottom值'){
-    @include assert{
-      @include output{
-        @include um-fast__dir(y);
-      }
-
-      @include expect{
-        top: 0; bottom: 0;
-      }
-    }
-  }
-
-  @include it('复杂设置'){
-    @include assert{
-      @include output{
-        @include um-fast__dir(o, 2px, border, width);
-      }
-
-      @include expect{
-        border-right-width: 2px; border-left-width: 2px; border-top-width: 2px; border-bottom-width: 2px;
+        border-top-width: 0; border-left-width: 0;
       }
     }
   }

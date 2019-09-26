@@ -1,0 +1,19 @@
+@include describe('The furl function =>'){
+  $this-value: 'abc.png';
+
+  @include it('给图片 #{$this-value} 添加路径'){
+    @include assert-equal(
+      furl($this-value),
+      unquote('url(images/#{$this-value})')
+    );
+  }
+
+  $this-dpr: 2;
+
+  @include it('获取图片 #{$this-value} dpi 为 #{$this-dpr} 对应的完整地址'){
+    @include assert-equal(
+      furl($this-value, $this-dpr),
+      unquote('url(images/abc@2x.png)')
+    );
+  }
+}

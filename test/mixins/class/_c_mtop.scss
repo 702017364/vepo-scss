@@ -1,0 +1,15 @@
+@include describe('The mc-mtop mixin =>'){
+  @include it('清除第一个元素设置上边距时的影响'){
+    @include assert{
+      @include output{
+        @include mc-mtop;
+      }
+
+      @include contains{
+        @include before(null){
+          @extend %epseudo-table;
+        }
+      }
+    }
+  }
+}

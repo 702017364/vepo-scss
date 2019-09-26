@@ -1,15 +1,22 @@
-@include describe('The uf-is-px function =>'){
-  @include it('验证值单位是否为 px'){
+@include describe('The f4px function =>'){
+  @include it('不带单位的数字'){
     @include assert-equal(
-      uf-is-px(4px), 
-      true
+      f4px(4), 
+      false
     );
   }
 
   @include it('字符串将返回 false'){
     @include assert-equal(
-      uf-is-px('4px'), 
+      f4px('4px'), 
       false
+    );
+  }
+
+  @include it('带单位 px 的数字，验证通过'){
+    @include assert-equal(
+      f4px(4px), 
+      true
     );
   }
 }

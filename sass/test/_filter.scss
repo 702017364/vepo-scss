@@ -1,0 +1,39 @@
+.css-filter{
+  --basic: 10px;
+  --corner: #{fcalc-single(--basic, 2, 1)};
+
+  $this-ratio: fcalc-single(--basic, 10, 1);
+  $this-margin: var(--basic);
+  $this-padding: fcalc-single(--basic, 2, 1);
+  $this-point: fcalc(100%, (exp: --corner, multiple: -1));
+
+  width: max-content; height: $this-ratio; margin: $this-margin; padding: $this-padding; border-radius: var(--basic); display: flex; box-shadow: 0 0 var(--basic) #f00; color: #ccc;
+
+  > li{
+    width: $this-ratio; position: relative;
+
+    &:not(:first-child){
+      margin-left: $this-margin;
+    }
+  }
+
+  > :nth-child(1){
+    clip-path: polygon(0 0, $this-point 0, 100% var(--corner), 100% 100%); filter: drop-shadow(0 0 var(--basic) #0f0); background: currentColor content-box;
+  }
+
+  > :nth-child(2){
+    filter: drop-shadow(0 0 var(--basic));
+
+    &::before{
+      $this-width: fcalc-single($this-ratio, 2);
+
+      @include mtriangle($this-width);
+      @include mcenter(po); 
+      content: '';
+    }
+  }
+
+  &::after{
+    width: 22em; margin-left: 2em; content: 'bug：当前元素clip-path + drop-shadow ，当其前面元素（只要满足dom树在其前面，包括自身）出现 transform 的动画，右上角已被裁切不可见的角再次出现【备注：Chrome 73.0.3683.86（正式版本）（64 位）】'; color: $gbasic-color;
+  }
+}

@@ -1,61 +1,86 @@
 @import 'functions/for';
 
-//  IIFE
-//  -
-/// @content调用
-/// @example scss -
-///   @include IIFE{
-///     z-index: 1; 
-///   }
-@mixin IIFE{
-  @content;
-}
-
-//  content
+//  mcontent
 //  -
 /// 设置 content 属性
-/// @example scss -
-///   @include content('content');
-@mixin content($content){
-  @if $content != null {
-    content: $content;
+/// @param {string} $value ['']
+/// @example
+///   @include mcontent(content);
+@mixin mcontent($value: ''){
+  @if $value != null{
+    $this-native: false;
+
+    @if type-of($value) != string{
+      $value: '#{$value}';
+    } @else{
+      $this-native: $value == normal
+        or $value == none
+        or $value == inherit
+        or $value == initial
+        or $value == no-close-quote
+        or $value == no-open-quote
+        or $value == close-quote
+        or $value == open-quote
+        or f4native($value, url)
+        or f4native($value, attr)
+        or f4native($value, counter)
+        or f4native($value, counters);
+    }
+
+    @if $this-native == false{
+      $value: quote($value);
+    }
+
+    content: $value;
   }
 }
 
 //  before
 //  -
-/// 设置伪元素 before 的 content 属性
-/// @param {String} $content [''] 属性值
-/// @example scss -
-///   @include before;
+/// 设置伪元素 before
+/// - 快速切换单冒号和双冒号的目的
+/// @param {string} $content [''] 属性值
+/// @example
+///   @include before(a){
+///     z-index: 1;
+///   }
 @mixin before($content: ''){
-  &#{$u-character-before}{
-    @include content($content);
+  $this-selector: if($gie > 8, $gchar-colons, $gchar-colon) + before;
+
+  &#{$this-selector}{
+    @include mcontent($content);
     @content;
   }
 }
 
 //  after
 //  -
-/// 设置伪元素 after 的 content 属性
-/// @param {String} $content [''] 属性值
-/// @example scss -
-///   @include after;
+/// 设置伪元素 after
+/// - 快速切换单冒号和双冒号的目的
+/// @param {string} $content [''] 属性值
+/// @example
+///   @include after(a){
+///     z-index: 1;
+///   }
 @mixin after($content: ''){
-  &#{$u-character-after}{
-    @include content($content);
+  $this-selector: if($gie > 8, $gchar-colons, $gchar-colon) + after;
+
+  &#{$this-selector}{
+    @include mcontent($content);
     @content;
   }
 }
 
-//  um-keyframes
+//  mkeyframes
 //  -
 /// @keyframes简写模式
-/// - 当 $name 为空的时候会自动分配一个 uuid 作为其值
-/// @param {String} $name [''] 属性值
-/// @param {List} $args [$u-duration] 其他属性值设置
-/// @example scss -
-///   @include um-keyframes(abc){
+/// @param {string|number|list} $name [''] -
+/// - 检测是否为空值，如果为空值则随机分配一个值，以下三种情况会被认为是控制
+/// - 1、空字符串或 null
+/// - 2、值类型为 number
+/// - 3、值类型为 list 且第一项类型不为 string 或空字符串或 null
+/// @example
+///   @include mkeyframes(abc){
 ///     0%{
 ///       opacity: 0;
 ///     }
@@ -63,123 +88,147 @@
 ///       opacity: 1;
 ///     }
 ///   }
-@mixin um-keyframes($name: '', $args: $u-duration){
-  @if uf-is-empty($name) {
-    $uuid: uf-uuid();
-    @include um-keyframes($uuid){
+@mixin mkeyframes($name: ''){
+  $this-default: $gbasic-duration;
+  $this-type: type-of($name);
+  $this-name: '';
+  $this-value: ();
+
+  @if f4empty($name){
+    $this-name: unique-id();
+    $this-value: ($this-name $this-default);
+  } @else if $this-type == string{
+    $this-name: unquote($name);
+    $this-value: ($this-name $this-default);
+  } @else if $this-type == list{
+    $this-name: nth($name, 1);
+    
+    @if f4empty($this-name) or type-of($this-name) != string{
+      $this-name: unique-id();
+      $this-value: fconcat($this-name, $name);
+    } @else{
+      $this-name: unquote($this-name);
+      $this-value: $name;
+    }
+  } @else if $this-type == number{
+    $this-name: unique-id();
+    $this-value: ($this-name $name);
+  }
+
+  @if f4empty($this-name) == false{
+    @keyframes #{$this-name}{
       @content;
     }
-    @include um-animation($uuid, $args);
-  } @else {
-    @keyframes #{$name}{
-      @content;
-    }
+
+    animation: $this-value;
   }
 }
 
-//  um-quick-relative
+//  mquick
 //  -
-/// 将传入的属性集合对于的值进行 em 转换，生成一个相对 font-size 的一个环境
-/// - 当 $name 为空的时候会自动分配一个 uuid 作为其值
-/// @param {Number} $font-size 字体大小
-/// @param {Map} $props 要进行转换的属性集合
-/// @param {Boolean} $itself [true] 是否要在 mixin 中设置 font-size 属性
-/// @param {Map} $option [$u-quick-relative] mixin 配置
-/// @param {Boolean} $option.rem [false] 设置是否对 rem 为单位的值进行转换
-/// @example scss -
-///   @include um-quick-relative(
+/// 快速创建一个基于 em 为单位的 CSS Module（传入的可转换属性，其值单位（为 px、rem、无单位）都会被转换成 em）
+/// @param {number} $font-size 当前环境的字体大小（支持单位 px、rem、无单位）
+/// @param {map} $props 要进行转换的属性集合
+/// @param {bool} $itself [true] 是否要在 mixin 中设置 font-size 属性
+/// - 值会进行 f2rem 函数转换
+/// @param {map} $option [$gquick-options] 配置
+/// @example
+///   @include mquick(
 ///     20px,
 ///     (width: 20px, height: 1rem, z-index: 1),
 ///     true,
 ///     (rem: true)
 ///   );
-@mixin um-quick-relative($font-size, $props, $itself: true, $option: $u-quick-relative){
-  $this-unit: uf-vector($font-size);
+@mixin mquick($font-size, $props, $itself: true, $option: $gquick-options){
+  @if type-of($font-size) == number and type-of($props) == map{
+    $this-size: f2px($font-size);
+    $this-unit: fvector($this-size);
 
-  @if($this-unit == 1rem){ //如果单位为rem，则转成px
-    $font-size: $font-size / 1rem * $u-fontSize-root;
-  }
-
-  $this-is-px: uf-is-px($font-size);
-
-  @if $itself {
-    font-size: uf-font-size($font-size);
-  }
-
-  $this-excludes:
-    box-flex,
-    box-flex-group,
-    box-ordinal-group,
-    column-count,
-    column-span,
-    flex,
-    flex-grow,
-    flex-shrink,
-    font-weight,
-    grid,
-    grid-area,
-    grid-column,
-    grid-column-start,
-    grid-column-end,
-    grid-row,
-    grid-row-start,
-    grid-row-end,
-    nav-index, 
-    opacity,
-    order,
-    tab-size, 
-    z-index,
-    zoom; //设置不需要进行转换的属性集（避免传入不需要转换的属性）
-  $this-excludes-size: length($this-excludes);
-
-  @each $key, $value in $props {
-    $this-value: $value;    
-    $this-need: true;
-    $this-type: type-of($value);
-    $this-is-list: $this-type == 'list';
-
-    @if $this-type == 'number' or $this-is-list { //如果值满足类型要求才进行判断，否则不需要进行转换
-      $i: 1;
-      
-      @while $i <= $this-excludes-size { //使用@while优化性能
-        @if $key == nth($this-excludes, $i) {
-          $i: $this-excludes-size + 1;
-          $this-need: false;
-        } @else {
-          $i: $i + 1;
-        }
-      }
-    } @else{
-      $this-need: false;
+    @if $this-unit == 1rem{ //如果单位为rem，则转成px
+      $this-size: $this-size / 1rem * $gbasic-size;
     }
-    
-    @if $this-need{
-      $this-list: if($this-is-list, $this-value, ($this-value, ));
-      
-      @for $i from 1 through length($this-list) {
-        $this-item: nth($this-list, $i);
-        $this-item: uf-to-px($this-item);
-        $this-vector: uf-vector($this-item);
 
-        @if(map-get($option, rem) == true and $this-vector == 1rem) { //rem转成px
-          $this-item: $this-item / 1rem * $u-fontSize-root;
-          $this-vector: 1px;
-        }
-        
-        @if $this-is-px and $this-vector == 1px { //转换的条件需要满足：1、字体单位为px；2、当前属性值的单位为px（转换后）
-          @if $this-item != 0 {
-            $this-item: $this-item / $font-size * 1em;
+    $this4px: f4px($this-size);
+
+    @if $this4px{
+      @if $itself{
+        font-size: f2rem($font-size);
+      }
+    }
+
+    $this-excludes: (
+      box-flex,
+      box-flex-group,
+      box-ordinal-group,
+      column-count,
+      column-span,
+      flex,
+      flex-grow,
+      flex-shrink,
+      font-weight,
+      grid,
+      grid-area,
+      grid-column,
+      grid-column-start,
+      grid-column-end,
+      grid-row,
+      grid-row-start,
+      grid-row-end,
+      nav-index, 
+      opacity,
+      order,
+      tab-size, 
+      z-index,
+      zoom,
+    ); //设置不需要进行转换的属性集（避免误传导致转换错误）
+    $this-excludes-length: length($this-excludes);
+    $this4map: type-of($option);
+    $this4rem2true: $this4map and map-get($option, rem) == true;
+
+    @each $key, $value in $props{
+      $this-value: $value;
+      $this-type: type-of($value);
+      $this4list: $this-type == list and length($this-value) > 0;
+
+      @if $this-type == number or $this4list{ //值类型为 number 或 list 才需要进行转换
+        @if index($this-excludes, $key) == null{
+          $this-list: if($this4list, $this-value, ($this-value,));
+
+          @for $i from 1 through length($this-list){
+            $this-item: nth($this-list, $i);
+
+            @if type-of($this-item) == number{
+              $this-item: f2px($this-item);
+              $this-vector: fvector($this-item);
+
+              @if $this4rem2true and $this-vector == 1rem{ //单位 rem 转成 px
+                $this-item: $this-item / 1rem * $gbasic-size;
+                $this-vector: 1px;
+              }
+
+              @if $this4px and $this-vector == 1px{ //转换满足条件：1、字体单位为 px；2、当前属性值的单位为 px
+                @if $this-item != 0{
+                  $this-item: $this-item / $this-size * 1em;
+                }
+              }
+
+              @if function-exists(set-nth){
+                $this-list: fset-nth($this-list, $i, $this-item);
+              }
+            }
           }
-        } @else {
-          $this-item: all($this-item);
-        }
 
-        $this-list: set-nth($this-list, $i, $this-item);
+          $this-value: if(
+            $this4list,
+            $this-list,
+            nth($this-list, 1)
+          );
+        }
       }
 
-      $this-value: if($this-is-list, $this-list, nth($this-list, 1));
+      #{$key}: $this-value;
     }
-
-    #{$key}: $this-value;
+  } @else{
+    @error '参数格式错误';
   }
 }

@@ -1,8 +1,0 @@
-@include describe('The uf-calc__analysisSplitMult-divi function =>'){
-  @include it('使用乘除连接符对字符串表达式进行分割'){
-    @include assert-equal(
-      uf-calc__analysisSplitMult-divi('(2px + 3ch) / 3'),
-      append((), '(2px + 3ch) / 3')
-    );
-  }
-}

@@ -1,0 +1,41 @@
+.ui-pyramid{
+  &-items{
+    $this-side: 100px;
+    $this-ratio: sqrt(3) / 3 * $this-side * 2;
+
+    @include mratio($this-ratio);
+    position: relative; border-radius: 50%; transform-style: preserve-3d; color: #ccc;
+    @include mkeyframes(8s linear infinite backwards){
+      0%{
+        transform: rotateX(0deg) rotateY(30deg);
+      }
+      100%{
+        transform: rotateX(360deg) rotateY(390deg);
+      }
+    }
+
+    > li{
+      $this-height: sqrt(3) / 3 * $this-side;
+      @include mcenter(px);
+      @include mtriangle-equil($this-side);
+      counter-increment: count; filter: drop-shadow(0 0 1px #000);
+
+      &::after{
+        @include mratio($this-ratio);
+        position: absolute; top: 0; left: 0; content: counter(count); display: flex; justify-content: center; align-items: center; transform: translateX(-50%); color: #000;
+      }
+
+      &:nth-child(2){
+        transform: rotate3d(-1, 1.732, 0, 70.5deg); transform-origin: 25% 50%;
+      }
+
+      &:nth-child(3){
+        transform: rotate3d(1, 0, 0, 70.5deg); transform-origin: 50% 100%;
+      }
+
+      &:nth-child(4){
+        transform: rotate3d(1, 1.732, 0, -70.5deg); transform-origin: 75% 50%;
+      }
+    }
+  }
+}

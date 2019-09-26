@@ -1,8 +1,29 @@
-@include describe('The uf-to-num function =>'){
-  @include it('将字符串数字转成 Number 类型'){
+@include describe('The f2num function =>'){
+  @include it('整数字符串'){
     @include assert-equal(
-      uf-to-num('2.73'),
-      2.73
+      f2num('123'),
+      123
+    );
+  }
+
+  @include it('小数点开头的字符串'){
+    @include assert-equal(
+      f2num('.123'),
+      0.123
+    );
+  }
+
+  @include it('带小数的字符串'){
+    @include assert-equal(
+      f2num('1.23'),
+      1.23
+    );
+  }
+
+  @include it('带单位的字符串'){
+    @include assert-equal(
+      f2num('1.23cm', true),
+      1.23cm
     );
   }
 }

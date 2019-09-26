@@ -1,8 +1,0 @@
-@include describe('The uf-calc__CSS4_var-sum function =>'){
-  @include it('CSS4 var 求和操作'){
-    @include assert-equal(
-      uf-calc__CSS4_var-sum(--b --b '--b * -5'),
-      unquote('var(--b) * -3')
-    );
-  }
-}

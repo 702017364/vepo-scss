@@ -1,123 +1,137 @@
-//  uf-to-all
+//  f2all
 //  -
 /// 单位转换（总接口）
-/// - 会对 $value 进行 px 转换
-/// @param {Number} $value -
-/// @param {Number} $base [$u-fontSize-root] 转换的参数值
-/// @param {Number} $dpr [$u-view-dpr] dpi 设置
-/// @return {Number} -
-@function uf-to-all($value, $base: $u-fontSize-root, $dpr: $u-view-dpr){
-  $this-unit: unit($u-vector);
+/// @param {number} $value -
+/// @param {number} $basic [$gbasic-size] 转换的参数值
+/// @param {number} $dpr [$gdpr] dpi 设置
+/// @return {number} -
+/// @example
+///   f2all(32px, 1rem)   //2rem
+@function f2all($value, $basic: $gbasic-size, $dpr: $gdpr){
+  $this-unit: unit($gvector);
+  $this-viewport: index(vmin vmax vh vw, $this-unit) != null;
 
-  @if uf-is-empty($base) and index(vmin vmax vh vw, $this-unit) != null {
-    $base: uf-vector($u-vector);
-    $this-unit: vmin;
+  $this-name: if(
+    $this-viewport,
+    unquote('f2viewport'),
+    unquote('f2#{$this-unit}')
+  );
+
+  @if function_exists($this-name){
+    $this-value: call(get-function($this-name), $value, $basic);
+
+    @return $this-value / $dpr;
   }
 
-  $name: unquote('uf-to-#{$this-unit}');
-  $value: uf-to-px($value);
+  @return $value;
+}
 
-  @if function_exists($name) {
-    $value: call(get-function($name), $value, $base);
-    @return $value / $dpr;
-  } @else {
+//  f2rem
+//  -
+/// 返回一个将 px 单位转换为 rem 的值
+/// - 会对 $value 进行 f2px 调用
+/// @param {number} $value -
+/// @param {number} $base [null] 无实际意义，只为了方便 function f2all 内部调用而设置
+/// @return {number} -
+/// @example
+///   f2rem(20) //1.25rem
+@function f2rem($value, $basic: null){
+  $this-value: f2px($value);
+
+  @if $this-value == 0{
+    @return 0;
+  }
+
+  @if f4px($this-value){
+    $this-value: $this-value / $gbasic-size * 1rem;
+    $this-value: fround($this-value, $gscss-dec);
+
+    @return $this-value;
+  }
+
+  @return $value;
+}
+
+//  f2viewport
+//  -
+/// 返回一个将 px 单位转换为视窗单位（vw、vh、vmin、vmax）的值
+/// - 会对 $value 进行 f2px 调用
+/// @param {number} $value -
+/// @param {number} $vector [$gviewport-vector] 设置返回值向量（单位）
+/// @return {number} -
+/// @example
+///   f2viewport(75, 1vmin) //20vmin
+///   f2viewport(75, 1vmax) //20vmax
+///   f2viewport(75, 1vh)   //20vh
+///   f2viewport(75, 1vw)   //20vw
+@function f2viewport($value, $vector: $gviewport-vector){
+  $this-vector: fvector($vector) ;
+  $this-value: f2px($value);
+
+  @if $this-value == 0{
+    @return 0;
+  }
+
+  @if f4px($this-value){
+    @return $this-value / $gviewport-width * 100 * $this-vector;
+  }
+
+  @return $value;
+}
+
+//  f2px
+//  -
+/// 返回一个（非 0 纯数字）添加了 px 单位的值
+/// @param {number} $value -
+/// @param {object} $base [null] 无实际意义，只为了方便 function f2all 内部调用而设置
+/// @return {number} -
+/// @example
+///   @f2px(2)  //2px
+///   @f2px(0)  //0
+@function f2px($value, $basic: null){
+  $this-if: type-of($value) == number
+    and $value != 0
+    and unit($value) == '';
+  
+  @if $value == 0{
+    @return 0;
+  }
+  
+  @if type-of($value) == number and unit($value) == ''{
+    @return $value * 1px;
+  }
+
+  @return $value;
+}
+
+//  fless
+//  -
+/// 返回一个去除单位后的纯数字
+/// @param {number} $value -
+/// @return {number} -
+/// @example
+///   fless(3px)    //3
+///   fless(2.1%)  //2.1
+///   fless(5)      //5
+@function fless($value){
+  @if unitless($value){
     @return $value;
   }
+
+  @return $value / fvector($value);
 }
 
-//  all
-//  -
-/// 方法 uf-to-all 的简写模式 
-@function all($args...){
-  @return uf-to-all($args...);
-}
-
-//  uf-to-rem
-//  -
-/// 单位转 rem
-/// - 会对 $value 进行 px 转换
-/// @param {Number} $value -
-/// @param {Number} $base [$u-fontSize-root] 转换的参数值
-/// @return {Number} -
-@function uf-to-rem($value, $base: $u-fontSize-root){
-  $vector: uf-vector(1rem);
-  $value: uf-to-px($value);
-  @return if(
-    uf-is-px($value),
-    uf-round($value / $base * $vector, $u-toFixed-length),
-    $value
-  );
-}
-
-//  uf-to-vmin
-//  -
-/// 单位转 vmin
-/// - 会对 $value 进行 px 转换
-/// - 
-/// @param {Number} $value -
-/// @param {Number} $vector [$u-view-vector] 设置返回值向量（单位）
-/// @return {Number} -
-@function uf-to-vmin($value, $vector: $u-view-vector){
-  $vector: uf-vector($vector) ;
-  $value: uf-to-px($value);
-  @return if(
-    uf-is-px($value),
-    $value / $u-view-width * 100 * $vector,
-    $value
-  );
-}
-
-//  uf-to-px
-//  -
-/// 数字 => px
-/// @param {Number} $value
-/// @param {Object} $base [null] -
-/// - 无实际意义参数，只为了方便统一调用 function all 而设置
-/// @return {Number} -
-@function uf-to-px($value, $base: null){
-  @return if(
-    type-of($value) == 'number' and $value != 0 and unit($value) == '',
-    $value * uf-vector(1px),
-    $value
-  );
-}
-
-//  uf-font-size
-//  -
-/// 对 font-size 值进行转换
-/// - 单独对 font-size 进行调用该方法进行转换的话，方便全局对 font-size 的转换进行设置
-/// @param {Number} $value
-/// @return {Number} -
-@function uf-font-size($value){
-  $value: uf-to-px($value);
-  @return if(
-    $u-fixed__fontSize,
-    $value,
-    all($value)
-  );
-}
-
-//  uf-less
-//  -
-/// 去除单位
-/// @param {Number} $value
-/// @return {Number} -
-@function uf-less($value){
-  @return if(
-    unitless($value),
-    $value,
-    $value / uf-vector($value)
-  );
-}
-
-//  uf-vector
+//  fvector
 //  -
 /// 返回单位向量
-/// @param {Number} $value
-/// @return {Number} -
-@function uf-vector($value){
-  @return map-get(
-    $u-vector-table,
-    unit($value)
-  );
+/// @param {number} $value -
+/// @return {number|null} -
+/// @example
+///   fvector(3px)    //1px
+///   fvector(2.1vw)  //1vw
+@function fvector($value){
+  $this-unit: unit($value);
+  $this-vector: map-get($gvector-table, $this-unit);
+
+  @return $this-vector;
 }

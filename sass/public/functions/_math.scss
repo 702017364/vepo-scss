@@ -1,96 +1,107 @@
-//  uf-round
+//  fround
 //  -
 /// 对指定长度后的小数进行四舍五入
-/// @param {Number} $value 进行运算的值
-/// @param {Number} $pow [0] 保留小数的长度
-/// @return {Number} -
-@function uf-round($value, $pow: 0){
-  $mul: pow(10, $pow);
+/// - 如果 $pow 为负数，则对整数位（从右向左）第 $pow * -1 位 进行四舍五入
+/// @param {number} $value 进行运算的值
+/// @param {number} $pow [0] 保留小数的长度
+/// @return {number} -
+/// @example
+///   fround(2.733, 2)  //2.73
+///   fround(2.735, 2)  //2.74
+///   fround(2735, -2)  //2700
+@function fround($num, $pow: 0){
+  $this-mul: pow(10, $pow);
 
-  @return round($value * $mul) / $mul;
+  @return round($num * $this-mul) / $this-mul;
 }
 
-//  uf-to-num
+//  f2num
 //  -
-/// 将 String 型数字转成 Number
-/// @param {String} $str 进行转换的字符串
-/// @return {Number}
-/// @throw 不是一个有效的 Number
-@function uf-to-num($str){
-  $sum: 0;
-  $length: str-length($str);
-  $point-index: str-index($str, '.');
-  $size: if(
-    uf-is-empty($point-index),
-    $length,
-    $point-index - 1
-  );
-  $point-count: 0;
-  $error: '不是一个有效的 Number';
-  $dir: 1;
+/// 返回由字符串数字转换得到的数字
+/// @param {string} $value -
+/// @param {bool} $withUnit [false] 是否进行单位转换
+/// - 如果值为 true 的话，则会启用带单位转换功能
+/// @return {number} -
+/// @throw $value（具体值）不是一个有效的字符串 number
+/// @example
+///   f2num('123')    //123
+///   f2num('.123')   //0.123
+///   f2num('1.23')   //1.23
+///   f2num('1.23cm', true) //1.23cm
+///   f2num('1.2.3')  //报错：只能有一个小数点
+///   f2num('1.23cm') //报错：$withUnit = false 时不带单位转换功能
+///   f2num('1.23cmc')  //报错：cmc 不是一个有效的单位
+@function f2num($value, $withUnit: false){
+  $this-error: '\'#{$value}\' 不是一个有效的字符串 number';
+  $this-length: str-length($value);
 
-  @for $i from 1 through $length {
-    $char: str-slice($str, $i, $i);
+  @if $withUnit{
+    $this-index: -1;
+    $i: $this-length;
 
-    @if $i == 1 and $char == '+' {
-      $dir: 1;
-    } @else if $i == 1 and $char == '-' {
-      $dir: -1;
-    } @else if $char == '.' {
-      $point-count: $point-count + 1;
+    @while $i > 0{
+      $this-char: str-slice($value, $i, $i);
+      $this-value: map-get($gnum-table, $this-char);
 
-      @if $point-count >= 2 {
-        @error $error;
+      @if $this-value == null{
+        $i: $i - 1;
+      } @else {
+        $this-index: $i;
+        $i: 0;
       }
+    }
 
-      $size: $point-index;
-    } @else {
-      $value: map-get($u-nums, $char);
+    $this-unit: str-slice($value, $this-index + 1);
+    $this-vertor: 1;
+    
+    @if $this-unit != ''{
+      $this-vertor: map-get($gvector-table, $this-unit);
 
-      @if uf-is-empty($value) {
-        @error $error;
+      @if $this-vertor == null{
+        @error $this-error;
       }
-
-      $sum: $sum + $value * pow(10, $size - $i);
     }
-  }
 
-  @return $sum * $dir;
-}
+    $this-num: str-slice($value, 1, $this-index);
 
-//  uf-to-num__unit
-//  -
-/// 将 String 型数字（可带单位）转成 Number（带单位）
-/// @param {String} $str 进行转换的字符串
-/// @return {Number}
-/// @throw 不是一个有效的 Number
-@function uf-to-num__unit($str){
-  $length: str-length($str);
-  $index: -1;
-  $i: $length;
+    @return f2num($this-num, false) * $this-vertor;
+  } @else{
+    $this-sum: 0;
+    $this-index: str-index($value, '.');
+    $this-size: if($this-index == null, $this-length, $this-index - 1);
+    $this-bout: 0;
+    $this-plus: true;
 
-  @while $i > 0 {
-    $item: str-slice($str, $i, $i);
+    @for $i from 1 through $this-length{
+      $this-char: str-slice($value, $i, $i);
 
-    @if uf-is-empty(map-get($u-nums, $item)) {
-      $i: $i - 1;
-    } @else {
-      $index: $i;
-      $i: 0;
+      @if $i == 1 and $this-char == '+'{
+        $this-plus: true;
+      } @else if $i == 1 and $this-char == '-'{
+        $this-plus: false;
+      } @else if $this-char == '.'{
+        @if $i == $this-length{
+          @error $this-error;
+        }
+
+        $this-bout: $this-bout + 1;
+
+        @if $this-bout >= 2{
+          @error $this-error;
+        }
+
+        $this-size: $this-index;
+      } @else{
+        $this-value: map-get($gnum-table, $this-char);
+
+        @if $this-value == null{
+          @error $this-error;
+        }
+
+        $this-sum: $this-sum + $this-value * pow(10, $this-size - $i);
+      }
     }
-  }
 
-  $vertor: map-get(
-    $u-vector-table,
-    str-slice(
-      $str, 
-      $index + 1
-    )
-  );
-
-  @if uf-is-empty($vertor) {
-    $vertor: 1px;
+    @return $this-sum * if($this-plus, 1, -1);
   }
-  
-  @return uf-to-num(str-slice($str, 1, $index)) * $vertor;
 }

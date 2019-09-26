@@ -34,7 +34,6 @@ const esOptions = {
 //html配置选项
 const syncs = [
   'index.html',                       //要监听的主html文件
-  `${dist_path}**/*.html`,            //要监听的html文件目录
   dist_path + scss_name,              //要监听的css文件
   dist_path + es_files,               //要监听的js文件
 ];

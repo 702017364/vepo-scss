@@ -1,8 +1,0 @@
-@include describe('The uf-calc__CSS4_var-format function =>'){
-  @include it('格式化 CSS4 变量'){
-    @include assert-equal(
-      uf-calc__CSS4_var-format(--b),
-      unquote('var(--b)')
-    );
-  }
-}

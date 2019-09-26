@@ -1,0 +1,35 @@
+.ui-rotate-triangle{
+  $this-width: 300px;
+
+  width: max-content; position: relative;
+  
+  &::before{
+    $this-value: sqrt(3) / 3 * $this-width * 2;
+
+    @include mratio($this-value);
+    border-radius: 50%; content: ''; display: block; background-color: #ccc;
+  }
+
+  &::after{
+    $this-value: sqrt(3) / 3 * $this-width;
+
+    @include mratio($this-value);
+    @include mcenter(po);
+    padding: 2em; border-radius: 50%; font-size: f2all(12); content: '三角形的旋转点应取其中心点（不是简单的宽高一半）（中心点也及外接圆或内切圆的圆心）'; display: flex; box-sizing: border-box; justify-content: center; align-items: center; background-color: #ddd;
+  }
+
+  > div{
+    @include mcenter(px);
+    @include mtriangle-equil($this-width);
+    top: 0; transform-origin: $this-width / 2 sqrt(3) / 3 * $this-width;
+
+    @include mkeyframes(8s linear infinite backwards){
+      0%{
+        transform: rotate(0deg);
+      }
+      100%{
+        transform: rotate(360deg);
+      }
+    }
+  }
+}

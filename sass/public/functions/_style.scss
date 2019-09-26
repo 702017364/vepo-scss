@@ -1,66 +1,129 @@
-//  bgurl
+//  furl
 //  -
-/// 背景图片简写（取值）设置
-/// @param {String} $name [$u-image-sprite] 图片名称
-/// @param {Number} $dpr [$u-view-dpr] dpi 设置
-/// @return {String} -
-@function bgurl($name: $u-image-sprite, $dpr: $u-view-dpr){
-  $list: uf-string-split($name, '.');
-  $length: length($list);
-  $value: map-get($u-view-dpr__name, $dpr);
-  @if $length > 1 and not(uf-is-empty($value)) {
-    $str: '';
-    @for $i from 1 through $length - 1 {
-      $str: $str + nth($list, $i);
+/// 增强原生 CSS 方法 url（可全局设置统一路径）
+/// @param {string} $value 图片名称
+/// @param {number} $dpr [$gdpr]  设置 dpi
+/// @return {string} -
+/// @example
+///   furl('abc.png')     //url(images/abc.png)
+///   furl('abc.png', 2)  //url(images/abc@2x.png)
+@function furl($value, $dpr: $gdpr){
+  $this-value: $value;
+  $this-split: unquote('.');
+  $this-list: fsplit($this-value, $this-split);
+  $this-length: length($this-list);
+
+  @if $this-length > 1{ //只有设置了后缀名的值才被认为可以设置别名
+    $this-name: map-get($gdpr-table, $dpr);
+    
+    @if f4empty($this-name){
+      $this-name: '';
     }
-    $name: $str + $value + '.' + nth($list, $length);
+    
+    $this-value: '';
+
+    @for $i from 1 to $this-length{
+      $this-value: $this-value + nth($this-list, $i) + $this-split;
+    }
+
+    $this-value: str-slice($this-value, 1, -2);
+    $this-value: $this-value + $this-name + $this-split + nth($this-list, $this-length);
+    $this-path: $gbasic-path;
+    $this-fragment: unquote('/');
+
+    @if str-slice($this-path, -1) != $this-fragment{
+      $this-path: $this-path + $this-fragment;
+    }
+
+    $this-value: $this-path + $this-value;
   }
-  @return unquote('url(#{$u-path}#{$name})');
+
+  $this-value: unquote('url(#{$this-value})');
+
+  @return $this-value;
 }
 
-//  uf-compose
+//  fcompose
 //  -
-/// 属性拼接
-/// @param {String} $far 方位值
-/// @param {String} $prev [''] 属性前置值（使用 '-' 拼接成新属性）
-/// @param {String} $next [''] 属性后置值（使用 '-' 拼接成新属性）
-/// @return {String} -
-@function uf-compose($far, $prev: '', $next: ''){
-  $prev: if(
-    uf-is-empty($prev),
-    '',
-    $prev + '-'
-  );
-  $next: if(
-    uf-is-empty($next),
-    '',
-    '-' + $next
-  );
-  @return $prev + $far + $next;
+/// 返回一个由多个属性拼接成的一个新属性
+/// @param {string} $attr 初始属性
+/// @param {string} $prev [''] 属性前置值
+/// - 空值则不处理
+/// - 不为空值则使用 '-' 拼接到初始属性之前成为一个新属性
+/// @param {string} $next [''] 属性后置值
+/// - 空值则不处理
+/// - 不为空值则使用 '-' 拼接到初始属性之后成为一个新属性
+/// @return {string} -
+/// @example
+///   fcompose(top, border)         //border-top
+///   fcompose(top, border, width)  //border-top-width
+@function fcompose($attr, $prev: '', $next: ''){
+  $this-prev: if(f4empty($prev), '', $prev + '-');
+  $this-next: if(f4empty($next), '', '-' + $next);
+
+  @return unquote('#{$this-prev}#{$attr}#{$this-next}');
 }
 
-//  of-line
+//  fline
 //  -
-/// 优化 line-height 值
-/// - 会对 $value 进行 px 转换
-/// - 满足优化条件：
-/// -   1、$value 单位为 px 或者 rem
-/// -   2、$value 还原值（如果单位为 rem 时，转换为 px 单位）不能被 $u-fontSize-root 除尽
-/// @param {Number} $value -
-/// @return {Number} -
-@function of-line($value){
-  @if $u-major-line and uf-vector($value) == 1rem {
-    $px: uf-less($value) * $u-fontSize-root;
-    $max: uf-round($px, 1);
-    @if $max > $px {
-      $list: uf-string-split(
-        unquote('#{uf-less($px)}'),
-        '.'
-      );
-      $dec-length: str-length(nth($list, 2));
-      $dec-value: pow(10, $dec-length * -1);
-      $value: $value + $dec-value;
+/// 返回一个优化过的 line-height 值，从而避免转换后造成的误差（在进行单位转换的过程中，部分值会在转换过程中造成精度损失，而由于部分浏览器针对 line-height 使用的是去尾处理，结果就是造成实际应用值比我们预期设置的值少 1px）
+/// - 该方法主要测试浏览器为 Google Chrome（73.0.3683.86）
+/// - 需要设置全局变量 $g4major-line: true （允许进行优化）
+/// - 由于百分比值在各个浏览器中计算方式存在更大差异，所以尽量避免发生百分比值优化
+/// @param {number} $value 当前需要优化值
+/// @param {number} $basic [$gbasic-size] 当前值的相对字号
+/// - 单位为 rem 的话，则值为跟元素的字号（注意：此时设置值将不产生作用）
+/// - 单位为 em、%、空，则值为当前元素的字号
+/// @return {number} -
+/// @example
+///   fline(18 / 17, 17px)    //1.05883
+///   fline(18em / 17, 17px)  //1.05883em
+///   fline(percentage(18 / 17), 17px)  //106%
+@function fline($value, $basic: $gbasic-size){
+  @if $g4major-line and type-of($value) == number and type-of($basic) == number{
+    $this-vector: fvector($basic);
+
+    @if unit($value) != px and $this-vector == 1px{
+      @if $this-vector == 1rem{
+        $basic: fless($basic) * $gbasic-size;
+      }
+  
+      $this-basic: $basic;
+      $this-vector: fvector($value);
+      $this-mult: 1;
+      $this-value: fless($value);
+  
+      @if $this-vector == 1rem{
+        $this-basic: $gbasic-size;
+      } @else if $this-vector == 1%{
+        $value: fround($value, 1) / 100;
+        $this-mult: 100;
+      }
+  
+      $this-basic: fless($this-basic);
+      $this-value: unquote('#{$this-value}');
+      $this-value: f2num($this-value);
+      $this-quite: $this-value * $this-basic;
+      $this-limit: fround($this-quite, 1);
+      $this-total: 0;
+  
+      @if $this-limit > $this-quite{
+        $this-str: unquote('#{$this-value}');
+        $this-list: fsplit($this-str, '.');
+        $this-decimal: nth($this-list, 2);
+        $this-length: str-length($this-decimal);
+        $this-plus: pow(10, $this-length * -1);
+  
+        @while $this-limit > $this-quite{
+          $this-value: $this-value + $this-plus;
+          $this-total: $this-total + $this-plus;
+          $this-quite: $this-value * $this-basic;
+        }
+      }
+  
+      $value: ($value + $this-total * $this-mult) * $this-mult;
     }
   }
+
   @return $value;
 }

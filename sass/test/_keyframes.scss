@@ -1,0 +1,29 @@
+.ui-keyframes-var{
+  $this-key: --s;
+
+  #{$this-key}: 0;
+  --value: calc(var(#{$this-key}) * 3.6deg);
+
+  @include mratio(200px);
+  @include mkeyframes(5s linear infinite){
+    @for $i from 1 through 100{
+      #{$i}%{
+        $this-value: $i;
+
+        #{$this-key}: #{$this-value};
+      }
+    }
+  }
+
+  $this-list: ();
+
+  @for $i from 1 through 4{
+    $this-basic: ($i - 2) * 90deg;
+    $this-value: fcalc(--value, ($i - 3) * 90deg, 45deg);
+    $this-list: append($this-list, unquote('linear-gradient(#{$this-value}, currentColor 25%, transparent calc(25% + 1px))'));
+  }
+
+  $this-list: join($this-list, (), comma);
+
+  border-radius: 50%; background-size: 10% 10%; background-image: $this-list;
+}

@@ -1,0 +1,119 @@
+.mixin-arrow{
+  --b: 45deg;
+
+  display: flex;
+
+  @include after{
+    $this-width: .5em;
+    $this-weight: 2px;
+
+    // @include marrow($this-width, $this-weight, 45deg);
+    // @include marrow($this-width, $this-weight, 2);
+    @include marrow($this-width, $this-weight, var(--b));
+    display: block;
+  }
+}
+
+.mixin-triangle-equil{
+  $this-edge: 2em;
+
+  display: flex;
+
+  @include before(){
+    @include mtriangle-equil($this-edge, 1);
+  }
+
+  @include after(){
+    @include mtriangle-equil($this-edge, 3);
+  }
+}
+
+.mixin-triangle{
+  $this-edge: 2em;
+  $this-height: $this-edge / 2;
+
+  display: flex;
+
+  @include before(){
+    @include mtriangle($this-edge, $this-height, 1);
+  }
+
+  @include after(){
+    @include mtriangle($this-edge, $this-height, 3);
+    margin-left: 1em;
+  }
+}
+
+.mixin-quick{
+  @extend %div-box;
+  @include mquick(
+    20px,
+    (
+      width: 80%,
+      padding: 10px 20px 5px 16px,
+      line-height: 40px,
+      font-weight: 400,
+      text-indent: 1rem,
+      content: '10',
+      z-index: 10,
+      opacity: .7,
+    ), $option: (rem: true),
+  );
+
+  @include before('mquick 测试');
+}
+
+.function-calc{
+  --a: 20px;
+  --b: 1.5;
+
+  @extend %div-box;
+
+  $this-width: fcalc(
+    1px,
+    var(--a),
+    calc((2px + 20%) / 2 - var(--a) / 2 + var(--a) * var(--b)),
+    (-2px 3cm),
+    (
+      exp: (
+        exp: (
+          exp: calc(4px + 40%),
+          multiple: 3,
+          mode: 1,
+        ),
+        multiple: 2,
+      ),
+      multiple: 2,
+    ),
+  );
+
+  width: $this-width; line-height: 1em;
+
+  @include after('fcalc 测试');
+}
+
+//cssnext
+.cssnext{
+  --a: 20px;
+  --b: 1em;
+
+  $this-var: --test-color;
+  #{$this-var}: $gbasic-color;
+
+  width: fcalc-single(180% --a --b -10em, 2);
+  border: 0 solid;
+  border-top-width: fcalc-single(--a, .75, 1);
+  border-right-width: fcalc-single(--a 10px, 2);
+  border-bottom-width: fcalc-single(--a 10px, .5, 1);
+  border-left-width: fcalc-single(--a 10px, 2);
+  line-height: fcalc-single(1rem --a --b 1em, 2);
+  transition: $gbasic-duration;
+  text-indent: fcalc-single(--a);
+  color: var($this-var);
+
+  @include before('cssnext => var 测试');
+
+  &:hover{
+    #{$this-var}: $gcolor-light;
+  }
+}

@@ -1,8 +1,0 @@
-@include describe('The uf-is-boolean function =>'){
-  @include it('检测值类型是否为 Boolean'){
-    @include assert-equal(
-      uf-is-boolean(true), 
-      true
-    );
-  }
-}

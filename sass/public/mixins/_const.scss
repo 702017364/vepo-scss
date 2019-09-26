@@ -1,36 +1,38 @@
-//  um-root__font
+//  mroot-adaptive
 //  -
-/// 针对 :root 设置 font
+/// 设置一个基础 font，适应于 :root
 /// @access private
-/// @example scss -
-///   @include um-root__font;
-@mixin um-root__font{
-  $size: $u-fontSize-root / $u-browser-default-fontSize * 100%;
-  $size-line: if(
-    uf-is-empty($u-lineHeight-root),
-    $size,
-    unquote('#{$size}/#{$u-lineHeight-root}')
+/// @example
+///   @include mroot-adaptive;
+@mixin mroot-adaptive{
+  $this-size: $gbasic-size / $gbrowser-fontSize * 100%;
+  $this-line: $gbasic-line;
+  $this-value: if(
+    f4empty($this-line),
+    $this-size,
+    unquote('#{$this-size}/#{$this-line}')
   );
-  font: $size-line $u-family;
+
+  font: $this-value $gbasic-family;
 }
 
-//  um-h1from6
+//  mh1to6
 //  -
-/// 针对 h1-h6 标签做重置
+/// 重置 h1-h6 标签样式
 /// @access private
-/// @example scss -
-///   @include um-h1from6;
-@mixin um-h1from6{
-  $this-list: (
-    h1: $u-fontSize-h1,
-    h2: $u-fontSize-h2,
-    h3: $u-fontSize-h3,
-    h4: $u-fontSize-h4,
-    h5: $u-fontSize-h5,
-    h6: $u-fontSize-h6
+/// @example
+///   @include mh1to6;
+@mixin mh1to6{
+  $this-option: (
+    h1: f2all($gsize-h1),
+    h2: f2all($gsize-h2),
+    h3: f2all($gsize-h3),
+    h4: f2all($gsize-h4),
+    h5: f2all($gsize-h5),
+    h6: f2all($gsize-h6),
   );
 
-  @include um-for-style($this-list, $lists: font-size, $is: true){
-    @extend %U-EL__H;
+  @include mfor-style($this-option, $list: font-size){
+    @extend %ereset-h;
   };
 }

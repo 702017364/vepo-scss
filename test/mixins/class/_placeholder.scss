@@ -1,14 +1,14 @@
 $test-placeholder-color: #ccc;
 
 @mixin test-placeholder-mixin{
-  font-size: 1em;
+  z-index: 1;
 }
 
-@include describe('The um-placeholder mixin =>'){
-  @include it('兼容设置 placeholder'){
+@include describe('The mplaceholder mixin =>'){
+  @include it('设置 ::placeholder 样式'){
     @include assert{
       @include output{
-        @include um-placeholder($test-placeholder-color){
+        @include mplaceholder($test-placeholder-color){
           @include test-placeholder-mixin;
         }
       }
@@ -20,7 +20,7 @@ $test-placeholder-color: #ccc;
         }
 
         &::-moz-placeholder{
-          opacity: 1 !important; color: $test-placeholder-color;
+          color: $test-placeholder-color; opacity: 1 !important;
           @include test-placeholder-mixin;
         }
 

@@ -1,39 +1,31 @@
-//  um-not
+//  mnot
 //  -
-/// :not 伪类调用
-/// - 当全局变量 $u-cssnext-pollfill__not: true 时，使用降级处理，否则开启多值模式
-/// @param {String<List>} $args 选择器参数列表
-/// @example scss -
-///   @include um-not(':first-child', ':last-child'){
+/// :not() level 4（多重选择器）
+/// - 当全局变量 $g4cssnext-not: true 时，使用降级处理（:not() level 3）
+/// @param {string<list>} $args 选择器参数列表
+/// @example
+///   @include mnot(':first-child', ':last-child'){
 ///     z-index: 1;  
 ///   }
-@mixin um-not($args...){
-  @if $u-cssnext-pollfill__not {
-    @include um-not__pollfill($args...){
-      @content;
-    };
-  } @else if(length($args) == 1) {
-    @include um-not__pollfill($args){
-      @content;
-    };
-  } @else {
-    @warn 'Unimplemented configuration => :not';
-  }
-};
+@mixin mnot($args...){
+  $this-length: length($args);
 
-//  um-not__pollfill
-//  -
-/// :not 伪类多值模式兼容处理
-/// - 参数和实例参照 um-not
-/// @access private
-@mixin um-not__pollfill($args...){
-  $not-rules: '';
+  $this-rules: '';
 
-  @each $value in $args {
-    $not-rules: '#{$not-rules}:not(#{$value})';
+  @if $this-length > 0{
+    @if $g4cssnext-not{
+      @each $value in $args{
+        $this-rules: '#{$this-rules}:not(#{$value})';
+      }
+    } @else{
+      $this-join: join($args, (), comma);
+      $this-rules: '#{$this-rules}:not(#{$this-join})';
+    }
   }
-  
-  &#{$not-rules}{
+
+  $this-rules: unquote($this-rules);
+
+  &#{$this-rules}{
     @content;
   }
 }

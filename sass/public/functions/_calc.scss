@@ -1,1215 +1,1137 @@
-//  uf-calc-single
+$gcalc-left: '('; //字符：左括号
+$gcalc-right: ')'; //字符：右括号
+$gcalc-default-multiple: 1; //multiple 默认值
+$gcalc-default-mode: 0; //mode 默认值
+
+//  fcalc
 //  -
-/// 单例 calc 运算
-/// - uf-calc-single 为 uf-calc 的一种分支写法
-/// @param {Number|List} $args 进行运算的数字或者一组数字
-/// @param {Number} $product [1] 运算倍数（乘数/除数）
-/// @param {0|1} $reply [0] 运算方式
-/// - 0：除法运算
-/// - 1：乘法运算
-/// @param {Boolean} $analysis [false] 是否强制分解表达式
-/// @return {Number|String} 运算结果
-@function uf-calc-single($args, $product: 1, $reply: 0, $analysis: false){
-  @return uf-calc((
-    exp: $args,
-    product: $product,
-    reply: $reply,
-    analysis: $analysis
+/// 对原生函数 calc 添加计算功能
+/// @param {number|string|list|map<list>} $list -
+/// @return {number|string} -
+/// @throw 类型错误
+/// @throw 不是有效的 calc 表达式
+/// @throw 未找到结束标记
+/// @example
+///   fcalc((exp: 5px, multiple: var(-b)))  //calc(5px / var(-b))
+@function fcalc($list...){
+  @if length($list) == 0{
+    @return 0;
+  }
+
+  $this-list: fcalc-conver($list);
+  $this-list: fcalc-merge8quantity($this-list);
+  $this-list: fcalc-merge8exp($this-list);
+  $this-classify: fcalc-classify8option($this-list);
+  $this-classify: fcalc-merge8unit($this-classify);
+  $this-classify: fcalc-merge8option($this-classify);
+
+  @return fcalc-output($this-classify);
+}
+
+//  fcalc-list
+//  -
+/// fcalc 列表模式
+/// @param {list} $list 非list类型值将会被强制转换成长度为1的list类型
+/// @param {list} $multiples [()]
+/// - 空类型的值会被转换为一个空数组
+/// - 非空且非list类型值会被强制转换成长度为1的list类型
+/// - 如何对应的 mode 或 multiple 不存在，则使用全局默认值
+/// @param {list} $modes [()] 同参数 $multiples
+/// @example
+///   fcalc-list(
+///     (100% 5px --b calc(50vw - 2rem)),
+///     (1 -1 2 5),
+///     (1 1 0 0)
+///   ) //calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
+@function fcalc-list($list, $multiples: (), $modes: ()){
+  @if type-of($list) != list{
+    $list: ($list,);
+  }
+
+  @if f4empty($multiples){
+    $multiples: ();
+  } @else if type-of($multiples) != list{
+    $multiples: ($multiples,);
+  }
+
+  @if f4empty($modes){
+    $modes: ();
+  } @else if type-of($modes) != list{
+    $modes: ($modes,);
+  }
+
+  $through: length($list);
+  $array: ();
+
+  @for $i from 1 through $through{
+    $array: append($array, (
+      exp: nth($list, $i),
+      multiple: nth($multiples, $i) or $gcalc-default-multiple,
+      mode: nth($modes, $i) or $gcalc-default-mode,
+    ));
+  }
+
+  @return fcalc($array);
+}
+
+//  fcalc-option
+//  -
+/// fcalc 配置模式
+/// @param {list} $list 非list类型值将会被强制转换成长度为1的list类型
+/// @param {list} $option [()]
+/// - 空类型的值会被转换为一个空数组
+/// - 非空且非list类型值会被强制转换成长度为1的list类型
+/// - 数组奇数位为 mode，偶数为为 multiple
+/// - 如何对应的 mode 或 multiple 不存在，则使用全局默认值
+/// @example
+///   fcalc-option(
+///     (100% 5px --b calc(50vw - 2rem)),
+///     (1 1 1 -1 0 2 0 5)
+///   ) //calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
+@function fcalc-option($list, $option: ()){
+  @if type-of($list) != list{
+    $list: ($list,);
+  }
+
+  @if f4empty($option){
+    $option: ();
+  } @else if type-of($option) != list{
+    $option: ($option,);
+  }
+
+  $through: length($list);
+  $array: ();
+
+  @for $i from 1 through $through{
+    $array: append($array, (
+      exp: nth($list, $i),
+      multiple: nth($option, $i * 2) or $gcalc-default-multiple,
+      mode: nth($option, $i * 2 - 1) or $gcalc-default-mode,
+    ));
+  }
+
+  @return fcalc($array);
+}
+
+//  fcalc-single
+//  -
+/// fcalc 单例模式
+/// @param {number|string|list|map} $value -
+/// @param {number|string} $multiple [$gcalc-default-multiple] 除数（或乘数）
+/// @param {0|1} $mode [$gcalc-default-mode] 表示进行除法（或乘法）运算
+/// @example
+///   fcalc-single(5px 6%, 2) //calc(2.5px + 3%)
+@function fcalc-single($value, $multiple: $gcalc-default-multiple, $mode: $gcalc-default-mode){
+  @return fcalc((
+    exp: $value,
+    multiple: $multiple,
+    mode: $mode,
   ));
 }
 
-//  uf-calc
+//  fcalc-output
 //  -
-/// calc 运算
-/// - 支持字符串表达式运算
-/// - 支持 CSS4 var 运算
-/// @param {(Number|String|List|Map)<List>} $args 进行运算的参数集合
-/// @return {Number|String} 运算结果
-/// - 类型取决于值是否包含多个单位，如果只有一个单位则输出 Number 类型，否则输出 String 类型
-/// - 如果值只有一个 CSS var 且 $product 为 1 的话，则输出中不带 calc
-@function uf-calc($exps...){
-  $exp-list: uf-calc__analysisAndConcat($exps);
-  $exp-list: uf-calc__format-exps($exp-list);
-  $exp-list: uf-calc__mergeExpByProductAndReply($exp-list);
-  $exp-list: uf-calc__analysisOfAllRational($exp-list);
-  $exp-list: uf-calc__mergeExpByProductAndReply($exp-list);
-  $exp-list: uf-calc__mergeExpsDataByUnit($exp-list);
-  $exp-list: uf-calc__outputExps($exp-list);
-  @return $exp-list;
-}
-
-//  uf-calc__analysisAndConcat
-//  -
-/// 将集合中的字符串表达式进行分解并组合
+/// 输出
 /// @access private
-/// @param {List} $exps 表达式列表
-/// @return {List} 新表达式列表
-@function uf-calc__analysisAndConcat($exps){
-  $exps-new: ();
-  @each $exp in $exps {
-    @if uf-is-string($exp) and uf-calc__is-calc($exp) {
-      $exps-new: uf-concat(
-        $exps-new,
-        uf-calc__analysisCalcByExps($exp)
-      );
-    } @else {
-      $exps-new: append(
-        $exps-new,
-        $exp
-      );
+/// @param {map} $classify -
+/// @return {number|string} -
+@function fcalc-output($classify){
+  $this-sum: '';
+
+  @each $key, $value in $classify{
+    $this-list: map-get($value, list);
+    $this-option: map-get($value, option);
+    $this-length: length($this-list);
+    $this-through: length($this-option) / 2;
+    $this-first2negative: false; //该组的第一项是否为负数（CSS var 不为正负数）
+    $this-value: nth($this-list, 1);
+    $this-sum4empty: f4empty($this-sum);
+
+    //优化 multiple 为 1 时，加减号问题
+    @if $this-sum4empty == false and type-of($this-value) == number and $this-value < 0{ //1、不为第一项；2、值为数字；3、值为负数
+      $this-value: $this-value * -1;
+      $this-first2negative: true;
     }
-  }
-  @return $exps-new;
-}
 
-//  uf-calc__analysisOfAllRational
-//  -
-/// 对表达式列表应用有理数则分解重组
-/// @access private
-/// @param {List} $exps 表达式列表
-/// @return {List} 新表达式列表
-@function uf-calc__analysisOfAllRational($exps){
-  $exps-new: ();
-  @each $exp in $exps {
-    $exps-new: append(
-      $exps-new,
-      uf-calc__analysisOfRational($exp)
-    );
-  }
-  @return $exps-new;
-}
+    @if $this-length > 1{ //处理多项
+      @for $i from 2 through $this-length{ //拼接项
+        $this-item: nth($this-list, $i);
 
-//  uf-calc__analysisOfRational
-//  -
-/// 如果表达式所有项都为有理数则分解重组
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {Map} 新表达式
-@function uf-calc__analysisOfRational($exp){
-  @if uf-calc__isAllRational($exp) {
-    $exp-product: map-get($exp, product);
-    $exp-reply: map-get($exp, reply);
-    $exp-new: ();
-    @each $value in map-get($exp, exp) {
-      $exp-new: append(
-        $exp-new,
-        uf-calc__operation($value, $exp-product, $exp-reply)
-      );
-    }
-    $exp: map-merge(
-      $exp,
-      (
-        exp: $exp-new,
-        product: 1,
-        reply: 1
-      )
-    );
-  }
-  @return $exp;
-}
-
-//  uf-calc__isAllRational
-//  -
-/// 检测表达式是否所有项都为有理数
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {Booolea} 是否全部为有理数
-@function uf-calc__isAllRational($exp){
-  $exp-product: map-get($exp, product);
-  @if uf-is-string($exp-product) {
-    @return false;
-  } @else {
-    $exp-reply: map-get($exp, reply);
-    $exp-list: map-get($exp, exp);
-    @each $value in $exp-list {
-      @if uf-is-number($value) {
-        @if not(uf-calc__isRational($value, $exp-product, $exp-reply)) {
-          @return false;
+        @if type-of($this-item) == number and $this-item < 0{
+          $this-value: '#{$this-value} - #{$this-item * -1}';
+        } @else{
+          $this-value: '#{$this-value} + #{$this-item}';
         }
-      } @else {
-        @if not(uf-is-rational__number($exp-product)) {
-          @return false;
+      }
+
+      @if $this-through > 0{ //多项且 multiple 不为 1， 则需要添加小括号
+        $this-value: '(#{$this-value})';
+      }
+
+    }
+
+    $this-multiple2negative: false; //multiple 是否为负数（多个值则不为负数）
+
+    //优化 multiple 为 负值时，加减号问题
+    @if $this-through == 1{ //只有一个值
+      $this-count: 2;
+      $this-multiple: nth($this-option, $this-count);
+
+      @if type-of($this-value) == number 
+        and type-of($this-multiple) == number 
+        and $this-multiple < 0{ //需满足条件：1、$this-value为数字；2、$this-multiple为负数
+        $this-option: fset-nth($this-option, $this-count, $this-multiple * -1);
+        $this-multiple2negative: true;
+      }
+    }
+
+    @if $this-through > 0{
+      @for $i from 1 through $this-through{ //拼接 multiple
+        $this-index: $i * 2;
+        $this-multiple: nth($this-option, $this-index);
+  
+        @if $this-multiple != 1{ //避免 multiple = 1 被加入到输出
+          @if nth($this-option, $this-index - 1) == 0{ //判断除（或乘）号
+            $this-value: '#{$this-value} / #{$this-multiple}';
+          } @else{
+            $this-value: '#{$this-value} * #{$this-multiple}';
+          }
         }
       }
     }
-  }
-  @return true;
-}
 
-//  uf-calc__isAllRational
-//  -
-/// 检测参数 $a 相对于参数 $b 是否为有理数
-/// @access private
-/// @param {Number} $a 参数
-/// @param {Number} $b 参数
-/// @param {0|1} $reply 运算方式
-/// - 0：除法运算
-/// - 1：乘法运算
-/// @return {Booolea} 是否为有理数
-@function uf-calc__isRational($a, $b, $reply){
-  @if $reply == 0 {
-    @return uf-is-rational__division($a, $b);
-  } @else {
-    @return uf-is-rational__multiplication($a, $b);
-  }
-}
+    $this-negative: $this-first2negative or $this-multiple2negative;
 
-//  uf-calc__outputExps
-//  -
-/// 输出运算结果
-/// @access private
-/// @param {List} $exps 表达式列表
-/// @return {Number|String} 运算结果
-@function uf-calc__outputExps($exps){
-  $exps-length: length($exps);
-  @if $exps-length == 0 { /* 长度为0的情况 */
-    @return 0;
-  } @else if $exps-length == 1 { /* 长度为1的情况 */
-    $exps-item: nth($exps, 1);
-    $exp-list: map-get($exps-item, exp);
-    $exp-product: map-get($exps-item, product);
-    $exp-list-length: length($exp-list);
-    @if $exp-list-length == 0 { /* 长度为0的情况 */
-      @return 0;
-    } @else if uf-is-number($exp-product) and $exp-list-length == 1 {
-      $exp-first: nth($exp-list, 1);
-      $exp-notVar: if( /* 检测是否为字符串 */
-        type-of($exp-first) == 'string',
-        if( /* 检测长度是否大于3 */
-          str-length($exp-first) > 3,
-            if( /* 检测是否含有 var */
-              uf-calc__is-CSS4_var($exp-first),
-              false,
-              true
-            ),
-          true
+    @if $this-first2negative and $this-multiple2negative{ //负负为正
+      $this-negative: false;
+    }
+
+    @if $this-sum4empty{ //例：a
+      $this-sum: if(
+        $this-negative,
+        if(
+          type-of($this-value) == number,
+          $this-value * -1,
+          str-slice($this-value, 1)
         ),
-        true
+        $this-value,
       );
-      @if uf-is-number($exp-first)
-        or ( //当 product = 1 时，由于之前合并造成的问题，所以要检测 $exp-first 类型为字符串的情况下是否包含 * or / 运算符，如果包含的话，则表示 product 值不是真正的等于 1
-          $exp-product == 1
-            and (
-              type-of($exp-first) != string
-                or not(str-index($exp-first, ' * ') != null or str-index($exp-first, ' / ') != null)
-            )
-        ) {
-        @if $exp-notVar {
-          @return uf-calc__operation($exp-first, $exp-product, map-get($exps-item, reply));
-        } @else {
-          @return $exp-first;
+    } @else{ // 例：a + b
+      $this-symbol: if($this-negative, '-', '+');
+      $this-sum: '#{$this-sum} #{$this-symbol} #{$this-value}';
+    }
+  }
+
+  @if f4empty($this-sum){
+    $this-sum: 0;
+  } @else if type-of($this-sum) == string{
+    $this-sum: unquote('calc(#{$this-sum})');
+  }
+
+  @return $this-sum;
+}
+
+//  fcalc-merge8exp
+//  -
+/// 合并相同表达式
+/// @access private
+/// @param {list} $list -
+/// @return {list} -
+@function fcalc-merge8exp($list){
+  $this-classify: fcreate();
+  $this-count: 1;
+
+  @each $value in $list{
+    $this-exp: map-get($value, exp);
+    $this-option: map-get($value, option);
+    $this-key: unquote('#{$this-exp}');
+    $this4merge: false; //是否可以合并
+
+    //合并相同项
+    @if type-of($this-exp) == string{ //表达式为字符串
+      $this-size: length($this-option);
+
+      @if $this-size == 0{ //空的 multiple 为 1 的省略形式
+        $this4merge: true;
+      } @else if $this-size == 2{ //只有一个 multiple 且为乘法
+        $this-mode: nth($this-option, 1);
+        $this-multiple: nth($this-option, 2);
+
+        @if type-of($this-multiple) == number{ //数字类型则都算
+          $this4merge: true;
+        } @else if nth($this-option, 1) == 1{ //字符类型只能为乘法
+          $this4merge: true;
         }
       }
     }
-  }
-  $exp-str: unquote('calc(');
-  @for $i from 1 through length($exps) {
-    $exp-str-join: if(
-      $i == 1,
-      '',
-      uf-calc__conn-plus-minus(1)
-    );
-    $exp-str-item: uf-calc__outputExp(nth($exps, $i));
-    $exp-str: unquote('#{$exp-str}#{$exp-str-join}#{$exp-str-item}');
-  }
-  $exp-str: unquote('#{$exp-str})');
-  @return $exp-str;
-}
 
-//  uf-calc__outputExp
-//  -
-/// 输出运算结果
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {Number|String} 运算结果
-@function uf-calc__outputExp($exp){
-  $exp-list: map-get($exp, exp);
-  $exp-list-length: length($exp-list);
-  @if $exp-list-length == 0 {
-    @return 0;
-  } @if $exp-list-length == 1 {
-    @return uf-calc__outputExpToOnlyValue($exp);
-  } @else {
-    @return uf-calc__outputExpToString($exp);
-  }
-}
-
-//  uf-calc__outputExpToOnlyValue
-//  -
-/// 输出运算结果（仅有一个值且不为 var）
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {Number} 运算结果
-@function uf-calc__outputExpToOnlyValue($exp){
-  $exp-list: map-get($exp, exp);
-  $exp-product: map-get($exp, product);
-  $exp-reply: map-get($exp, reply);
-  $exp-first: nth($exp-list, 1);
-  // @debug $exp;
-  @return uf-calc__operation($exp-first, $exp-product, $exp-reply);
-}
-
-//  uf-calc__outputExpToString
-//  -
-/// 输出运算结果（字符串运算表达式）
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {String} 运算结果
-@function uf-calc__outputExpToString($exp){
-  $exp-list: map-get($exp, exp);
-  $exp-product: map-get($exp, product);
-  $exp-reply: map-get($exp, reply);
-  $exp-analysis: map-get($exp, analysis);
-  @if $exp-product == 1 or $exp-product == -1 {
-    $exp-analysis: true;
-  }
-  @if uf-is-string($exp-product) {
-    $exp-analysis: false;
-  }
-  @if $exp-analysis == true {
-    @return uf-calc__outputExpToStringByAnalysis($exp-list, $exp-product, $exp-reply);
-  } @else {
-    @return uf-calc__outputExpToStringByDefault($exp-list, $exp-product, $exp-reply);
-  }
-}
-
-//  uf-calc__outputExpToStringByDefault
-//  -
-/// 输出运算结果（参数化调用）
-/// @access private
-/// @param {List} $list 进行计算的值列表
-/// @param {Number} $product 运算倍数（乘数/除数）
-/// @param {0|1} $reply 运算方式
-/// - 0：除法运算
-/// - 1：乘法运算
-/// @return {String} 运算结果
-@function uf-calc__outputExpToStringByDefault($list, $product, $reply){
-  $list-str: uf-calc__join($list);
-  $list-join: uf-calc__conn-mult-divi($reply);
-  @return unquote('(#{$list-str})#{$list-join}#{$product}');
-}
-
-//  uf-calc__outputExpToStringByAnalysis
-//  -
-/// 输出运算结果（参数化调用）
-/// - 进行了 $product 分解
-/// @access private
-/// @param {List} $list 进行计算的值列表
-/// @param {Number} $product 运算倍数（乘数/除数）
-/// @param {0|1} $reply 运算方式
-/// - 0：除法运算
-/// - 1：乘法运算
-/// @return {String} 运算结果
-@function uf-calc__outputExpToStringByAnalysis($list, $product, $reply){
-  $exp-new-list: ();
-  @each $value in $list {
-    $exp-new-list: append(
-      $exp-new-list,
-      uf-calc__operation($value, $product, $reply)
-    );
-  }
-  @return uf-calc__join($exp-new-list);
-}
-
-//  uf-calc__join
-//  -
-/// 将字符串表达式进行串联
-/// @access private
-/// @param {List} $list 进行计算的值列表
-/// @return {String} 运算结果
-@function uf-calc__join($list){
-  $list-str: '' !default;
-  $list-length: length($list);
-  @for $i from 1 through $list-length {
-    $list-item: nth($list, $i);
-    @if $i == 1 {
-      $list-str: $list-item;
-    } @else {
-      $list-item-join: 1 !default;
-      @if uf-is-number($list-item) {
-        @if $list-item < 0 {
-          $list-item-join: 0;
-          $list-item: abs($list-item);
-        }
-      } @else {
-        $list-item: uf-calc__operation($list-item, 1, 1);
-        @if str-slice($list-item, 1, 1) == '-' {
-          $list-item-join: 0;
-          $list-item: str-slice($list-item, 2);
-        }
-      }
-      $list-str-join: uf-calc__conn-plus-minus($list-item-join);
-      $list-str: unquote('#{$list-str}#{$list-str-join}#{$list-item}');
+    @if $this4merge == false{ //防止不满足条件的项被合并进去
+      $this-key: $this-key + $this-count;
+      $this-count: $this-count + 1;
     }
+
+    $this-value: map-get($this-classify, $this-key) or ();
+    $this-value: append($this-value, $value);
+    $this-classify: map-merge($this-classify, (
+      #{$this-key}: $this-value,
+    ));
   }
-  @return $list-str;
-}
 
-//  uf-calc__analysisCalc
-//  -
-/// 分解字符串（calc 函数）表达式
-/// @access private
-/// @param {String} $value calc 字符串
-/// @return {List} 运算结果
-@function uf-calc__analysisCalc($value){
-  @return uf-calc__analysisCalcByExps($value);
-}
-
-//  uf-calc__analysisCalcByExps
-//  -
-/// 分解字符串（calc 函数）表达式
-/// @access private
-/// @param {String} $value calc 字符串
-/// @return {List} 运算结果
-@function uf-calc__analysisCalcByExps($value){
-  $value: str-slice($value, 6, -2);
-  $exps: uf-calc__analysisSplitMult-divi($value);
-  $exps: uf-calc__analysisToProductAfter($exps);
-  $exps: uf-calc__analysis2mapAndDealWith($exps);
-  $exps: uf-calc__analysis2allListOfNumber($exps);
-  @return $exps;
-}
-
-//  uf-calc__analysisCalcByExps
-//  -
-/// 将所有表达式列表分解成数组
-/// @access private
-/// @param {List} $exps 表达式列表
-/// @return {List} 新表达式列表
-@function uf-calc__analysis2allListOfNumber($exps){
-  $exps-new: ();
-  @each $exp in $exps {
-    $exps-new: append(
-      $exps-new,
-      uf-calc__analysis2listOfNumber($exp)
-    );
-  }
-  @return $exps-new;
-}
-
-//  f-calc__analysis2listOfNumber
-//  -
-/// 将表达式分解成数组
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {Map} 新表达式
-@function uf-calc__analysis2listOfNumber($exp){
-  $exp-list: map-get($exp, exp);
-  $exp-list: uf-calc__analysisToSplitPlus-minus($exp-list);
-  $exp-new: ();
-  @each $value in $exp-list {
-    $exp-new: append(
-      $exp-new,
-      if(
-        uf-calc__is-CSS4_var($value),
-        $value,
-        uf-to-num__unit($value)
-      )
-    );
-  }
-  @return map-merge(
-    $exp,
-    (exp: $exp-new)
-  );
-}
-
-//  uf-calc__analysis2mapAndDealWith
-//  -
-/// 将字符串转换成 map
-/// @access private
-/// @param {List} $exps 表达式列表
-/// @return {List} 新表达式列表
-@function uf-calc__analysis2mapAndDealWith($exps){
-  $exps-new: ();
-  @each $exp in $exps {
-    $exp: uf-calc__CSS4_var-splitWithMult_Divi($exp);
-    $exp-list: map-get($exp, exp);
-    $exp-product: map-get($exp, product);
-    $exp-first: str-slice($exp-list, 1, 1);
-    @if $exp-first == '(' {
-      $exp-list: str-slice($exp-list, 2, -2);
-    } @else if $exp-first == '-' {
-      $exp-list0: str-slice($exp-list, 2);
-      @if uf-calc__is-CSS4_var($exp-list0) {
-        $exp-list: $exp-list0;
-        $exp-product: $exp-product * -1;
-      }
-    }
-    $exp: map-merge(
-      $exp,
-      (
-        product: $exp-product,
-        exp: $exp-list
-      )
-    );
-    $exps-new: append(
-      $exps-new,
-      $exp
-    );
-  }
-  @return $exps-new;
-}
-
-//  uf-calc__analysisSplitMult-divi
-//  -
-/// 使用乘除连接符对字符串进行分割
-/// @access private
-/// @param {String} $value 字符串
-/// @return {List} -
-@function uf-calc__analysisSplitMult-divi($value){
-  $exps: uf-calc__analysisCalcByPlus(
-    $value,
-    uf-calc__analysisCalcSplitByExps(1)
-  );
-  @return uf-calc__analysisCalcByPlus(
-    $exps,
-    uf-calc__analysisCalcSplitByExps(0)
-  );
-}
-
-//  uf-calc__analysisCalcByPlus
-//  -
-/// 使用连接符对列表内表达式进行分割
-/// @access private
-/// @param {List} $exps 表达式列表
-/// @param {String} $exps-join 分割符
-/// @return {List} -
-@function uf-calc__analysisCalcByPlus($exps, $exps-join){
-  @if not(uf-is-list($exps)){
-    $exps: ($exps, );
-  }
-  $exps-new: ();
-  $exps-is: str-index($exps-join, '(');
-  $exps-is: not(uf-is-empty(str-index)) and $exps-is == str-length($exps-join);
-  @each $exp in $exps {
-    $exp-list: uf-string-split($exp, $exps-join);
-    @if $exps-is == true {
-      $exp-list: uf-calc__analysis2fill($exp-list);
-    }
-    $exps-new: uf-concat($exps-new, $exp-list);
-  }
-  @return $exps-new;
-}
-
-//  uf-calc__analysisToProductAfter
-//  -
-/// 将列表中字符串表达式从 product 之后进行切割
-/// @access private
-/// @param {List} $exps 表达式列表
-/// @return {List} -
-@function uf-calc__analysisToProductAfter($exps){
-  $exps-new: ();
-  @each $exp in $exps {
-    $exp-after: uf-calc__analysis2productAfterIndex($exp);
-    @if $exp-after != -1 {
-      $exp-before: str-slice($exp, 1, $exp-after - 1);
-      $exp-before: uf-calc__analysisSplitMult-divi($exp-before);
-      $exps-new: uf-concat($exps-new, $exp-before);
-      $exp-after: str-slice($exp, $exp-after);
-      $exp-after: uf-calc__analysisToSplitPlus-minus($exp-after);
-      $exps-new: uf-concat($exps-new, $exp-after);
-    } @else {
-      $exps-new: append($exps-new, $exp);
-    }
-  }
-  @return $exps-new;
-}
-
-//  uf-calc__analysisToSplitPlus-minus
-//  -
-/// 将字符串根据加/减连接符进行分割
-/// @access private
-/// @param {String} $exp 字符串
-/// @return {List} -
-@function uf-calc__analysisToSplitPlus-minus($exp){
-  $exp-indexs: uf-calc__analysis2subOptionIndexs($exp);
-  $exp-length: length($exp-indexs);
-  $exp-added: -4;
-  @if $exp-length == 0 {
-    @return ($exp, );
-  } @else {
-    $exp-news: ();
-    $exp-first: nth($exp-indexs, 1);
-    $exp-first: abs($exp-first);
-    @if $exp-first + $exp-added > 0 {
-      $exp-news: append(
-        $exp-news,
-        str-slice($exp, 1, $exp-first + $exp-added)
-      );
-    }
-    @for $i from 1 through $exp-length {
-      $exp-index: nth($exp-indexs, $i);
-      $exp-symbol: if(
-        $exp-index < 0,
-        '-',
-        ''
-      );
-      $exp-index: abs($exp-index);
-      $exp-chars: if(
-        $i == $exp-length,
-        str-slice($exp, $exp-index),
-        str-slice($exp, $exp-index, abs(
-          nth($exp-indexs, $i + 1)
-        ) + $exp-added)
-      );
-      /* @if uf-calc__is-CSS4_var($exp-chars) {
+  $this-list: ();
   
-      } @else {
-        $exp-chars: unquote('#{$exp-symbol}#{$exp-chars}');
-      } */
-      $exp-chars: unquote('#{$exp-symbol}#{$exp-chars}');
-      $exp-news: append(
-        $exp-news,
-        $exp-chars
-      );
+  @each $key, $value in $this-classify{
+    $this-push: true; //合并后的项是否还需要加入列表中（全部抵消后，multiple = 0）
+
+    @if length($value) > 1{
+      $this-num: 0;
+      $this-multiples: ();
+      $this-exp: null;
+      @each $val in $value{
+        @if f4empty($this-exp){
+          $this-exp: map-get($val, exp);
+        }
+
+        $this-option: map-get($val, option);
+        
+        @if length($this-option) == 0{ //长度为 0 则取默认值 1
+          $this-num: $this-num + 1;
+        } @else{
+          $this-multiple: nth($this-option, 2);
+          @if type-of($this-multiple) == number{
+            @if nth($this-option, 1) == 0{ //如果为除法要先转为乘法
+              $this-multiple: 1 / $this-multiple;
+            }
+
+            $this-num: $this-num + $this-multiple;
+          } @else{
+            $this-multiples: append($this-multiples, $this-multiple);
+          }
+        }
+      }
+
+      $this-option: ();
+      @if $this-num == 0{ //没有数字类型的 multiple（或者在合并过程中互相抵消）
+        $this-option: $this-multiples;
+      } @else{ //包含字符 multiple 的合并
+        $this-value: '';
+
+        @each $val in $this-multiples{ //先将字符 multiple 合并
+          @if f4empty($this-value){
+            $this-value: $val;
+          } @else{
+            $this-value: $this-value + $val;
+          }
+        }
+
+        //再和数字 multiple 合并
+        @if f4empty($this-value){
+          $this-value: $this-num;
+        } @else{
+          $this-symbol: '+';
+
+          @if $this-num < 0{
+            $this-symbol: '-';
+            $this-num: $this-num * -1;
+          }
+
+          $this-value: '(#{$this-value} #{$this-symbol} #{$this-num})';
+        }
+
+        $this-option: (1 $this-value);
+      }
+
+      @if length($this-option) == 0{ //此时的空数组和属性 option 中的空数组是不一样，该空数组表示 multiple = 0
+        $this-push: false;
+      } @else{
+        $value: (
+          exp: $this-exp,
+          option: $this-option,
+        );
+        $value: ($value,);
+        $value: fcalc-merge8quantity($value); //再次合并 multiple，删除多余项
+        $value: nth($value, 1);
+      }
+    } @else{
+      $value: nth($value, 1);
     }
-    @return $exp-news;
+
+    @if $this-push{
+      $this-list: append($this-list, $value);
+    }
   }
+
+  @return $this-list;
 }
 
-//  uf-calc__analysis2subOptionIndexs
+//  fcalc-merge8option
 //  -
-/// 将字符串根据加/减连接符进行分割然后返回 index 集合
-/// - 负数或者减号所对应的 index 为负值
+/// 将相同 option 项归类在一起
 /// @access private
-/// @param {String} $value 字符串
-/// @return {List} -
-@function uf-calc__analysis2subOptionIndexs($value){
-  $exp-list: ();
-  $value-length: str-length($value);
-  $value-added: 2;
-  $exp-plus: uf-calc__conn-plus-minus(1);
-  $exp-minus: uf-calc__conn-plus-minus(0);
-  $value-indexs: ();
-  @for $i from 1 through ($value-length - $value-added) {
-    $value-chars: str-slice($value, $i, $i + $value-added);
-    @if $value-chars == $exp-plus {
-      $value-indexs: append(
-        $value-indexs,
-        $i + $value-added + 1
+/// @param {map} $classify -
+/// @return {map} -
+@function fcalc-merge8option($classify){
+  $this-classify: fcreate();
+
+  @each $key, $value in $classify{
+    $this-value: map-get($value, value);
+    
+    @if $this-value != 0{
+      $this-option: map-get($value, option);
+      $this-key: unquote('#{$this-option}');
+      $this-cache: map-get($this-classify, $this-key) or (
+        list: (),
+        option: $this-option,
       );
-    } @else if $value-chars == $exp-minus {
-      $value-indexs: append(
-        $value-indexs,
-        ($i + $value-added + 1) * -1
-      );
+      $this-list: map-get($this-cache, list);
+      $this-list: append($this-list, $this-value);
+      $this-cache: map-merge($this-cache, (
+        list: $this-list,
+      ));
+      $this-classify: map-merge($this-classify, (
+        #{$this-key}: $this-cache,
+      ));
     }
   }
-  @return $value-indexs;
+
+  @return $this-classify;
 }
 
-//  uf-calc__analysis2productAfterIndex
+//  fcalc-merge8unit
 //  -
-/// 获取字符串 product 之后的分表达式的起始位置
+/// 合并相同单位的项
 /// @access private
-/// @param {String} $exp 字符串
-/// @return {Number} -
-@function uf-calc__analysis2productAfterIndex($exp){
-  $exp-plus: uf-calc__conn-plus-minus(1);
-  $exp-minus: uf-calc__conn-plus-minus(0);
-  $exp-join: uf-calc__conn-mult-divi(1);
-  $exp-index: str-index($exp, $exp-join);
-  @if uf-is-empty($exp-index) {
-    $exp-join: uf-calc__conn-mult-divi(0);
-    $exp-index: str-index($exp, $exp-join);
-  }
-  @if uf-is-empty($exp-index){
-    @return -1;
-  }
-  $exp-index: $exp-index + str-length($exp-join) + 1;
-  $exp-length: str-length($exp);
-  @if $exp-index > $exp-length {
-    @return -1;
-  }
-  $exp-is: true;
-  @for $i from $exp-index through $exp-length {
-    $exp-chars: str-slice($exp, $i, $i + 2);
-    @if $exp-chars == $exp-plus or $exp-chars == $exp-minus {
-      @return $i;
+/// @param {map} $classify
+/// @return {map} -
+@function fcalc-merge8unit($classify){
+  $this-classify: fcreate();
+
+  @each $key, $value in $classify{
+    $this-list: map-get($value, list);
+    $this-option: map-get($value, option);
+
+    @each $item in $this-list{
+      $this-key: $key;
+      $this-value: fcreate();
+
+      @if type-of($item) == number{
+        $this-key: $key + unit($item);
+        $this-value: map-get($this-classify, $this-key) or (
+          value: 0,
+          option: $this-option,
+        );
+        $this-value: map-merge($this-value, (
+          value: map-get($this-value, value) + $item,
+        ));
+      } @else{
+        $this-key: $key + $item;
+        $this-value: (
+          value: $item,
+          option: $this-option,
+        );
+      }
+
+      $this-classify: map-merge($this-classify, (
+        #{$this-key}: $this-value,
+      ));
     }
   }
-  @return -1;
+
+  @return $this-classify;
 }
 
-//  uf-calc__analysis2fill
+//  fcalc-classify8option
 //  -
-/// 填补切割造成的左括号缺失
+/// 将列表通过 option 进行归类
 /// @access private
-/// @param {List} $exps 字符串列表
-/// @return {List} 新字符串列表
-@function uf-calc__analysis2fill($exps){
-  $exps-new: ();
-  @for $i from 1 through length($exps) {
-    $exp: nth($exps, $i);
-    @if $i == 1 {
-      $exp: unquote('#{$exp}');
+/// @param {list} $list -
+/// @return {map} -
+/// @example
+///   fcalc-classify8option(
+///     (
+///       (exp: 4em, option: ()) 
+///       (exp: 5%, option: ()) 
+///       (exp: 4em, option: (0 3))
+///     )
+///   ) //(: (option: (), list: 4em 5%), 0 3: (option: 0 3, list: (4em,)))
+@function fcalc-classify8option($list){
+  $this-classify: fcreate();
+
+  @each $value in $list{ //通过 option 信息进行归类
+    $this-exp: map-get($value, exp);
+    $this-option: map-get($value, option);
+    $this-key: unquote('#{$this-option}');
+
+    $this-value: map-get($this-classify, $this-key) or (
+      option: $this-option,
+    );
+    $this-list: map-get($this-value, list) or ();
+    $this-list: append($this-list, $this-exp);
+    $this-value: map-merge($this-value, (
+      list: $this-list,
+    ));
+    $this-classify: map-merge($this-classify, (
+      #{$this-key}: $this-value,
+    ));
+  }
+
+  @return $this-classify;
+}
+
+//  fcalc-merge8quantity
+//  -
+/// 合并 multiple
+/// @access private
+/// @param {list} $list -
+/// @return {list} -
+/// @example
+///   fcalc-merge8quantity(((exp: 8px, option: (0 2 0 2)),)) //((exp: 2px, option: ()),)
+@function fcalc-merge8quantity($list){
+  $this-list: ();
+
+  @each $value in $list{
+    $this-exp: map-get($value, exp);
+    
+    @if $this-exp != 0{ //exp 值为 0 的操作可以忽略，例：0 / x
+      $this-option: map-get($value, option);
+      $this-through: length($this-option) / 2; //只有偶数项才是 multiple，所以只要查找 length / 2 次
+      $this-newOption: ();
+      $this-exp4number: type-of($this-exp) == number;
+      $this-multiples: 1;
+
+      @for $i from 1 through $this-through{
+        $this-index: $i * 2;
+        $this-multiple: nth($this-option, $this-index);
+        $this-mode: nth($this-option, $this-index - 1);
+        $this-ignore: false; //是否忽略本次的 multiple
+        $this-multiple4number: type-of($this-multiple) == number and fvector($this-multiple) != 1%; //百分比的值将被视为字符串
+
+        @if $this-multiple == 1{ //multiple 值为 1 的操作（忽略），例：x * 1
+          $this-ignore: true;
+        } @else if $this-exp4number and $this-multiple4number and f4rational($this-exp, $this-multiple, $this-mode){ //两数可以除尽，则将表达式进行运算后（忽略）
+          $this-ignore: true;
+
+          @if $this-mode == 0{
+            $this-exp: $this-exp / $this-multiple;
+          } @else{
+            $this-exp: $this-exp * $this-multiple;
+          }
+        } @else if $this-exp == $this-multiple and $this-mode == 0{ //表达式和 multiple 相同且为除法运算，则将表达式值赋值为 1（忽略）
+          $this-ignore: true;
+          $this-exp: 1;
+        } @else if $this-multiple4number and f4rational($this-multiples, $this-multiple, $this-mode){ //排除以上情况后，如果 multiple 可以统合在一起，则将 multiple 统合（忽略）
+          $this-ignore: true;
+          
+          @if $this-mode == 0{
+            $this-multiples: $this-multiples / $this-multiple;
+          } @else{
+            $this-multiples: $this-multiples * $this-multiple;
+          }
+        }
+
+        @if $this-ignore == false{
+          $this-newOption: fconcat($this-newOption, ($this-mode $this-multiple));
+        }
+      }
+
+      @if $this-multiples != 1{
+        $this-value: fcalc-quite2length($this-multiples, 1);
+        $this-newOption: fconcat($this-newOption, $this-value);
+      }
+
+      $this-list: append($this-list, (
+        exp: $this-exp,
+        option: $this-newOption,
+      ));
+    }
+  }
+
+  @return $this-list;
+}
+
+//  fcalc-quite2length
+//  -
+/// 比较数与其倒数的（字符）长度，取长度短的进行操作
+/// @access private
+/// @param {number} $value -
+/// @param {0|1} $mode 表示除法（或乘法）
+/// @return {list} -
+/// @example
+///   fcalc-quite2length(.5, 0) //(value: 2, mode: 1)
+@function fcalc-quite2length($value, $mode){
+  $this-length: str-length('#{$value}');
+  $this-reciprocal: 1 / $value;
+  
+  @if $this-length > str-length('#{$this-reciprocal}'){
+    $value: $this-reciprocal;
+    $mode: if($mode == 0, 1, 0);
+  }
+
+  @return ($mode $value);
+}
+
+//  fcalc-conver
+//  -
+/// 转换表达式
+/// @access private
+/// @param {list} $list 表达式集合
+/// @return {list} -
+/// @throw 类型错误
+/// @example
+///   fcalc-conver(calc('2px + 5%'), (3px, 2cm))  //(exp: 2px, option: ()) (exp: 5%, option: ()) (exp: 3px, option: 0 1) (exp: 2cm, option: 0 1)
+@function fcalc-conver($list){
+  $this-list: ();
+
+  @each $value in $list{
+    $this-type: type-of($value);
+    $this-value: ();
+
+    @if $this-type == number{         //例：4px
+      $this-value: fcalc-default($value);
+    } @else if $this-type == string{  //例：'calc(2px + 4vh)'
+      $this-value: fcalc-converString($value);
+    } @else if $this-type == list{    //例：(4px, 'calc(2px + 4vh)')
+      $this-value: fcalc-conver($value);
+    } @else if $this-type == map{     //例：(exp: 5px, multiple: 3, mode: 1)
+      $this-value: fcalc-converMap($value);
     } @else {
-      $exp: unquote('(#{$exp}');
+      @error 'fcalc 不支持 #{$this-type} 类型 { #{$value} }';
     }
-    $exps-new: append(
-      $exps-new,
-      $exp
-    );
+
+    $this-list: fconcat($this-list, $this-value);
   }
-  @return $exps-new;
+
+  @return $this-list;
 }
 
-//  uf-calc__analysisCalcSplitByExps
+//  fcalc-converMap
 //  -
-/// 获取分解 calc 函数为多表达式使用的切割符
+/// 转换 map 表达式
 /// @access private
-/// @param {String} $value 字符串
-/// @return {String} 切割符
-@function uf-calc__analysisCalcSplitByExps($value){
-  $value-split: uf-calc__conn-plus-minus($value);
-  @return unquote('#{$value-split}(');
+/// @param {map} -
+/// @return {list} -
+/// @throw 非法表达式
+/// @example
+///   fcalc-converMap((exp: (7% -2vh), multiple: 2, mode: 1))  //(exp: 7%, option: 1 2 0 1) (exp: -2vh, option: 1 2 0 1)
+@function fcalc-converMap($value){
+  $this-exp: map-get($value, exp);
+
+  @if map-has-key($value, option) == false{
+    $this-multiple:  map-get($value, multiple) or $gcalc-default-multiple;
+    $this-mode: map-get($value, mode) or $gcalc-default-mode;
+
+    $value: fcalc-default($this-exp, $this-multiple, $this-mode);
+    $this-exp: map-get($value, exp);
+  }
+
+  $this-option: map-get($value, option);
+  $this-exp: ($this-exp,);
+  $this-conver: fcalc-conver($this-exp);
+  $this-list: ();
+
+  @each $val in $this-conver{
+    $this-items: map-get($val, option);
+    $this-value: (
+      exp: map-get($val, exp),
+      option: fconcat($this-option, $this-items),
+    );
+    $this-list: append($this-list, $this-value);
+  }
+
+  @return $this-list;
 }
 
-//  uf-calc__operation
+//  fcalc-pushOption
 //  -
-/// 进行两数运算
+/// 往表达式中添加配置项，并返回新的表达式
 /// @access private
-/// @param {Number|String} $a 参数
-/// @param {Number|String} $b 参数
-/// @param {0|1} $reply 运算方式
-/// - 0：除法运算
-/// - 1：乘法运算
-/// @return {Number|String}
-/// - 参数 $a or $b 存在类型为 String，则结果类型为 String，否则为 Number
-@function uf-calc__operation($a, $b, $reply){
-  $not-has-string: true;
-  @if $b == 1 or $b == -1 {
-    @return uf-calc__operation-self($a, $b);
-  }
-  @if uf-is-string($a) {
-    $not-has-string: false;
-    $a: uf-calc__CSS4_var-format($a);
-  }
-  @if uf-is-string($b) {
-    $not-has-string: false;
-    $b: uf-calc__CSS4_var-format($b);
-  }
-  @if $reply == 0 {
-    @return if(
-      $not-has-string and uf-is-rational__division($a, $b),
-      $a / $b,
-      unquote('#{$a} / #{$b}')
-    );
-  } @else {
-    @return if(
-      $not-has-string and uf-is-rational__multiplication($a, $b),
-      $a * $b,
-      unquote('#{$a} * #{$b}')
-    );
-  }
-}
+/// @param {map} $value 表达式
+/// @param {number|string} $multiple 除数（或乘数）
+/// @param {0|1} $mode 表示除法（或乘法）
+/// @return {map} -
+/// @example
+///   fcalc-pushOption((exp: 2px, option: (0 2 1 3), 5, 1)) //(exp: 2px, option: (0 2 1 3 1 5)
+@function fcalc-pushOption($value, $multiple, $mode){
+  $this-option: map-get($value, option);
 
-//  uf-calc__operation-self
-//  -
-/// 进行两数运算（当第二个参数值为 1 或 -1）
-/// @access private
-/// @param {Number|String} $a 参数
-/// @param {1|-1} $b 参数
-/// @return {Number|String}
-/// - 参数 $a 类型为 String，则结果类型为 String，否则为 Number
-@function uf-calc__operation-self($a, $b){
-  @if uf-is-number($a) {
-    @return $a * $b;
-  } @else {
-    $a: uf-calc__CSS4_var-format($a);
-    @return if(
-      $b == 1,
-      $a,
-      unquote('-#{$a}')
-    );
+  @if f4empty($this-option) != false and type-of($this-option) == list{
+    $this-option: fconcat($this-option, ($mode $multiple));
+
+    @return map-merge($value, (
+      option: $this-option,
+    ));
+  } @else{
+    $this-exp: map-get($value, exp);
+
+    @return fcalc-default($this-exp, $multiple, $mode);
   }
 }
 
-//  uf-calc__mergeExpsDataByUnit
+//  fcalc-converString
 //  -
-/// 通过单位对表达式列表项进行合并
+/// 转换 string 表达式
 /// @access private
-/// @param {List} $exps 表达式列表
-/// @return {List} -
-@function uf-calc__mergeExpsDataByUnit($exps){
-  $exp-list: ();
-  @each $exp in $exps {
-    $exp-list: append(
-      $exp-list,
-      uf-calc__mergeExpDataByUnit($exp)
-    );
-  }
-  @return $exp-list;
-}
+/// @param {string} -
+/// @return {map|list} -
+/// @throw 非法表达式
+/// @example
+///   fcalc-converString('123px') //(exp: 123px, option: (0 1))
+@function fcalc-converString($value){
+  $this-value: ();
 
-//  uf-calc__mergeExpDataByUnit
-//  -
-/// 通过单位对表达式进行合并
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {Map} -
-@function uf-calc__mergeExpDataByUnit($exp){
-  $data-list: ();
-  @each $key, $list in uf-calc__categoryOfUnit($exp) {
-    $data-sum: 0 !default;
-    @if uf-calc__is-CSS4_var($key) {
-      $data-sum: uf-calc__CSS4_var-sum($list);
-    } @else {
-      $data-sum: uf-calc__sum($list);
+  @if fcalc6operator($value){ //例：'calc(2px + 3vh)'
+    @if fcalc4calc($value){
+      $this-value: fcalc-ast($value);
+    } @else{
+      @error '不是一个有效的字符串 calc 表达式 { #{$value} }';
     }
-    @if $data-sum != 0 {
-      $data-list: append(
-        $data-list,
-        $data-sum
+  } @else if fcalc4var($value){ //例：var(--a)
+    $this-value: fcalc-default($value);
+  } @else if fcalc4var($value, false){ //例：--a
+    $this-value: fcalc-default(unquote('var(#{$value})'));
+  } @else{ //例：123px
+    $this-value: f2num($value, true);
+    $this-value: fcalc-default($this-value);
+  }
+
+  @return $this-value;
+}
+
+//  fcalc-ast
+//  -
+/// 解析（字符串）为抽象语法树
+/// @access private
+/// @param {string} $value 字符串表达式
+/// @return {list} -
+/// @example
+///   fcalc-ast('calc(6px / 4 - 2px)')  //(exp: 6px, option: 0 4) (exp: 2px, option: 1 -1)
+@function fcalc-ast($value){
+  $this-value: $value;
+
+  @if fcalc4calc($value){
+    $this-value: str-slice($value, 6, -2);
+  }
+
+  $this-length: str-length($this-value);
+  $this-list: ();
+  $this-childs: ();
+  $this-count: 1;
+  $this-current: null;
+  $i: 1;
+
+  @while $i <= $this-length{
+    $this-item: str-slice($this-value, $i, $i);
+    @if $this-item == $gcalc-left and str-slice($this-value, $i - 3, $i - 1) != var{ //获取子项方式1：把字符串表达式通过第一级的括号切分
+      $this-stop: fcalc-bracketsQuery($this-value, $i);
+      $this-exp: str-slice($this-value, $i + 1, $this-stop - 1);
+      $this-option: ();
+
+      @if fcalc4Minusexp($this-value, $i){ //处理减法运算
+        $this-option: (1 -1);
+      }
+
+      $this-current: (
+        exp: $this-exp,
+        option: $this-option,
       );
+
+      $this-list: append($this-list, $this-current);
+
+      @if fcalc6child($this-exp){ //记录子项为组合项的位置
+        $this-childs: append($this-childs, length($this-list));
+      }
+
+      $this-count: $this-stop + 1;
+      $i: $this-stop;
+    } @else if fcalc-next4multiple($this-value, $i){ //查找出除数（或乘数）
+      
+      $this-data: fcalc-multipleQuery($this-value, $i);
+      $this-option: map-get($this-data, option);
+
+      @if $this-count + 1 != $i{ //获取子项方式3：无法被其他获取方式捕获到的其它子项
+        $this-exp: str-slice($this-value, $this-count, $i - 2);
+
+        @if fcalc4var($this-exp) == false{ //如果是数字字符串项则转换为数字
+          $this-exp: f2num($this-exp, true);
+        }
+        
+        @if fcalc4Minusexp($this-value, $this-count){ //处理减法运算
+          $this-option: fconcat($this-option, 1 -1);
+        }
+
+        $this-current: (
+          exp: $this-exp,
+        );
+
+        $this-list: append($this-list, $this-current);
+      }
+
+      $this-cache: map-get($this-current, option);
+
+      @if f4empty($this-cache) == false{
+        $this-option: fconcat($this-cache, $this-option);
+      }
+
+      $this-current: map-merge($this-current, (
+        option: $this-option,
+      ));
+      $this-list: fset-nth($this-list, length($this-list), $this-current);
+      $this-next: map-get($this-data, next);
+      $this-count: $this-next + 3;
+      $i: $this-next;
+    } @else if (fcalc4next($this-value, $i) and ($i - $this-count > 2)) or ($i == $this-length and $this-count < $i){ //获取子项方式1：单项无除数（或乘数）表达式
+      $this-at: if($i == $this-length, -1, $i - 2); //需要判断是否已经是末尾
+      $this-exp: str-slice($this-value, $this-count, $this-at);
+      
+      @if fcalc4var($this-exp) == false{ //如果是数字字符串项则转换为数字
+        $this-exp: f2num($this-exp, true);
+      }
+      
+      $this-option: ();
+
+      @if fcalc4Minusexp($this-value, $this-count){ //处理减法运算
+        $this-option: (1 -1);
+      }
+
+      $this-current: (
+        exp: $this-exp,
+        option: $this-option,
+      );
+      $this-list: append($this-list, $this-current);
+      $this-count: $i + 2;
+      $i: $i + 1; //跳过下一个空格
+    }
+
+    $i: $i + 1;
+  }
+
+  //深度分解子项，最终得到一个深度为 1 的数组
+  @each $value in $this-childs{
+    $this-item: nth($this-list, $value);
+    $this-exp: map-get($this-item, exp);
+    $this-option: map-get($this-item, option);
+    $this-cache: fcalc-ast($this-exp);
+    $this-length: length($this-cache);
+    
+    @for $i from 1 through $this-length{
+      $this-self: nth($this-cache, $i);
+      $this-self-option: map-get($this-self, option);
+      $this-self-option: fconcat($this-option, $this-self-option);
+      $this-self-exp: (
+        exp: map-get($this-self, exp),
+        option: $this-self-option,
+      );
+
+      @if $i == 1{ //替换掉原来的项（防止位置变化）
+        $this-list: fset-nth($this-list, $value, $this-self-exp);
+      } @else{ //添加多出的项
+        $this-list: append($this-list, $this-self-exp);
+      }
     }
   }
-  @return map-merge(
-    $exp,
-    (exp: $data-list)
-  );
+
+  @return $this-list;
 }
 
-//  uf-calc__sum
+//  fcalc4Minusexp
 //  -
-/// 求和操作（相同单位）
+/// 返回当前子表达式是否为减法运算
 /// @access private
-/// @param {List} $list 求和列表
-/// @return {Number} -
-@function uf-calc__sum($list){
-  $list-sum: 0;
-  @each $value in $list {
-    $list-sum: $list-sum + $value;
+/// @param {string} $value -
+/// @param {number} $start-index 子表达式的起始位置
+/// @return {bool} -
+/// @example
+///   fcalc4Minusexp('2px - 3%', 7) //true
+@function fcalc4Minusexp($value, $start-index){
+  $this-index: $start-index - 2;
+
+  @if $this-index > 0 and str-slice($value, $this-index, $this-index) == '-'{
+    @return true;
   }
-  @return $list-sum;
+
+  @return false;
 }
 
-//  uf-calc__CSS4_var-sum
+//  fcalc-multipleQuery
 //  -
-/// 求和操作（相同的 CSS4 var）
+/// 返回查找出除数（或乘数）信息
 /// @access private
-/// @param {List} $list 求和列表
-/// @return {0|String}
-/// - 剩余个数为 0 的话，则返回 0，否则返回 String 类型
-@function uf-calc__CSS4_var-sum($list){
-  $list-var: null !default;
-  $list-count: 0;
-  @each $value in $list {
-    $value-map: uf-calc__CSS4_var-splitWithMult_Divi($value);
-    $value-product: map-get($value-map, product);
-    @if uf-is-empty($list-var) {
-      $list-var: map-get($value-map, exp);
-      $list-var: uf-calc__CSS4_var-format($list-var);
+/// @param {string} $value -
+/// @param {number} $start-index 除法（或乘法）标识符的位置
+/// @return {map} -
+/// @example
+///   fcalc-multipleQuery('5px / 3 * 2 + 2px', 5) //(next: 12, option: (0 3 1 2))
+@function fcalc-multipleQuery($value, $start-index){
+  $this-length: str-length($value);
+  $this-start: $start-index + 2;
+  $this-next: -1;
+  $this-option: ();
+
+  @if str-slice($value, $this-start, $this-start) == $gcalc-left{ //左括号开始表示是一个组合式的除数（或乘数）
+    $this-index: fcalc-bracketsQuery($value, $this-start);
+    $this-next: $this-index + 1;
+    $this-option: fcalc-splitOption8push($this-option, $value, $start-index, $this-index);
+  } @else{
+    $this-while: true;
+    $i: $start-index + 2;
+
+    @while $this-while{
+      $this-stop: -1;
+
+      @if fcalc-next4multiple($value, $i) or fcalc4next($value, $i){ //检测到加减乘除运算
+        $this-while: false;
+        $this-stop: $i - 2;
+        $this-next: $i - 1;
+      } @else if $i == $this-length{ //到达字符串结束位置
+        $this-while: false;
+        $this-stop: $i;
+        $this-next: $i + 1;
+      }
+
+      @if $this-while == false{ //结束循环体
+        $this-option: fcalc-splitOption8push($this-option, $value, $start-index, $this-stop);
+      }
+      
+      $i: $i + 1;
     }
-    @if map-get($value-map, reply) == 0 {
-      $value-product: 1 / $value-product;
-    }
-    $list-count: $list-count + $value-product;
   }
-  @if $list-count == 0 {
-    @return 0;
-  } @else if $list-count == 1 {
-    @return $list-var;
-  } @else {
-    @return unquote('#{$list-var}#{uf-calc__conn-mult-divi(1)}#{$list-count}');
+  
+  @if fcalc-next4multiple($value, $this-next + 1){
+    $this-data: fcalc-multipleQuery($value, $this-next + 1);
+    $this-next: map-get($this-data, next);
+    $this-list: map-get($this-data, option);
+    $this-option: fconcat($this-option, $this-list);
   }
-}
 
-//  uf-calc__CSS4_var-format
-//  -
-/// 格式化 CSS4 变量
-/// @access private
-/// @param {String|Object} $value 要格式的值
-/// @return {String|Object}
-/// - 只有传入满足格式条件的值时才会进行格式，否则返回传入值
-@function uf-calc__CSS4_var-format($value){
-  @return if(
-    uf-calc__is-CSS4_var($value),
-    $value,
-    unquote('var(#{$value})')
-  );
-}
-
-//  uf-calc__categoryOfUnit
-//  -
-/// 根据单位对表达式进行分类
-/// @access private
-/// @param {Map} $exp 表达式
-/// @return {Map} 返回分类好的对象（key 为单位）
-@function uf-calc__categoryOfUnit($exp){
-  $unit-map: ();
-  @each $item in map-get($exp, exp) {
-    $item-key: '' !default;
-    $item-list: () !default;
-    @if uf-is-string($item) {
-      $item-key: uf-calc__CSS4_var-format($item);
-      $item-key: uf-calc__CSS4_var-splitWithMult_Divi($item-key);
-      $item-key: map-get($item-key, exp);
-    } @else if is-number($item) {
-      $item-key: unit($item);
-    }
-    $unit-map: uf-calc__unit-mergeDataOrCreateArray(
-      $unit-map,
-      $item-key,
-      $item
-    );
-  }
-  @return $unit-map;
-}
-
-//  uf-calc__CSS4_var-splitWithMult_Divi
-//  -
-/// 使用乘/除连接符对表达式进行分割解析
-/// @access private
-/// @param {String} $value 字符串
-/// @return {Map} 返回格式化后的表达式
-@function uf-calc__CSS4_var-splitWithMult_Divi($value){
-  $exp-reply: 1;
-  $exp-split: uf-calc__conn-mult-divi(1);
-  $exp-split-index: str-index($value, $exp-split);
-  @if uf-is-empty($exp-split-index) {
-    $exp-reply: 0;
-    $exp-split: uf-calc__conn-mult-divi(0);
-  }
-  $exp-item: uf-string-split($value, $exp-split);
   @return (
-    exp: nth($exp-item, 1),
-    product: uf-calc__CSS4_var-product($exp-item),
-    reply: $exp-reply
+    next: $this-next,
+    option: $this-option,
   );
 }
 
-//  uf-calc__CSS4_var-product
+//  fcalc-splitOption8push
 //  -
-/// 格式化 CSS4 var 中的 product
+/// 截取除数（或乘数）信息并加入到列表中，并返回一个新列表
 /// @access private
-/// @param {List} $list -
-/// @return {String|Number} -
-@function uf-calc__CSS4_var-product($list){
-  @if length($list) > 1 {
-    $value: nth($list, 2);
-    @if uf-calc__is-CSS4_var($value) {
-      @return $value;
-    } @else {
-      @return uf-to-num($value);
-    }
-  } @else {
-    @return 1;
-  }
+/// @param {list} $list 已有列表
+/// @param {string} $value -
+/// @param {number} $start-index 除数（或乘数）标识符的位置
+/// @param {number} $stop-index 除数（或乘数）结束位置
+/// @return {list} -
+/// @example
+///   fcalc-splitOption8push((), '5px / 2', 5, 7) //(0 2);
+@function fcalc-splitOption8push($list, $value, $start-index, $stop-index){
+  $this-multiple: str-slice($value, $start-index + 2, $stop-index);
+  $this-mode: str-slice($value, $start-index, $start-index);
+  $this-mode: if($this-mode == '/', 0, 1);
+  $this-option: fcalc-multipleConver($this-multiple, $this-mode);
+
+  @return fconcat($list, $this-option);
 }
 
-//  uf-calc__unit-mergeDataOrCreateArray
+//  fcalc-multipleConver
 //  -
-/// 检测 Map 中是否存在数据，如果存在则合并数据，否则创建一个 List 并赋值
+/// 对字符串除数（或乘数）进行转换
 /// @access private
-/// @param {Map} $map -
-/// @param {String} $key -
-/// @param {Object} $value -
-/// @return {Map} -
-@function uf-calc__unit-mergeDataOrCreateArray($map, $key, $value){
-  $data-new: () !default;
-  @if map-has-key($map, $key) {
-    $data-new: append(
-      map-get($map, $key),
-      $value
-    );
-  } @else {
-    $data-new: ($value);
-  }
-  @return map-merge(
-    $map,
-    ($key: $data-new)
-  );
-}
+/// @param {string} $multiple 除数（或乘数）
+/// @param {0|1} $mode 表示除法（或乘法）
+/// @return {list} -
+/// @example
+///   fcalc-multipleConver('(var(--c) / 2)', 0) //(0 'var(--c)' 1 2)
+@function fcalc-multipleConver($multiple, $mode){
+  $this-first: str-slice($multiple, 1, 1);
+  $this-list: ($mode $multiple);
 
-//  uf-calc__is-CSS4_var
-//  -
-/// 检测是否为 css4 变量
-/// @access private
-/// @param {String} $value -
-/// @return {Boolean} -
-@function uf-calc__is-CSS4_var($value){
-  @return str-slice($value, 1, 3) == 'var';
-}
+  //1、'-var(--a)' 为无效值；
+  @if ($this-first == '-' or map-get($gnum-table, $this-first)) and str-slice($multiple, -1) != '%'{ //例：'-3' 可以转换为数字，10% 不可以转换为数字
+    $multiple: f2num($multiple);
+    $this-list: ($mode $multiple);
+  } @else if $this-first == $gcalc-left{ //例：'(var(--a) / 2)'
+    $this-value: str-slice($multiple, 2, -2);
+    $this-value: '* #{$this-value}';
+    $this-data: fcalc-multipleQuery($this-value, 1);
+    @if map-get($this-data, next) - 1 == str-length($this-value){ //该组合式由多个除数（或乘数）组合得到
+      $this-option: map-get($this-data, option);
+      $this-through: length($this-option) / 2;
+      $this-list: ();
 
-//  uf-calc__is-calc
-//  -
-/// 检测是否为 calc 函数
-/// @access private
-/// @param {String} $value -
-/// @return {Boolean} -
-@function uf-calc__is-calc($value){
-  @return str-slice($value, 1, 4) == 'calc';
-}
+      @for $i from 1 through $this-through{
+        $this-index: $i * 2 - 1;
+        $this-multiple: nth($this-option, $this-index + 1);
+        $this-mode: nth($this-option, $this-index);
+        
+        @if $mode == 0{ //组合式为除数，则分项除法变乘法、乘法变除法
+          $this-mode: if($this-mode == 0, 1, 0);
+        }
 
-//  uf-calc__mergeExpByProductAndReply
-//  -
-/// 根据 product 和 reply 合并相同项
-/// @access private
-/// @param {list} $exps -
-/// @return {List} -
-@function uf-calc__mergeExpByProductAndReply($exps){
-  $exp-map: ();
-  @each $exp in $exps {
-    $exp-product: map-get($exp, product);
-    $exp-reply: map-get($exp, reply);
-    @if $exp-product == -1 {
-      $exp: uf-calc__exp-toggleNegativeValue($exp);
-      $exp-product: map-get($exp, product);
-    }
-    $exp-key: unquote('#{$exp-reply}#{$exp-product}');
-    @if uf-is-number($exp-product) and $exp-reply == 0 {
-      @if uf-is-rational__number($exp-product) {
-        $exp-key: unquote('1#{1 / $exp-product}');
+        @if type-of($this-multiple) == string{ //子项为字符串则继续进行转换
+          $this-cache: fcalc-multipleConver($this-multiple, $this-mode);
+          $this-list: fconcat($this-list, $this-cache);
+        } @else{
+          $this-list: fconcat($this-list, $this-mode, $this-multiple);
+        }
       }
     }
-    $exp-map: uf-calc__exp-mergeDataOrCreateArray(
-      $exp-map,
-      $exp-key,
-      $exp
-    );
   }
-  $exps: ();
-  @each $key, $exp in $exp-map {
-    $exps: append(
-      $exps,
-      $exp
-    );
-  }
-  @return $exps;
+
+  @return $this-list;
 }
 
-//  uf-calc__exp-toggleNegativeValue
+//  fcalc4next
 //  -
-/// 对表达式进行负值切换
+/// 返回之后的项是否为同级别的表达式
 /// @access private
-/// @param {Map} $exp -
-/// @return {Map} -
-@function uf-calc__exp-toggleNegativeValue($exp){
-  $exp-new: ();
-  @each $value in map-get($exp, exp) {
-    $exp-new: append(
-      $exp-new,
-      if(
-        uf-is-number($value),
-        $value * -1,
-        unquote('#{uf-calc__CSS4_var-format($value)}#{uf-calc__conn-mult-divi(1)}-1')
-      )
-    );
-  }
-  @return map-merge(
-    $exp,
-    (
-      product: 1,
-      exp: $exp-new
-    )
-  );
+/// @param {string} $value -
+/// @param {number} $index 开始检测位置
+/// @return {bool} -
+/// @example
+///   fcalc4next('5px + 2px', 5)  //true
+@function fcalc4next($value, $index){
+  $this-item: str-slice($value, $index, $index);
+  $this-next: $index + 1;
+
+  @return ($this-item == '+' or $this-item == '-')
+    and str-slice($value, $this-next, $this-next) == ' ';
 }
 
-//  uf-calc__exp-mergeDataOrCreateArray
+//  fcalc-next4multiple
 //  -
-/// 检测是否存在表达式，存在则合并数据，否则创建一个 List 并赋值
+/// 返回之后的项是否为对应的除数（或乘数）
 /// @access private
-/// @param {Map} $map -
-/// @param {String} $key -
-/// @param {Map} $exp -
-/// @return {Map} -
-@function uf-calc__exp-mergeDataOrCreateArray($map, $key, $exp){
-  $exp-new: () !default;
-  
-  @if map-has-key($map, $key) {
-    $exp-old: map-get($map, $key);
-    $exp-new-list: map-get($exp-old, exp);
-    $exp-new-list: uf-concat(
-      $exp-new-list,
-      map-get($exp, exp)
-    );
-    $exp-new: map-merge(
-      $exp-old,
-      (exp: $exp-new-list)
-    );
-  } @else {
-    $exp-new: $exp;
-  }
-  @return map-merge(
-    $map,
-    ($key: $exp-new)
-  );
+/// @param {string} $value -
+/// @param {number} $index 需要检测的位置
+/// @return {bool} -
+/// @example
+///   fcalc-next4multiple('5px / 3', 5)  //true 
+@function fcalc-next4multiple($value, $index){
+  $this-item: str-slice($value, $index, $index);
+
+  @return $this-item == '*' or $this-item == '/';
 }
 
-//  uf-calc__format-exps
+//  fcalc-bracketsQuery
 //  -
-/// 格式化表达式列表
+/// 返回对应右括号的位置
 /// @access private
-/// @param {List} $exps -
-/// @return {List} -
-@function uf-calc__format-exps($exps){
-  $exp-list: ();
-  @each $exp in $exps {
-    $exp-list: append(
-      $exp-list,
-      uf-calc__format-exp($exp)
-    );
-  }
-  @return $exp-list;
-}
+/// @param {string} $value -
+/// @param {number} $start-index 左括号的位置
+/// @return {number} -
+/// @throw  无效表达式
+/// @example
+///   fcalc-bracketsQuery('a(b(c)d)e', 2) //6  
+@function fcalc-bracketsQuery($value, $start-index){
+  $this-length: str-length($value);
+  $this-count: 1;
+  $this-while: true;
+  $i: $start-index + 1;
 
-//  uf-calc__format-exp
-//  -
-/// 格式化表达式
-/// @access private
-/// @param {Map} $exp -
-/// @return {Map} -
-@function uf-calc__format-exp($exp){
-  $exp-type: type-of($exp);
-  $exp-function-name: uf-calc__get-mergeFunction($exp-type);
-  @if function_exists($exp-function-name) {
-    @return call(
-      get-function($exp-function-name),
-      $exp
-    );
-  }
-  @warn('Invalid type');
-}
+  @while $this-while and $i <= $this-length{
+    $this-item: str-slice($value, $i, $i);
 
-//  uf-calc__get-mergeFunction
-//  -
-/// 获取表达式对应的合并方法
-/// @access private
-/// @param {String} $type -
-/// @return {String} -
-@function uf-calc__get-mergeFunction($type){
-  @return unquote('uf-calc__mergeConfig-#{$type}');
-}
+    @if $this-item == $gcalc-left{ //左括号则 +1 记录
+      $this-count: $this-count + 1;
+    } @else if $this-item == $gcalc-right{ //右括号则 -1 记录
+      $this-count: $this-count - 1;
+    }
 
-//  uf-calc__mergeConfig-map
-//  -
-/// 提供值类型为 map 的合并
-/// @access private
-/// @param {Map} $value -
-/// @return {Map} -
-@function uf-calc__mergeConfig-map($value){
-  $exp-list: map-get($value, exp);
-  @if not(uf-is-list($exp-list)) {
-    $value: map-merge(
-      $value,
-      (exp: ($exp-list, ))
-    );
-  }
-  @return uf-calc__mergeConfig($value);
-}
-
-//  uf-calc__mergeConfig-list
-//  -
-/// 提供值类型为 list 的合并
-/// @access private
-/// @param {List} $value -
-/// @param {Map} $config [()] -
-/// @return {Map} -
-@function uf-calc__mergeConfig-list($value, $config: ()){
-  @return uf-calc__mergeConfig-map(
-    map-merge(
-      $config,
-      (exp: $value)
-    )
-  );
-}
-
-//  uf-calc__mergeConfig-number
-//  -
-/// 提供值类型为 number 的合并
-/// @access private
-/// @param {Number} $value -
-/// @param {Map} $config [()] -
-/// @return {Map} -
-@function uf-calc__mergeConfig-number($value, $config: ()){
-  @return uf-calc__mergeConfig-list(
-    ($value, ),
-    $config
-  );
-}
-
-//  uf-calc__mergeConfig-string
-//  -
-/// 提供值类型为 string 的合并
-/// @access private
-/// @param {String} $value -
-/// @param {Map} $config [()] -
-/// @return {Map} -
-@function uf-calc__mergeConfig-string($value, $config: ()){
-  @return uf-calc__mergeConfig-list(
-    ($value, ),
-    $config
-  );
-}
-
-//  uf-calc__mergeConfig
-//  -
-/// 合并选项
-/// @access private
-/// @param {Map} $config [()] -
-/// @return {Map} -
-@function uf-calc__mergeConfig($config: ()){
-  $config: uf-calc__mergeConfig-simplify($config);
-  @return map-merge((
-    product: 1,
-    reply: 0,
-    analysis: false
-    ), $config);
-}
-  
-//  uf-calc__mergeConfig-simplify
-//  -
-/// 合并选项（简化 product 长度）
-/// @access private
-/// @param {Map} $config -
-/// @return {Map} -
-@function uf-calc__mergeConfig-simplify($config){
-  $exp-product: map-get($config, product);
-  @if isempry($exp-product) and uf-is-number($exp-product) and uf-is-rational__number($exp-product) {
-    $exp-product-length: str-length('#{$exp-product}');
-    $exp-product-inverted-length: str-length('#{1 / $exp-product}');
-    @if $exp-product-inverted-length < $exp-product-length {
-      @return map-merge(
-        $config,
-        (
-          product: 1 / $exp-product,
-          reply: if(
-            map-get($config, reply) == 1,
-            0,
-            1
-          )
-        )
-      );
+    @if $this-count == 0{ //匹配到对应的右括号，则退出查找
+      $this-while: false;
+    } @else{
+      $i: $i + 1;
     }
   }
-  @return $config;
+
+  @if $this-count > 0{ //查找结束还没有找到对应的右括号，则说明该表达式有问题
+    $this-exp: str-slice($value, $start-index);
+
+    @error '无效表达式：#{$this-exp}，未找到对应的结束标记 )';
+  }
+
+  @return $i;
 }
 
-//  uf-calc__conn-mult-divi
+//  fcalc4calc
 //  -
-/// 返回乘/除法连接符
+/// 返回字符串是否为 calc 表达式格式
 /// @access private
-/// @param {0|1} $value -
-/// @return {' / '|' * '} -
-@function uf-calc__conn-mult-divi($value){
-  @return if(
-    $value == 1,
-    ' * ',
-    ' / '
-  );
+/// @param {string} $value -
+/// @return {bool} -
+/// @example
+///   fcalc4calc('calc(5px)') //true
+///   fcalc4calc('5px')       //false
+@function fcalc4calc($value){
+  @return f4native($value, calc, 1);
 }
 
-//  uf-calc__conn-plus-minus
+//  fcalc4var
 //  -
-/// 返回加/减号连接符
+/// 返回字符串是否为 CSS var 格式
 /// @access private
-/// @param {0|1} $value -
-/// @return {' + '|' - '} -
-@function uf-calc__conn-plus-minus($value){
-  @return if(
-    $value == 1,
-    ' + ',
-    ' - '
+/// @param {string} $value -
+/// @param {bool} $licit [true] 是否使用严格检测
+/// - true：严格检测，必须被 var 函数包含
+/// - false：宽松检测
+/// @return {bool} -
+/// @example
+///   fcalc4var('var(--a)')  //true
+///   fcalc4var(--a, false)  //true
+@function fcalc4var($value, $licit: true){
+  @if $licit{
+    @return f4var($value);
+  } @else{
+    @return type-of($value) == string
+      and str-length($value) > 2
+      and str-slice($value, 1, 2) == '--';
+  }
+}
+
+//  fcalc6operator
+//  -
+/// 返回字符串是否含有（加减乘除）运算符
+/// @access private
+/// @param {string} $value -
+/// @return {bool} -
+/// @example
+///   fcalc6operator('5px + 2ch') //true
+@function fcalc6operator($value){
+  @if type-of($value) == string{
+    $this-operators: ('+', '-', '*', '/');
+
+    @each $val in $this-operators{
+      @if fcalc6joiner($value, $val){
+        @return true;
+      }
+    }
+  }
+
+  @return false;
+}
+
+//  fcalc6joiner
+//  -
+/// 返回字符串是否包含某种运算符
+/// @access private
+/// @param {string} $value -
+/// @param {string} $joiner 运算符
+/// @return {bool} -
+/// @example
+///   fcalc6joiner('5px + 2ch', '+')  //true
+@function fcalc6joiner($value, $joiner){
+  @return str-index($value, ' #{$joiner} ') != null;
+}
+
+//  fcalc-default
+//  -
+/// 返回一个表达式
+/// @access private
+/// @param {number|string|list|map} $exp [0] -
+/// @param {number|string} $multiple [$gcalc-default-multiple] 除数（或乘数）
+/// @param {0|1} [$gcalc-default-mode] 表示除法（或乘法）
+/// @return {map} -
+/// @example
+///   fcalc-default(1px)  //(exp: 1px, option: (0 1))
+@function fcalc-default($exp: 0, $multiple: $gcalc-default-multiple, $mode: $gcalc-default-mode){
+  @return (
+    exp: $exp,
+    option: ($mode $multiple),
   );
 }

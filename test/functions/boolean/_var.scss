@@ -1,0 +1,19 @@
+@include describe('The f4var function =>'){
+  $this-value: var(--b);
+
+  @include it('#{$this-value} 符合 CSS 变量格式'){
+    @include assert-equal(
+      f4var($this-value), 
+      true
+    );
+  }
+
+  $this-value: a;
+
+  @include it('#{$this-value} 不符合 CSS 变量格式'){
+    @include assert-equal(
+      f4var($this-value),
+      false
+    );
+  }
+}

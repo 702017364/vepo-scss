@@ -1,10 +1,8 @@
-$test-keyframes-name: abc;
-
-@include describe('The um-keyframes mixin =>'){
-  @include it('定义一个 keyframes'){
+@include describe('The mkeyframes mixin =>'){
+  @include it('使用简写模式定义一个属性 animation'){
     @include assert{
       @include output{
-        @include um-keyframes($test-keyframes-name){
+        @include mkeyframes(abc){
           0%{
             opacity: 0;
           }
@@ -15,7 +13,9 @@ $test-keyframes-name: abc;
       }
 
       @include expect{
-        @keyframes #{$test-keyframes-name}{
+        animation: abc $gbasic-duration;
+
+        @keyframes abc{
           0%{
             opacity: 0;
           }

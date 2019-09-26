@@ -1,0 +1,11 @@
+@include describe('The fcalc-option function =>'){
+  @include it('function fcalc 配置模式'){
+    @include assert-equal(
+      fcalc-option(
+        (100% 5px --b calc(50vw - 2rem)),
+        (1 1 1 -1 0 2 0 5)
+      ),
+      calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
+    );
+  }
+}

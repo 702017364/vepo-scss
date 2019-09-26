@@ -1,45 +1,41 @@
-//  uf-is-number
+//  f4rational
 //  -
-/// 检测是否为 number 类型
-/// @param {Object} $value -
-/// @return {Boolean} -
-@function uf-is-number($value){
-  @return type-of($value) == 'number';
+/// 返回两数运算结果是否为有理数（值是否可以除尽）
+/// - 在 sass 中由于小数取值长度的问题，有理数的定义为小数5位数，超过则为无理数
+/// @param {number} $first -
+/// @param {number} $second -
+/// @param {0|1} $way
+/// 0：表示两数进行除法运算
+/// 1：表示两数进行乘法运算
+/// @return {bool} -
+/// @example
+///   f4rational(5, 2)  //true
+///   f4rational(5, 3)  //false
+///   f4rational(5, 1 / 2, 1) //true
+///   f4rational(5, 1 / 3, 1) //false
+///   f4rational(0.001, 0.001, 1) //false
+@function f4rational($first, $second, $way: 0){
+  $this-first: fless($first);
+  $this-second: fless($second);
+
+  $this-value: if(
+    $way == 0,
+    $this-first / $this-second,
+    $this-first * $this-second
+  );
+
+  @return f2num('#{$this-value}') == $this-value;
 }
 
-//  uf-is-rational__division
+//  f4rational-reciprocal
 //  -
-/// 检测运算（除法）结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-/// @param {Number} $a 被除数
-/// @param {Number} $b 除数
-/// @return {Boolean} -
-@function uf-is-rational__division($a, $b){
-  $a: uf-less($a);
-  $b: uf-less($b);
-  $operation-result: unquote('#{$a / $b}');
-  $operation-result: uf-to-num($operation-result);
-  @return $a / $operation-result == $b;
-}
-
-//  uf-is-rational__multiplication
-//  -
-/// 检测运算（乘法）结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-/// @param {Number} $a 被乘数
-/// @param {Number} $b 乘数
-/// @return {Boolean} -
-@function uf-is-rational__multiplication($a, $b){
-  $a: uf-less($a);
-  $b: uf-less($a);
-  $operation-result: unquote('#{$a * $b}');
-  $operation-result: uf-to-num($operation-result);
-  @return $a * $b == $operation-result;
-}
-
-//  uf-is-rational__number
-//  -
-/// 检测运算（倒数）结果是否为有理数（该有理数的定义为是否在 sass 的取值范围）
-/// @param {Number} $value 求倒值
-/// @return {Boolean} -
-@function uf-is-rational__number($value){
-  @return uf-is-rational__division(1, $value);
+/// 返回一个数的倒数是否为有理数
+/// - 在 sass 中由于小数取值长度的问题，有理数的定义为小数5位数，超过则为无理数
+/// @param {number} $num -
+/// @return {bool} -
+/// @example
+///   f4rational(2) //true
+///   f4rational(3) //false
+@function f4rational-reciprocal($num){
+  @return f4rational(1, $num);
 }

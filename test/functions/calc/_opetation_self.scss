@@ -1,8 +1,0 @@
-@include describe('The uf-calc__operation-self function =>'){
-  @include it('进行两数运算（当第二个参数值为 1 或 -1）'){
-    @include assert-equal(
-      uf-calc__operation-self(5px, -1),
-      -5px
-    );
-  }
-}

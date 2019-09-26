@@ -1,0 +1,89 @@
+.ui-spigot{
+  &-items{
+    $this-ratio: 80px;
+
+    @include mratio($this-ratio);
+    position: relative; transform-style: preserve-3d;
+    @include mkeyframes(8s linear infinite backwards){
+      0%{
+        transform: rotateX(0deg) rotateY(0deg);
+      }
+      100%{
+        transform: rotateX(360deg) rotateY(720deg);
+      }
+    }
+
+    &:hover{
+      animation-play-state: paused;
+    }
+
+    > li{
+      @include mratio(100%);
+      position: absolute; top: 0; left: 0; border: 1px solid #999; box-sizing: border-box; counter-increment: count; display: flex; justify-content: center; align-items: center; backface-visibility: hidden; background-color: #ccc;
+  
+      &::after{
+        content: counter(count);
+      }
+  
+      $this-value: fcalc-single($this-ratio, 2);
+      $this-option: (
+        translateZ($this-value),
+        rotateX(90deg) translateZ($this-value),
+        rotateX(180deg) translateZ($this-value),
+        rotateX(270deg) translateZ($this-value),
+        rotateY(90deg) translateZ($this-value),
+        rotateY(270deg) translateZ($this-value),
+      );
+  
+      @for $i from 1 through 6{
+        &:nth-child(#{$i}){
+          transform: nth($this-option, $i);
+        }
+      }
+    }
+  }
+}.ui-spigot{
+  &-items{
+    $this-ratio: 80px;
+
+    @include mratio($this-ratio);
+    position: relative; transform-style: preserve-3d;
+    @include mkeyframes(8s linear infinite backwards){
+      0%{
+        transform: rotateX(0deg) rotateY(0deg);
+      }
+      100%{
+        transform: rotateX(360deg) rotateY(720deg);
+      }
+    }
+
+    &:hover{
+      animation-play-state: paused;
+    }
+
+    > li{
+      @include mratio(100%);
+      position: absolute; top: 0; left: 0; border: 1px solid #999; box-sizing: border-box; counter-increment: count; display: flex; justify-content: center; align-items: center; backface-visibility: hidden; background-color: #ccc;
+  
+      &::after{
+        content: counter(count);
+      }
+  
+      $this-value: fcalc-single($this-ratio, 2);
+      $this-option: (
+        translateZ($this-value),
+        rotateX(90deg) translateZ($this-value),
+        rotateX(180deg) translateZ($this-value),
+        rotateX(270deg) translateZ($this-value),
+        rotateY(90deg) translateZ($this-value),
+        rotateY(270deg) translateZ($this-value),
+      );
+  
+      @for $i from 1 through 6{
+        &:nth-child(#{$i}){
+          transform: nth($this-option, $i);
+        }
+      }
+    }
+  }
+}

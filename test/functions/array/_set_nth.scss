@@ -1,0 +1,11 @@
+@include describe('The fset-nth function =>'){
+  $this-list: 1 2 3;
+  $this-index: 2;
+  $this-value: a;
+  @include it('替换数组 #{$this-list} 中的第 #{$this-index} 内容为 #{$this-value}'){
+    @include assert-equal(
+      fset-nth($this-list, $this-index, $this-value),
+      (1 a 3)
+    );
+  }
+}

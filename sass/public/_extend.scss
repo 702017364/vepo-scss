@@ -1,0 +1,24 @@
+/// 超出隐藏省略号效果（单行）
+%eellipsis{
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+
+/// 超出隐藏省略号效果（多行）
+%eomitted{
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;
+}
+
+/// 清除浏览器默认设置
+%eappearance{
+  -moz-appearance: normal; -webkit-appearance: normal; appearance: normal;
+}
+
+/// 可用于清除浮动造成的影响
+%epseudo-table{
+  width: 100%; content: ''; display: table; clear: both;
+}
+
+/// 重置 h1-6 标签样式
+%ereset-h{
+  margin: 0; font-weight: 500;
+}

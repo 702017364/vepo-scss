@@ -1,0 +1,23 @@
+@include describe('The fslice function =>'){
+  $this-list: (a b c d);
+
+  $this-start: 0;
+  $this-end: 2;
+
+  @include it('从#{$this-start}开始到#{$this-end}结束'){
+    @include assert-equal(
+      fslice($this-list, $this-start, $this-end),
+      (a b c)
+    );
+  }
+
+  $this-start: 1;
+  $this-end: -3;
+
+  @include it('从#{$this-start}开始到#{$this-end}结束'){
+    @include assert-equal(
+      fslice($this-list, $this-start, $this-end),
+      append((), b)
+    );
+  }
+}

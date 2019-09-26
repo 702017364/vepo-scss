@@ -1,0 +1,36 @@
+@include describe('The f4native function =>'){
+  @include it('默认调用中，无实参不符合原生函数格式'){
+    @include assert-equal(
+      f4native(url()), 
+      false
+    );
+  }
+
+  @include it('默认调用中，传入实参则符合原生函数格式'){
+    @include assert-equal(
+      f4native(url(1)), 
+      true
+    );
+  }
+
+  @include it('不满足指定函数名，认定为符合原生函数格式'){
+    @include assert-equal(
+      f4native(url(1), src), 
+      false
+    );
+  }
+
+  @include it('满足指定函数名，认定为符合原生函数格式'){
+    @include assert-equal(
+      f4native(url(1), url), 
+      true
+    );
+  }
+
+  @include it('通过调整函数实参最小满足的长度，让空函数调用被认为符合原生函数格式'){
+    @include assert-equal(
+      f4native(url(), $meet: 0), 
+      true
+    );
+  }
+}

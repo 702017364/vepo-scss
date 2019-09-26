@@ -1,0 +1,11 @@
+@include describe('The fcreate function =>'){
+  @include it('创建一个空的 map 类型值'){
+    $this-value: (a: 1);
+    $this-value: map-remove($this-value, a);
+
+    @include assert-equal(
+      fcreate(),
+      $this-value
+    );
+  }
+}

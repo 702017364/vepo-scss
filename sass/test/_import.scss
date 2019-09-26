@@ -1,0 +1,68 @@
+@function oftest($name, $value){
+  @return unquote('#{$name}: #{$value}');
+}
+
+%div-box{
+  margin: var(--div-box); padding: var(--div-box); border-radius: var(--div-box); box-shadow: 0 0 var(--div-box); box-sizing: border-box;
+}
+
+%body-center{
+  min-height: 100%; display: flex; justify-content: center; align-items: center;
+}
+
+:root{
+  --div-box: .5em;
+  --grid-col: 12;
+}
+
+.test{
+  &-list{
+    display: flex; flex-wrap: wrap; box-sizing: border-box;
+  }
+
+  &-box{
+    $this-grid-total: 12; //栅格总数为 12
+
+    --grid-span: #{$this-grid-total};
+
+    @extend %div-box;
+    width: fcalc(
+      (
+        exp: --grid-span,
+        option: 0 $this-grid-total 1 100%,
+        mode: 1,
+      ),
+      'calc(var(--div-box) * -2)',
+    );
+
+    @for $i from 1 through $this-grid-total - 1{
+      &[span='#{$i}']{
+        --grid-span: #{$i};
+      }
+    }
+
+    @media (max-width: 1024px){
+      min-width: 50%;
+    }
+    
+    @media (max-width: 600px){
+      width: 100%; overflow: hidden;
+    }
+  }
+}
+
+.test-center{
+  @extend %body-center;
+}
+
+@import 'api';
+@import 'list';
+@import 'concave';
+@import 'keyframes';
+@import 'pyramid';
+@import 'triangle';
+@import 'spigot';
+@import 'filter';
+@import 'scss';
+@import 'table';
+@import 'old';

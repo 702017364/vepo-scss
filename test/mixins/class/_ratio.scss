@@ -1,38 +1,12 @@
-$test-ratio-value: 1em;
-
-@include describe('The um-ratio mixin =>'){
-  @include it('宽度和高度相等'){
+@include describe('The mratio mixin =>'){
+  @include it('高级应用'){
     @include assert{
       @include output{
-        @include um-ratio($test-ratio-value);
+        @include mratio(5px, 0, 2);
       }
 
       @include expect{
-        width: $test-ratio-value; height: $test-ratio-value;
-      }
-    }
-  }
-
-  @include it('宽度和行高相等'){
-    @include assert{
-      @include output{
-        @include um-ratio($test-ratio-value, -1);
-      }
-
-      @include expect{
-        width: $test-ratio-value; line-height: $test-ratio-value;
-      }
-    }
-  }
-
-  @include it('宽度、高度、行高相等'){
-    @include assert{
-      @include output{
-        @include um-ratio($test-ratio-value, 0);
-      }
-  
-      @include expect{
-        width: $test-ratio-value; height: $test-ratio-value; line-height: $test-ratio-value;
+        width: 5px; height: 10px; line-height: 10px;
       }
     }
   }

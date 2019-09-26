@@ -1,8 +1,0 @@
-@include describe('The uf-is-rational__number function =>'){
-  @include it('检测运算（倒数）结果是否为有理数'){
-    @include assert-equal(
-      uf-is-rational__number(3),
-      false
-    );
-  }
-}

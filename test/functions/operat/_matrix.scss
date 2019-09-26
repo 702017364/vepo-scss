@@ -1,0 +1,10 @@
+@include describe('The fmatrix function =>'){
+  $this-value: radius;
+
+  @include it('查找 #{$this-value} 矩阵属性列表'){
+    @include assert-equal(
+      fmatrix($this-value),
+      map-get($gmatix-table, $this-value)
+    );
+  }
+}

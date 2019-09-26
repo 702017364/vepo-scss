@@ -1,12 +1,12 @@
-@include describe('The um-appearance mixin =>'){
+@include describe('The mappearance mixin =>'){
   @include it('清除浏览器默认设置'){
     @include assert{
       @include output{
-        @include um-appearance;
+        @include mappearance;
       }
 
       @include expect{
-        @extend %U-APPEARANCE;
+        @extend %eappearance;
       }
     }
   }

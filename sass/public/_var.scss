@@ -1,8 +1,14 @@
-/* setting (const) */
-$u-toFixed-length: 5;
-$u-quartet: top right bottom left;
-$u-browser-default-fontSize: 16px;
-$u-vector-table: (
+/// 浏览器的字体默认大小
+$gbrowser-fontSize: 16px;
+
+/// SCSS 计算值的最大长度（小数部分）
+$gscss-dec: 5;
+
+/// 基础矩阵属性（特指包含有上、右、下、左方位的属性）
+$gmatix-basic: (top right bottom left);
+
+/// 向量映射表
+$gvector-table: (
   '%': 1%,
   'em': 1em,
   'ex': 1ex,
@@ -28,97 +34,142 @@ $u-vector-table: (
   'Hz': 1Hz,
   'kHz': 1kHz,
 );
-$u-nums: ();
-@for $i from 0 through 9 {
-  $u-nums: map-merge(
-    $u-nums,
-    ('#{$i}': $i),
-  );
+
+/// 数字映射表
+$gnum-table: ();
+
+@for $i from 0 through 9{
+  $gnum-table: map-merge($gnum-table, ('#{$i}': $i));
 }
 
-/* setting (switch) */
-$u-isImport-reset: true !default;
-$u-major-line: true !default;
-$u-cssnext-pollfill__not: true !default;
-$u-cssnext-pollfill__matches: true !default;
-$u-fixed__fontSize: false !default;
+/// 设置是否导入 reset 样式
+$g4import-reset: true !default;
 
-/* setting (browser、view) */
-$u-browser-ie-version: 9 !default;
-$u-view-width: 375px !default;
-$u-view-vector: 1vmin !default;
-$u-view-column: 100 !default;
-$u-view-dpr: 1 !default;
-$u-view-dpr__name: (
+/// 设置是否开启 line-height 优化处理
+$g4major-line: true !default;
+
+/// 设置是否开启 :not 多重选择器的降级处理
+$g4cssnext-not: true !default;
+
+/// 设置是否开启 :matches 多重选择器的降级处理
+$g4cssnext-matches: true !default;
+
+/// 设置是否启用将多个选择符以逗号分隔的方式并为组
+/// - 1、浏览器在解析 CSS 时遇到不识别的选择符时，会舍弃该组选择符（即使其他选择符是识别的）
+/// - 2、由于第 1 点的原因，所以目前做兼容选择符样式时，都是单独成组
+$g4cssnext-group: false !default;
+
+/// 设置浏览器（IE）的关联版本
+$gie: 9 !default;
+
+/// 设置视窗单位（vw、vh、vmin、vmax）的计算基础（默认值为 iPhone 6 尺寸）
+$gviewport-width: 375px !default;
+
+/// 设置视窗向量（相关视窗方法的基础单位）
+$gviewport-vector: 1vmin !default;
+
+/// 设置视窗栅格（转换视窗单位时，要将窗口分成的份数）
+$gviewport-column: 100 !default;
+
+/// 设置物理像素和设备像素比值（devicePixelRatio）
+$gdpr: 1 !default;
+
+/// 不同 devicePixelRatio 环境下使用的图片映射
+$gdpr-table: (
   2: '@2x',
   3: '@3x',
 ) !default;
-$u-vector: 1rem !default;
 
-/* setting (css) */
-$u-position-list: absolute relative fixed !default;
-$u-family: 'Microsoft YaHei' !default;
-$u-path: unquote('images/') !default;
-$u-image-sprite: unquote('sprite.png') !default;
-$u-duration: .3s !default;
-$u-quartet-table: (
-  radius: top-left top-right bottom-right bottom-left,
+/// 设置基础向量
+/// - 基础向量决定了方法 f2all 的输出单位
+$gvector: 1rem !default;
+
+/// 设置（CSS）基础字体
+$gbasic-family: 'Microsoft YaHei' !default;
+
+/// 设置（CSS）统一资源路径（一般都特指图片资源）
+$gbasic-path: unquote('images/') !default;
+
+/// 设置（CSS）动画 duration 基本值
+$gbasic-duration: .3s !default;
+
+/// 设置特殊矩阵属性映射表
+/// - 特殊矩阵指新属性不是由 属性名-方向（如 border-left） 组合得到
+$gmatix-table: (
+  radius: (top-left top-right bottom-right bottom-left), //border-radius
 ) !default;
-$u-quick-relative: (
-  rem: false,
+
+/// 配置（全局） mixin mquick
+$gquick-options: (
+  rem: false, //是否对单位为 rem 的值进行转换
 ) !default;
 
-/* character */
-$u-character-colon: unquote(':');
-$u-character-colons: if($u-browser-ie-version > 8, unquote('::'), $u-character-colon);
-$u-character-before: $u-character-colons + before;
-$u-character-after: $u-character-colons + after;
-$u-character-and: unquote('&');
-$u-character-nbsp: '\0020';
-$u-character-ensp: '\2002';
-$u-character-emsp: '\2003';
-$u-character-thinsp: '\2009';
+/// 冒号（半角）
+$gchar-colon: unquote(':');
 
-/* default (font) */
-$u-fontSize-root: 16px !default;
-$u-lineHeight-root: null !default;
-$u-fontSize-h1: $u-fontSize-root * 1.375 !default;
-$u-fontSize-h2: $u-fontSize-root * 1.25 !default;
-$u-fontSize-h3: $u-fontSize-root * 1.125 !default;
-$u-fontSize-h4: $u-fontSize-root * 1 !default;
-$u-fontSize-h5: $u-fontSize-root * .875 !default;
-$u-fontSize-h6: $u-fontSize-root * .75 !default;
-$u-fontSize-default: $u-fontSize-root !default;
+/// 双冒号（半角）
+$gchar-colons: unquote('::');
 
-/* color */
-$u-color: #333 !default;
-$u-color-light: #666 !default;
-$u-color-dark: #000 !default;
-$u-color-warn: #ff0 !default;
-$u-color-danger: #f00 !default;
-$u-color-hover: #189cd8 !default;
-$u-color-active: #189cd8 !default;
-$u-color-disabled: #ccc !default;
-$u-color-placeholder: #ddd !default;
-$u-bgcolor: #eee !default;
+/// 基础（CSS）字体大小
+/// - 该值是很多方法的计算基础值，只能使用 px 单位
+$gbasic-size: 16px !default;
 
-/* size */
-$u-icon: 28px !default;
-$u-icon-arrow: 8px !default;
+/// 基础（CSS）行高
+$gbasic-line: null !default;
 
-/* extend */
-%U-EL__H{
-  margin-top: 0; margin-bottom: 0; font-weight: 400;
-}
+/// 标签 h1 的字体大小
+$gsize-h1: $gbasic-size * 1.375 !default;
 
-%U-PSEUDO__TABLE{
-  width: 100%; content: ''; display: table; clear: both;
-}
+/// 标签 h2 的字体大小
+$gsize-h2: $gbasic-size * 1.25 !default;
 
-%U-PSEUDO__ICON{
-  content: $u-character-thinsp; display: inline-block; vertical-align: inherit;
-}
+/// 标签 h3 的字体大小
+$gsize-h3: $gbasic-size * 1.125 !default;
 
-%U-APPEARANCE{
-  -moz-appearance: normal; -webkit-appearance: normal; appearance: normal;
-}
+/// 标签 h4 的字体大小
+$gsize-h4: $gbasic-size * 1 !default;
+
+/// 标签 h5 的字体大小
+$gsize-h5: $gbasic-size * .875 !default;
+
+/// 标签 h6 的字体大小
+$gsize-h6: $gbasic-size * .75 !default;
+
+/// 标签 body 的字体大小
+$gsize-body: $gbasic-size !default;
+
+/// 基础（CSS）色值
+$gbasic-color: #333 !default;
+
+/// 高亮色值
+$gcolor-light: #666 !default;
+
+/// 暗色色值
+$gcolor-dark: #000 !default;
+
+/// 警告色值
+$gcolor-warn: #ff0 !default;
+
+/// 危险色值
+$gcolor-danger: #ff0 !default;
+
+/// hover 状态色值
+$gcolor-hover: #189cd8 !default;
+
+/// active 状态色值
+$gcolor-active: #189cd8 !default;
+
+/// disabled 状态色值
+$gcolor-disabled: #ccc !default;
+
+/// placeholder 伪类色值
+$gcolor-placeholder: #ddd !default;
+
+/// 基础（CSS）背景色
+$gbasic-bgcolor: #eee !default;
+
+/// 基础（CSS）图标大小
+$gbasic-icon: 28px !default;
+
+/// 箭头图标大小
+$gicon-arrow: 8px !default;

@@ -1,26 +1,24 @@
-@include describe('The uf-calc function =>'){
-  @include it('一个数字的运算'){
+@include describe('The fcalc function =>'){
+  @include it('扩展原生函数 calc （添加强大的计算功能）'){
     @include assert-equal(
-      uf-calc(2),
-      2px
-    );
-  }
-
-  @include it('多种格式运算'){
-    @include assert-equal(
-      uf-calc(
-        (1px 2em),
-        -3vh,
-        --a,
+      fcalc(
+        1px,
+        var(--a),
+        calc((2px + 4%) / 2 - var(--a) / 2 + var(--a) * var(--b)),
+        (-2px 3cm),
         (
-          exp: (5vw 2px),
-        ),
-        (
-          exp: (3%, 4px),
-          product: 2,
+          exp: (
+            exp: (
+              exp: calc(4px + 40%),
+              multiple: 3,
+              mode: 1,
+            ),
+            multiple: 2,
+          ),
+          multiple: 2,
         ),
       ),
-      'calc(5px + 2em - 3vh + var(--a) + 5vw + 1.5%)'
+      calc(3px + 32% + 3cm + var(--a) * (var(--b) + 0.5))
     );
   }
 }

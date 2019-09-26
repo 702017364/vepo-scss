@@ -1,41 +1,57 @@
-//  uf-icons
+//  fadjust
 //  -
-/// 格式化数据
-/// @param {Map|List} $map -
-/// @param {String} $before [''] 添加到数据之前（$before + $content 模式）
-/// @param {String} $after [''] 添加到数据之后（$after + $content 模式）
-/// @return {Map} -
-/// @throw $map 不是一个有效的类型
-@function uf-icons($map, $before: '', $after: ''){
-  $new-map: ();
-  $map-type: type-of($map);
+/// 统一调整所有的项
+/// @param {map|list} $data -
+/// @param {string} $before [''] 添加到数据之前（$before + $content 模式）
+/// - 如果 $before 为非 string 类型，将会被强制转换成字符串
+/// @param {string} $after [''] 添加到数据之后（$after + $content 模式）
+/// - 如果 $after 为非 string 类型，将会被强制转换成字符串
+/// @return {map} -
+/// @throw $data 不是 map or list 类型
+/// @example
+///   fadjust((key1: abc, key2: 123), i-, '.png') //(key1: i-abc.png, key2: i-123.png)
+///   fadjust(abc 123), i-, '.png') //(abc: i-abc.png, 123: i-123.png)
+@function fadjust($data, $before: '', $after: ''){
+  $this-type: type-of($data);
 
-  @if $map-type == 'list' {
-    @each $value in $map {
-      $new-map: map-merge($new-map, (
-        $value: $value
-      ));
+  @if $this-type == list{
+    $this-length: length($data);
+    
+    @if $this-length == 0{
+      @return map-remove((a: 1), a);
+    }
+    
+    $this-data: fcreate();
+
+    @each $value in $data{
+      $this-merge: ($value: $value);
+      $this-data: map-merge($this-data, $this-merge);
     }
 
-    $new-map: uf-icons($new-map, $before, $after);
-  } @else if $map-type == 'map' {
-    @each $key, $value in $map {
-      $new-map: map-merge($new-map, (
-        $key: unquote('#{$before}#{$value}#{$after}')
-      ));
-    }
-  } @else {
-    @error '$map 不是一个有效的类型';
+    @return fadjust($this-data, $before, $after);
   }
-  
-  @return $new-map;
+
+  @if $this-type == map{
+    @each $key, $value in $data{
+      $this-merge: ($key: unquote('#{$before}#{$value}#{$after}'));
+      $data: map-merge($data, $this-merge);
+    }
+
+    @return $data;
+  }
+
+  @error '$data 不是 map or list 类型';
 }
 
-//  uf-is-map
+//  fcreate
 //  -
-/// 检测是否为 map 类型
-/// @param {Object} $value -
-/// @return {Boolean} -
-@function uf-is-map($value){
-  @return type-of($value) == 'map';
+/// 返回一个空的 map类型 值
+/// @return {map}
+/// @example
+///   fcreate() //()
+@function fcreate(){
+  $this-value: (a: 1);
+  $this-value: map-remove($this-value, a);
+
+  @return $this-value;
 }

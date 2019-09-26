@@ -1,0 +1,12 @@
+@include describe('The fcalc-list function =>'){
+  @include it('function fcalc 列表模式'){
+    @include assert-equal(
+      fcalc-list(
+        (100% 5px --b calc(50vw - 2rem)),
+        (1 -1 2 5),
+        (1 1 0 0)
+      ),
+      calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
+    );
+  }
+}

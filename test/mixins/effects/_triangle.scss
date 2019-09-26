@@ -1,18 +1,19 @@
-$test-triangle-edge: 2em;
 
-@include describe('The um-effect__triangle mixin =>'){
-  @include it('向上的等腰三角形'){
+@include describe('The mtriangle mixin =>'){
+  $this-edge: 2em;
+
+  @include it('底边宽度为 #{$this-edge} 的向上等腰三角形'){
     @include assert{
       @include output{
-        @include um-effect__triangle($test-triangle-edge);
+        @include mtriangle($this-edge);
       }
 
       @include expect{
-        $this-border-width: $test-triangle-edge $test-triangle-edge / 2;
+        $this-border-width: $this-edge $this-edge / 2;
 
         width: 0; height: 0;
 
-        @if $u-browser-ie-version > 8 {
+        @if $gie > 8 {
           border: solid transparent; border-width: $this-border-width; border-top-width: 0; border-bottom-color: currentColor;
         } @else {
           border: solid; border-width: $this-border-width; border-left-color: transparent; border-right-color: transparent; border-top-width: 0;

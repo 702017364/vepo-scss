@@ -1,12 +1,27 @@
-@include describe('The um-ellipsis mixin =>'){
-  @include it('单行超出省略号效果'){
+@include describe('The mellipsis mixin =>'){
+  @include it('省略号效果（不换行）'){
     @include assert{
       @include output{
-        @include um-ellipsis;
+        @include mellipsis;
       }
 
       @include expect{
-        overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+        @extend %eellipsis;
+      }
+    }
+  }
+  
+  $this-value: 2;
+
+  @include it('省略号效果（#{$this-value}行）'){
+    @include assert{
+      @include output{
+        @include mellipsis($this-value);
+      }
+
+      @include expect{
+        @extend %eomitted;
+        -webkit-line-clamp: $this-value;
       }
     }
   }

@@ -1,0 +1,60 @@
+.ui-concave{
+  $this-width: 200px;
+  $this-height: 100px;
+  $this-color: #999;
+  $this-spac: 10px;
+  $this-fill: fcalc-single($this-spac, -1);
+
+  margin: $this-fill 0 0 $this-fill; display: flex; flex-wrap: wrap; color: $this-color;
+
+  > div{
+    width: $this-width; height: $this-height; margin: $this-spac 0 0 $this-spac; font-size: f2all(12px); display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 0 5px);
+
+    &::after{
+      color: #333;
+    }
+  }
+
+  //缺点：一个标签只能实现一个圆角
+  &-shadow{
+
+    position: relative; overflow: hidden;
+
+    &::before{
+      @include mratio(50%);
+
+      position: absolute; top: 0; left: 0; border-radius: 50%; content: ''; box-shadow: 0 0 0 100vmax currentColor, inset 0 0 0 1px; transform: translate(-50%, -50%); pointer-events: none;
+    }
+
+    &::after{
+      position: relative; content: '使用 box-shadow 实现的凹角';
+    }
+  }
+
+  &-bgimage{
+    //在 radial-gradient 内使用 calc(50% + 1px) 而不是 0 是为了避免 Chrome 的过渡锯齿（版本 75.0.3770.80）
+    //在 background-size 内使用 calc(50% + 1px) 是为了避免宽度或高度的值为奇数时出现的缝隙
+    background: 
+      radial-gradient(50% 50% at 0% 0%, transparent 100%, currentColor calc(100% + 1px)) 0 0,
+      radial-gradient(50% 50% at 100% 0%, transparent 100%, currentColor calc(100% + 1px)) 100% 0,
+      radial-gradient(50% 50% at 0% 100%, transparent 100%, currentColor calc(100% + 1px)) 0 100%,
+      radial-gradient(50% 50% at 100% 100%, transparent 100%, currentColor calc(100% + 1px)) 100% 100%; background-size: calc(50% + 1px) calc(50% + 1px); background-repeat: no-repeat;
+
+    &::after{
+      content: '使用 radial-gradient 实现的凹角';
+    }
+  }
+
+  //缺点：宽高颜色都只能定死
+  &-svg{
+    $this-width0: fless($this-width);
+    $this-height0: fless($this-height);
+    $this-color0:  unquote('%23#{str-slice(unquote('#{$this-color}'), 2)}');
+
+    background: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' width='#{$this-width0}' height='#{$this-height0}' viewBox='0 0 #{$this-width0} #{$this-height0}'%3E%3Cpath fill='#{$this-color0}' d='M #{$this-width0 / 4 * 3} 0 A #{$this-width0 / 4}, #{$this-height0 / 4} 0 0, 0 #{$this-width0}, #{$this-height0 / 4} V #{$this-height0 / 4 * 3} A #{$this-width0 / 4}, #{$this-height0 / 4} 0 0, 0 #{$this-width0 / 4 * 3}, #{$this-height0} H #{$this-width0 / 4} A #{$this-width0 / 4}, #{$this-height0 / 4} 0 0, 0 0, #{$this-height0 / 4 * 3} V #{$this-height0 / 4} A #{$this-width0 / 4}, #{$this-height0 / 4} 0 0, 0 #{$this-width0 / 4}, 0 Z'/%3E%3C/svg%3E");
+
+    &::after{
+      content: '使用 SVG 实现的凹角';
+    }
+  }
+}

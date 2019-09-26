@@ -1,80 +1,123 @@
-//  um-effect__arrow
+//  marrow
 //  -
-/// 快速制作一个颜色为当前色值的箭头
-/// - 当 $rotate 值为纯数字时，将自动添加单位 deg
-/// - 当 $rotate 不为 Number 类型时，将不添加 transform 属性
-/// @param {Number} $size [$u-icon-arrow] 箭头所属盒子的大小
-/// @param {Number} $weight [2px] 箭头的边框大小
-/// @param {Number} $rotate [45deg] 箭头的角度
-/// @example scss -
-///   @include um-effect__arrow(1em);
-@mixin um-effect__arrow($size: $u-icon-arrow, $weight: 2px, $rotate: 45deg){
-  @include um-ratio(all($size), 0);
+/// 制作箭头
+/// @param {number} $width [$gicon-arrow] 箭头所属盒子的大小
+/// - 纯数字的值将被转换成以 -45deg 起始，90deg 作为一个添加单位的计算值（这是为了保证当值为 1 时，箭头的方向垂直朝上）
+/// - 
+/// @param {number} $weight [2px] 箭头的边框大小
+/// @param {number|string} $rotate [45deg] 箭头的方向（角度）
+/// - string 类型的值只能为 inherit、initial、CSS 变量
+/// - 无效值将忽略 transform 属性
+/// @example
+///   @include marrow(1em, 2px, 45deg);
+///   @include marrow(1em, 2px, 2);
+///   @include marrow(1em, 2px, var(--b));
+@mixin marrow($width: $gicon-arrow, $weight: 2px, $rotate: 45deg){
+  @include mratio($width, 0);
+  border: solid; border-width: $weight $weight 0 0; box-sizing: border-box;
 
-  @if type-of($rotate) == number {
-    @if uf-vector($rotate) == null {
-      $rotate: $rotate * 1deg;
+  $this-type: type-of($rotate);
+  $this-value: null;
+
+  @if $this-type == number{ //处理 number 类型的值
+    @if fvector($rotate) == null{ //对纯数字进行转换
+      $rotate: ($rotate % 4 - 1) * 90deg - 45;
+    } @else{ //对大值进行处理，保证值处于 [0, 360)
+      $rotate: $rotate % 360;
     }
 
-    transform: rotate($rotate);
+    $this-value: rotate($rotate);
+  } @else if $this-type == string{
+    @if $rotate == inherit or $rotate == initial{
+      $this-value: unquote($rotate);
+    } @else if f4var($rotate){ //例：var(--a)
+      $this-value: unquote($rotate);
+      $this-value: rotate($this-value);
+    }
   }
 
-  border: solid; border-width: $weight $weight 0 0; box-sizing: border-box;
+  @if f4empty($this-value) == false{
+    transform: $this-value;
+  }
 }
 
-//  um-effect__triangle
+//  mtriangle
 //  -
-/// 快速制作一个颜色为当前色值的等腰三角形
-/// - 受全局变量 $u-browser-ie-version 的影响，会产生 ie8 和非 ie8 两种模式
-/// @param {Number} $edge 三角形底边宽
-/// @param {Number} $height [$edge] 三角形高度
+/// 制作三角形（等腰）
+/// - 受全局变量 $gie 的影响，会产生 ie8 和非 ie8 两种模式
+/// @param {number|string} $edge 三角形底边宽
+/// - string 类型的值为 calc 函数和 CSS var
+/// @param {number|string} $height [$edge] 三角形高度
+/// - string 类型的值为 calc 函数和 CSS var
 /// @param {1|2|3|4} $mode [1] 箭头方向
 /// - 1：向上箭头
 /// - 2：向右箭头
 /// - 3：向下箭头
 /// - 4：向左箭头
-/// @example scss -
-///   @include um-effect__triangle(2em);
-@mixin um-effect__triangle($edge, $height: $edge, $mode: 1){
-  $this-flow-positive: uf-negate__prop($mode + 1);
-  $this-flow-negative: uf-negate__prop($this-flow-positive);
+/// @example
+///   @include mtriangle(2em);
+@mixin mtriangle($edge, $height: $edge, $mode: 1){
+  $this-flow-positive: finverse-name($mode + 1);
+  $this-flow-negative: finverse-name($this-flow-positive);
   $this-div-positive: 2 - $mode % 2;
   $this-div-negative: 2 - $this-flow-positive % 2;
   $this-list: ($edge, $height);
-  $this-value-positive: nth($this-list, $this-div-negative) / $this-div-positive;
-  $this-value-negative: nth($this-list, $this-div-positive) / $this-div-negative;
+  $this-value-positive: nth($this-list, $this-div-negative); //获取垂直方向的边框宽度
+  $this-value-positive: fcalc-single($this-value-positive, $this-div-positive);
+  $this-value-negative: nth($this-list, $this-div-positive); //获取水平方向的边框宽度
+  $this-value-negative: fcalc-single($this-value-negative, $this-div-negative);
 
-  @include um-ratio(0);
+  @include mratio(0);
 
-  @if $u-browser-ie-version > 8 {
-    $this-flow-anti: uf-negate__prop($mode);
+  @if $gie > 8 { //现代浏览器写法
+    $this-flow-anti: finverse-name($mode);
 
     border: solid transparent; border-width: $this-value-positive $this-value-negative;
-    @include um-fast__dir($mode, 0, border, width);
-    @include um-fast__dir($this-flow-anti, currentColor, border, color);
-  } @else {
+    @include mfast-pos($mode, 0, border, width);
+    @include mfast-pos($this-flow-anti, currentColor, border, color);
+  } @else { //兼容 ie8 写法
     border: solid; border-width: $this-value-positive $this-value-negative;
-    @include um-fast__dir($this-flow-positive, transparent, border, color);
-    @include um-fast__dir($this-flow-negative, transparent, border, color);
-    @include um-fast__dir($mode, 0, border, width);
+    @include mfast-pos($this-flow-positive, transparent, border, color);
+    @include mfast-pos($this-flow-negative, transparent, border, color);
+    @include mfast-pos($mode, 0, border, width);
   }
 }
 
-//  um-effect__triangle-equil
+//  mtriangle-equil
 //  -
-/// 快速制作一个颜色为当前色值的等边三角形
-/// - 受全局变量 $u-browser-ie-version 的影响，会产生 ie8 和非 ie8 两种模式
-/// @param {Number} $edge 三角形底边宽
+/// 制作三角形（等边）
+/// - 受全局变量 $gie 的影响，会产生 ie8 和非 ie8 两种模式
+/// @param {number|string} $edge 三角形底边宽
+/// - string 类型的值为 calc 函数和 CSS var
 /// @param {1|2|3|4} $mode [1] 箭头方向
 /// - 1：向上箭头
 /// - 2：向右箭头
 /// - 3：向下箭头
 /// - 4：向左箭头
-/// @example scss -
-///   @include um-effect__triangle-equil(2em);
-@mixin um-effect__triangle-equil($edge, $mode: 1){
-  $value: uf-less($edge);
-  $height: sqrt(pow($value, 2) - pow($value / 2, 2)) * uf-vector($edge);
+///   @include mtriangle-equil(2em);
+@mixin mtriangle-equil($edge, $mode: 1){
+  $this-type: type-of($edge);
+  $this-4number: $this-type == number;
+  $this-value: null;
 
-  @include um-effect__triangle($edge, $height, $mode);
+  @if $this-4number and fvector($edge) != null{ //有单位的数字
+    $this-value: fless($edge);
+  } @else if f4var($edge) or f4native($edge, calc, 1){ //例：var(--a) 或 calc(4px + 2em)
+    $this-value: $edge;
+  }
+
+  @if $this-value == 0 or f4empty($this-value){ //无效参数
+    @debug 'Invalid parameter #{$edge}';
+  } @else{
+    $this-multiple: sqrt(3) / 2;
+    $this-height: 0;
+
+    @if $this-4number{ //number 类型的值需要添加单位
+      $this-height: $this-value * fvector($edge) * $this-multiple;
+    } @else{
+      $this-height: fcalc-single($this-value, $this-multiple, 1);
+    }
+
+    @include mtriangle($edge, $this-height, $mode);
+  }
 }

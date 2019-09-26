@@ -1,44 +1,40 @@
-//  um-matches
+//  mmatches
 //  -
-/// :matches 伪类调用
-/// - 当全局变量 $u-cssnext-pollfill__matches: true 时，使用降级处理，否则使用伪类 :matches
-/// @param {String<List>} $args 选择器参数列表
-/// @example scss -
-///   @include um-matches('.a', '.b'){
+/// :matches 伪类
+/// - 当全局变量 $g4cssnext-matches: true 时，使用降级处理
+/// @param {string<list>} $args 选择器参数列表
+/// @example
+///   @include mmatches('.abc', '.bcd'){
 ///     z-index: 1;  
 ///   }
-@mixin um-matches($args...){
-  @if $u-cssnext-pollfill__matches {
-    @include um-matches__pollfill($args...){
-      @content;
+@mixin mmatches($args...){
+  $this-length: length($args);
+  
+  @if $this-length > 0{
+    @if $g4cssnext-matches or $this-length == 1{
+      $this-rules: '';
+  
+      @for $i from 1 to $this-length{
+        $this-item: nth($args, $i);
+        $this-rules: '#{$this-rules}&#{$this-item}, ';
+      }
+  
+      $this-last: nth($args, $this-length);
+      $this-rules: '#{$this-rules}&#{$this-last}';
+  
+      @at-root #{$this-rules}{
+        @content;
+      }
+      
+    } @else{
+      $this-join: join($args, (), comma);
+      $this-rules: unquote(':matches(#{$this-join})');
+  
+      &#{$this-rules}{
+        @content;
+      }
     }
-  } @else if(length($args) == 1) {
-    @include um-not__pollfill($args){
-      @content;
-    };
-  } @else {
-    &:matches(#{$args}){
-      @content;
-    }
-  }
-}
-
-//  um-matches__pollfill
-//  -
-/// :matches 伪类兼容处理
-/// - 参数和实例参照 um-matches
-/// @access private
-@mixin um-matches__pollfill($args...){
-  $matches-rules: '';
-
-  @for $i from 1 through length($args) {
-    @if $i > 1 {
-      $matches-rules: '#{$matches-rules} ,';
-    }
-    
-    $matches-rules: '#{$matches-rules}#{&}#{nth($args, $i)}';
-  }
-  @at-root #{$matches-rules}{
+  } @else{
     @content;
   }
 }

@@ -1,8 +1,0 @@
-@include describe('The uf-is-rational__division function =>'){
-  @include it('检测运算（除法）结果是否为有理数'){
-    @include assert-equal(
-      uf-is-rational__division(5, 3),
-      false
-    );
-  }
-}

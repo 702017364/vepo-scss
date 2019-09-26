@@ -1,34 +1,82 @@
-//  uf-is-empty
+//  f4empty
 //  -
-/// 检测值是否为空
-/// @param {Object} $value 检测值
-/// @return {Boolean} 是否为空值
-@function uf-is-empty($value){
-  @return if(
-    $value == null or $value == '',
-    true,
-    false
-  );
+/// 返回检测值是否为空
+/// @param {object} $value -
+/// @return {bool} -
+/// @example
+///   f4empty(0)      //false
+///   f4empty(false)  //false
+///   f4empty(null)   //true
+///   f4empty('')     //true
+@function f4empty($value){
+  @return $value == null or $value == '';
 }
 
-//  uf-is-empty
+//  f4px
 //  -
-/// 检测值单位是否为 px
-/// @param {Object} $value 检测值
-/// @return {Boolean} 单位是否为 px
-@function uf-is-px($value){
-  @return if(
-    type-of($value) == number and unit($value) == 'px',
-    true,
-    false
-  );
+/// 返回参数单位是否 px
+/// @param {object} $value -
+/// @return {bool} -
+/// @example
+///   f4px(4)     //false
+///   f4px('4px') //false
+///   f4px(4px)   //true
+@function f4px($value){
+  @return type-of($value) == number and unit($value) == px;
 }
 
-//  uf-is-boolean
+//  f4var
 //  -
-/// 检测类型是否为 Boolean
-/// @param {Object} $value 检测值
-/// @return {Boolean} 是否为 bool 类型
-@function uf-is-boolean($value){
-  @return type-of($value) == 'bool';
+/// 返回检测值是否符合 CSS 变量格式
+/// @param {string} $value -
+/// @return {bool} -
+/// @example
+///   f4var(var(--a)) //true
+///   f4var(a)        //false
+@function f4var($value){
+  @return type-of($value) == string
+    and str-length($value) > 7
+    and str-slice($value, 1, 6) == 'var(--'
+    and str-slice($value, -1) == ')';
+}
+
+//  f4native
+//  -
+/// 返回检测值是否满足 CSS 原生函数的格式（提供非空 $name 值时，则同时检测是否为该值所指的函数）
+/// @param {string} $value -
+/// @param {string} $name [''] 检测值要符合的函数名
+/// @param {number} $meet [1] 指定函数实参最少要满足的长度
+/// @return {bool} -
+/// @example
+///   f4native(url())       //false
+///   f4native(url(1))      //true
+///   f4native(url(1), src) //false
+///   f4native(url(1), url) //true
+///   f4native(url(), $meet: 0) //true
+@function f4native($value, $name: '', $meet: 1){
+  @if type-of($value) == string and type-of($name) == string{
+    @if str-slice($value, -1) == ')'{
+      $this-sub: $name + '(';
+      $this-index: str-index($value, $this-sub);
+      $this-value-length: str-length($value);
+      $this-sub-length: str-length($this-sub);
+
+      @if type-of($meet) != number or $meet < 0{
+        $meet: 0;
+      }
+
+      $meet: floor($meet);
+
+      @return if(
+        f4empty($name),
+        $this-index != null
+          and $this-index > 1
+          and $this-value-length > $this-index + $meet,
+        $this-index == 1
+          and $this-value-length > $this-sub-length + $meet
+      );
+    }
+  }
+
+  @return false;
 }

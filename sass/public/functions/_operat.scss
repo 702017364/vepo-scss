@@ -1,51 +1,60 @@
-//  uf-dir
+//  fmatrix
 //  -
-/// 获取方向值
-/// @param {String} $prop [''] -
-/// @return {List} -
-@function uf-dir($prop: ''){
-  $far: map-get($u-quartet-table, $prop);
-  @return if(
-    uf-is-empty($far),
-    $u-quartet,
-    $far
-  );
+/// 返回查找矩阵属性（有关于 top、right、bottom、left）得到的一个列表
+/// @param {string} $name [''] 索引名称
+/// @return {list} -
+/// @example
+///   fmatrix(raduis) //(top-left top-right bottom-right bottom-left)
+@function fmatrix($name: ''){
+  $this-value: map-get($gmatix-table, $name);
+
+  @return if(f4empty($this-value), $gmatix-basic, $this-value);
 }
 
-//  uf-dir
+//  finverse-name
 //  -
-/// 取反值（属性）
-/// @param {Number} $mode [1] -
-/// @param {String} $prop [''] -
-/// @return {Number} -
-@function uf-negate__prop($mode: 1, $prop: ''){
-  $far: uf-dir($prop);
-  $length: length($far);
-  @return uf-negate($mode, $length);
+/// 返回一个属性（以在矩阵列表中的角标表示）的对立属性（以在矩阵列表中的角标表示）
+/// @param {number} $mode [1] -
+/// @param {string} $prop [''] -
+/// @return {number} -
+/// @example
+///   finverse-name(1)  //3
+@function finverse-name($mode: 1, $prop: ''){
+  $this-matrix: fmatrix($prop);
+  $this-length: length($this-matrix);
+
+  @return finverse-index($mode, $this-length);
 }
 
-//  uf-negate
+//  finverse-index
 //  -
-/// 取反值
-/// @param {Number} $mode -
-/// @param {Number} $range -
-/// @return {Number} -
-@function uf-negate($mode, $range){
-  $value: ($mode + 2) % $range;
-  @return if(
-    $value == 0,
-    $range,
-    $value
-  );
-}
+/// 返回一个数字在取值范围内的对立数字
+/// @param {number} $value -
+/// @param {number} $range [4] 取值范围
+/// @return {number} -
+/// @example
+///   finverse-index(3, 4)  //1
+///   finverse-index(3, 6)  //6
+@function finverse-index($value, $range: 4){
+  @if type-of($range) != number or $range < 1{
+    $range: 4;
+  }
+  
+  $range: floor($range);
 
-//  uf-uuid
-//  -
-/// 获取一个 uuid
-/// @param {String} $space ['A'] -
-/// @return {String} -
-@function uf-uuid($space: 'A'){
-  $num: random();
-  $id: str-slice(unquote('#{$num}'), 3);
-  @return unquote('#{$space}#{$id}');
+  @if type-of($value) != number or $value < 1{
+    $value: 1;
+  }
+
+  $this-model: $range % 2;
+  $this-ceil: ceil($range / 2);
+  $this-value: floor($value) % $range + $this-ceil;
+  $this-range: $range + $this-model;
+  $this-value: $this-value % $this-range;
+  
+  @if $this-value == 0{
+    $this-value: if($this-model == 0, $range, $this-ceil);
+  }
+
+  @return $this-value;
 }

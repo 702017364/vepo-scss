@@ -1,22 +1,15 @@
-$test-before-value: '';
-
-@mixin test-before-mixin{
-  z-index: 1;
-}
-
 @include describe('The before mixin =>'){
-  @include it('设置伪元素 before 的 content 属性'){
+  @include it('设置伪元素 before'){
     @include assert{
       @include output{
-        @include before($test-before-value){
-          @include test-before-mixin;
+        @include before(a){
+          z-index: 1;
         };
       }
 
       @include contains{
-        &#{$u-character-before}{
-          content: $test-before-value;
-          @include test-before-mixin;
+        &::before{
+          content: "a"; z-index: 1;
         }
       }
     }

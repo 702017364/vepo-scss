@@ -1,43 +1,8 @@
-@include describe('The uf-calc-single function =>'){
-  @include it('默认运算'){
+@include describe('The fcalc-single function =>'){
+  @include it('function fcalc 的单例模式'){
     @include assert-equal(
-      uf-calc-single(2), 
-      2px
-    );
-  }
-
-  @include it('改变参数 $product'){
-    @include assert-equal(
-      uf-calc-single((2px 4vh), 2), 
-      'calc(1px + 2vh)'
-    );
-  }
-
-  @include it('改变参数 $product 和 $reply'){
-    @include assert-equal(
-      uf-calc-single((3vh -2cm), 2, 1), 
-      'calc(6vh - 4cm)'
-    );
-  }
-
-  @include it('返回值仅有一个 CSS3 var 且 $product 为 1'){
-    @include assert-equal(
-      uf-calc-single(--b), 
-      var(--b)
-    );
-  }
-
-  @include it('返回值仅有一个 CSS3 var 但 $product = 0.75 （不为 1）'){
-    @include assert-equal(
-      uf-calc-single(--b, .75, 1), 
-      'calc(var(--b) * 0.75)'
-    );
-  }
-
-  @include it('返回值仅有一个 CSS3 var 但 $product = 2 （不为 1）'){
-    @include assert-equal(
-      uf-calc-single(--b, 2, 1), 
-      'calc(var(--b) * 2)'
+      fcalc-single(calc(2px + 6%), 3, 0), 
+      calc(2px / 3 + 2%)
     );
   }
 }

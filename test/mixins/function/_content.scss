@@ -1,14 +1,14 @@
-$test-content-value: 'content';
-
-@include describe('The content mixin =>'){
+@include describe('The mcontent mixin =>'){
   @include it('设置 content 属性'){
+    $this-value: content;
+
     @include assert{
       @include output{
-        @include content($test-content-value);
+        @include mcontent($this-value);
       }
 
       @include expect{
-        content: $test-content-value;
+        content: quote($this-value);
       }
     }
   }

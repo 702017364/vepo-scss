@@ -1,54 +1,104 @@
-//  uf-string-split
+//  fsplit
 //  -
-/// 字符串分割
-/// @param {String} $string -
-/// @param {String} $separator 分隔符
-/// @return {List} -
-@function uf-string-split($string, $separator){
-  @if uf-is-empty($separator) {
-    $list: ();
-    @return append(
-      $list,
-      $string
-    );
-  } @else if type-of($separator) != string {
-    $separator: unquote('#{$separator}');
+/// 将一个字符串分割为子字符串（如果是数组类型，则会依次对每一项进行分割），然后将结果作为字符串数组返回
+/// @param {string|list<string>} $value 被分割字符串或字符串数组
+/// @param {string<list>} $separators 分隔符（参数）集合
+/// - 如果分隔符的类型不为 list，将会被强制转换成字符串
+/// @return {list} -
+/// @example
+///   fsplit(a1b2c3e) //(a1b2c3e,)
+///   fsplit(a1b2c3e, 1, 2, 3)  //(a b c e)
+///   fsplit(a1b2c d2e3f, 1, 2, 3)  //(a b c d e f)
+@function fsplit($value, $separators...){
+  @if type-of($value) != list{
+    $value: append((), $value);
   }
-  @return uf-string-split__for((), $string, $separator);
+
+  $this-length: length($separators);
+
+  @if $this-length == 0{
+    @return $value;
+  }
+
+  $this-list: ();
+  $this-separator: nth($separators, 1);
+
+  @if type-of($this-separator) != string{
+    $this-separator: unquote('#{$this-separator}');
+  }
+
+  $this-separator-length: str-length($this-separator);
+
+  @each $val in $value{
+    $this-while: true;
+    $this-value: $val;
+
+    @while $this-while{
+      $this-index: str-index($this-value, $this-separator);
+
+      @if $this-index{
+        $this-slice: str-slice($this-value, 1, $this-index - 1);
+        $this-list: append($this-list, $this-slice);
+        $this-value: str-slice($this-value, $this-index + $this-separator-length);
+      } @else{
+        $this-list: append($this-list, $this-value);
+        $this-while: false;
+      }
+    }
+  }
+
+  @if $this-length == 1{
+    @return $this-list;
+  } @else{
+    $this-separators: fslice($separators, 1);
+    
+    @return fsplit($this-list, $this-separators...);
+  }
 }
 
-//  uf-string-split__for
+//  fspace
 //  -
-/// 字符串分割（分割好后的子串加入到列表中）
-/// @param {List} $list -
-/// @param {String} $string -
-/// @param {String} $separator 分隔符
-/// @return {List} -
-@function uf-string-split__for($list, $string, $separator){
-  $index: str-index($string, $separator);
-  @if uf-is-empty($index) {
-    @return append(
-      $list,
-      $string
-    );
-  } @else {
-    $list: append(
-      $list,
-      str-slice($string, 0, $index - 1)
-    );
-    $string: str-slice(
-      $string,
-      $index + str-length($separator)
-    );
-    @return uf-string-split__for($list, $string, $separator);
-  }
-}
+/// 返回一个空格的 Unicode 表示形式
+/// @param {string|number} $value 字符映射关系
+/// - nbsp（或 1 或任意无效值） 对应 &nbsp;
+/// - ensp（或 2） 对应 &ensp;（相对于 1/2 个中文宽度）
+/// - emsp（或 3） 对应 &ensp;（相对于 1 个中文宽度）
+/// - thinsp（或 4） 对应 &thinsp;（最小空格）
+/// @return {string}
+/// @example
+///   fspace(1)   //'\0020'
+@function fspace($value){
+  $this-data: (
+    nbsp '\0020',
+    ensp '\2002',
+    emsp '\2003',
+    thinsp '\2009',
+  );
 
-//  uf-is-string
-//  -
-/// 检测是否为 String 类型
-/// @param {Object} $value -
-/// @return {Boolean} -
-@function uf-is-string($value){
-  @return type-of($value) == 'string';
+  $this-length: length($this-data);
+  $this-list: ();
+  $this-option: fcreate();
+  
+  @for $i from 1 through $this-length{
+    $this-item: nth($this-data, $i);
+    $this-key: nth($this-item, 1);
+    $this-value: nth($this-item, 2);
+    $this-list: append($this-list, $this-value);
+    $this-option: map-merge($this-option, (#{$this-key}: $this-value));
+  }
+
+  $this-value: null;
+  $this-type: type-of($value);
+
+  @if $this-type == number{
+    $this-value: nth($this-list, $value);
+  } @else if $this-type == string{
+    $this-value: map-get($this-option, $value);
+  }
+
+  @if f4empty($this-value){
+    $this-value: nth($this-list, 1);
+  }
+
+  @return $this-value;
 }

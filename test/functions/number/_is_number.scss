@@ -1,8 +1,0 @@
-@include describe('The uf-is-number function =>'){
-  @include it('检测是否为 number 类型'){
-    @include assert-equal(
-      uf-is-number(1),
-      true
-    );
-  }
-}

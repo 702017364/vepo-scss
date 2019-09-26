@@ -1,8 +1,10 @@
-@include describe('The uf-to-rem function =>'){
-  @include it('单位转 rem'){
+@include describe('The f2rem function =>'){
+  $this-value: 20;
+
+  @include it('将 #{$this-value} 转换成 rem 单位的值'){
     @include assert-equal(
-      uf-to-rem(16),
-      1rem
+      f2rem($this-value),
+      1.25rem
     );
   }
 }

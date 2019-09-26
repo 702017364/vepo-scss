@@ -1,7 +1,14 @@
-@include describe('The uf-compose function =>'){
-  @include it('属性拼接'){
+@include describe('The fcompose function =>'){
+  @include it('拼接出 border-top'){
     @include assert-equal(
-      uf-compose(top, border, width),
+      fcompose(top, border),
+      border-top
+    );
+  }
+
+  @include it('拼接出 border-top-width'){
+    @include assert-equal(
+      fcompose(top, border, width),
       border-top-width
     );
   }

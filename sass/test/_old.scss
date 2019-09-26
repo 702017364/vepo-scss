@@ -1,0 +1,105 @@
+.libsass3-5-0{
+  @include before('测试libsass@3.5.0新增的功能');
+
+  @include after('该宽度是通过科学计数法来定义'){
+    @extend %div-box;
+    width: 3e2px; display: block;
+  }
+
+  &[custom-value='abc']{
+    color: #f00;
+  }
+
+  &[custom-value='ABC' i]{
+    color: #000;
+  }
+}
+
+//不嵌套标签做表格固定效果（ie11 不支持，Firefox ）
+.scroll-translate{
+  @extend %div-box;
+  width: 80%; margin-left: 10%; padding-top: 0; height: 150px; position: relative; overflow: auto;
+}
+
+.counter-none{
+  font-size: f2all(12px); line-height: 1;
+
+  ul{
+    counter-reset: counter-count 0;
+  }
+
+  li{
+    padding-left: 1em; counter-increment: counter-count;
+
+    > span{
+      @include after(null){
+        content: counters(counter-count, '-');
+      }
+    }
+  }
+
+  > li{
+    &:last-child{
+      display: none;
+    }
+  }
+}
+
+.jitter-blur{
+  height: 200px; position: relative;
+
+  &-box{
+    @include mcenter(ty);
+    min-width: 10%; white-space: nowrap; background-color: #ccc;
+
+    > p{
+      margin-bottom: 1em;
+    }
+
+    @include after('after'){
+      display: block; transition: $gbasic-duration; //transform: scale(0);
+    }
+
+    &:hover{
+      @include after(null){
+        transform: scale(1);
+      }
+    }
+  }
+}
+
+.for-style{
+  > li{
+    width: 3em; line-height: 1em; border: .3em solid; counter-increment: li-count; text-align: center; background: 50% / 100% 100% no-repeat;
+    
+    &::before{
+      content: counter(li-count);
+    }
+
+    &:not(:first-child){
+      margin-top: .2em;
+    }
+  }
+
+  @include mfor-style(
+    (
+      1: #000 #000 'img3.jpg',
+      2: #333 #333 'img4.jpg',
+      3: #666 #666 'img2.jpeg',
+      4: #999 #999 'img4.jpeg'
+    ),
+    '> :nth-child(',
+    ')',
+    border-color color background-image
+  );
+}
+
+.scroll-panel{
+  &{
+    width: 100px; height: 200px; overflow: auto;
+
+    &-content{
+      height: 500px; background: linear-gradient(#fff, #555);
+    }
+  }
+}

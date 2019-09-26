@@ -1,8 +1,0 @@
-@include describe('The uf-calc__is-CSS4_var function =>'){
-  @include it('检测是否为 css4 变量'){
-    @include assert-equal(
-      uf-calc__is-CSS4_var('var(--b)'), 
-      true
-    );
-  }
-}

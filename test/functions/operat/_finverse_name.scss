@@ -1,0 +1,8 @@
+@include describe('The finverse-name function =>'){
+  @include it('获取 top 的相反属性（index 表示）'){
+    @include assert-equal(
+      finverse-name(1),
+      3
+    );
+  }
+}

@@ -1,16 +1,11 @@
-@include describe('The of-line function =>'){
-  $this-cache: $u-fontSize-root;
-  $u-fontSize-root: 15px !global;
 
-  $test-line-cache: 17;
-  $test-line-value: all($test-line-cache);
 
-  @include it('优化 line-height 值'){
+@include describe('The fline function =>'){
+  @include it('line-height 优化后的值大于优化前的值（如果没有进行实际的优化，则相等）'){
+    $this-size: 17px;
+    $this-line: 18px / $this-size;
+
     @include assert-equal(
-      of-line($test-line-value) == $test-line-cache / uf-less($u-fontSize-root) * 1rem,
-      false
-    );
-
-    $u-fontSize-root: $this-cache !global;
+      fline($this-line, $this-size) >= $this-line, true);
   }
 }

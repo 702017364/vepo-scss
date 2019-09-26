@@ -1,8 +1,0 @@
-@include describe('The uf-is-rational__multiplication function =>'){
-  @include it('检测运算（乘法）结果是否为有理数'){
-    @include assert-equal(
-      uf-is-rational__multiplication(.0023, .005),
-      false
-    );
-  }
-}

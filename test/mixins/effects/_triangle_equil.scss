@@ -1,20 +1,20 @@
-$test-triangle_equil-edge: 2em;
+@include describe('The mtriangle-equil mixin =>'){
+  $this-value: 2em;
 
-@include describe('The um-effect__triangle-equil mixin =>'){
-  @include it('向上的等边三角形'){
+  @include it('边框长度为 #{$this-value} 的等边三角形'){
     @include assert{
       @include output{
-        @include um-effect__triangle-equil($test-triangle_equil-edge);
+        @include mtriangle-equil($this-value);
       }
 
       @include expect{
-        $this-temp: uf-less($test-triangle_equil-edge);
-        $this-border-hypot: sqrt(pow($this-temp, 2) - pow($this-temp / 2, 2)) * uf-vector($test-triangle_equil-edge);
-        $this-border-width: $this-border-hypot $test-triangle-edge / 2;
+        $this-temp: fless($this-value);
+        $this-border-hypot: sqrt(pow($this-temp, 2) - pow($this-temp / 2, 2)) * fvector($this-value);
+        $this-border-width: $this-border-hypot $this-value / 2;
 
         width: 0; height: 0;
 
-        @if $u-browser-ie-version > 8 {
+        @if $gie > 8 {
           border: solid transparent; border-width: $this-border-width; border-top-width: 0; border-bottom-color: currentColor;
         } @else {
           border: solid; border-width: $this-border-width; border-left-color: transparent; border-right-color: transparent; border-top-width: 0;

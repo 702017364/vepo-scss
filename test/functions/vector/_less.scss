@@ -1,8 +1,28 @@
-@include describe('The uf-less function =>'){
-  @include it('去除单位'){
+@include describe('The fless function =>'){
+  $this-value: 3px;
+
+  @include it('去除 #{$this-value} 的单位，得到一个纯数字'){
     @include assert-equal(
-      uf-less(16px),
-      16
+      fless($this-value),
+      3
+    );
+  }
+
+  $this-value: 2.1%;
+
+  @include it('去除 #{$this-value} 的单位，得到一个纯数字'){
+    @include assert-equal(
+      fless($this-value),
+      2.1
+    );
+  }
+
+  $this-value: 5;
+
+  @include it('去除 #{$this-value} 的单位，得到一个纯数字'){
+    @include assert-equal(
+      fless($this-value),
+      5
     );
   }
 }

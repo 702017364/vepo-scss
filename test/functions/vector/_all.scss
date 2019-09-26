@@ -1,8 +1,10 @@
-@include describe('The uf-to-all function =>'){
-  @include it('单位转换（总接口）'){
+@include describe('The f2all function =>'){
+  $this-value: 32px;
+
+  @include it('将 #{$this-value} 转换成 rem 单位的值'){
     @include assert-equal(
-      uf-to-all(16),
-      1rem
+      f2all($this-value, 1rem),
+      2rem
     );
   }
 }

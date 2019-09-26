@@ -1,7 +1,28 @@
-@include describe('The uf-is-empty function =>'){
-  @include it('验证值是否为空'){
+@include describe('The f4empty function =>'){
+  @include it('0 不为空值'){
     @include assert-equal(
-      uf-is-empty(''), 
+      f4empty(0), 
+      false
+    );
+  }
+
+  @include it('false 不为空值'){
+    @include assert-equal(
+      f4empty(false), 
+      false
+    );
+  }
+
+  @include it('null 为空值'){
+    @include assert-equal(
+      f4empty(null), 
+      true
+    );
+  }
+
+  @include it('\'\' 为空值'){
+    @include assert-equal(
+      f4empty(''), 
       true
     );
   }

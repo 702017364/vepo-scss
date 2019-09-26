@@ -1,14 +1,5 @@
-@if false {
-  /*
-    命名规则：
-      1）$u- 全局变量
-      2）$U- 全局继承
-      3）uf- 方法
-      4）um- 混淆
-  */
-}
-
-@import 'var';         //全局变量
-@import 'functions';    //全局方法
-@import 'mixins';       //全局 mixin
-@import 'reset';        //重置样式
+@import 'var';        //全局变量
+@import 'extend';     //全局继承
+@import 'functions';  //全局方法
+@import 'mixins';     //全局混淆
+@import 'reset';      //重置样式
