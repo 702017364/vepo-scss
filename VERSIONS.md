@@ -1,3 +1,7 @@
+#### 2.0.6-bate.5
+  - 重构 gulp 环境
+  - 删除 npm run server 命令
+  - 移除原 mathsass 拷贝如的文件，改完直接 import 到包
 #### 2.0.6-bate.4
   - 删除跟样式无关例子
   - 将测试示例移出

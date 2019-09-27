@@ -13,8 +13,6 @@ npm install @vope/scss
 npm run dev
 # 发布
 npm run build
-# 发布环境
-npm run server
 # 测试开发环境
 npm run mocha
 # 测试
