@@ -34,7 +34,7 @@
     padding-left: 1em; counter-increment: counter-count;
 
     > span{
-      @include after(null){
+      &::after{
         content: counters(counter-count, '-');
       }
     }
@@ -58,12 +58,12 @@
       margin-bottom: 1em;
     }
 
-    @include after('after'){
-      display: block; transition: $gbasic-duration; //transform: scale(0);
+    &::after{
+      content: 'after'; display: block; transition: $gbasic-duration; //transform: scale(0);
     }
 
     &:hover{
-      @include after(null){
+      &::after{
         transform: scale(1);
       }
     }

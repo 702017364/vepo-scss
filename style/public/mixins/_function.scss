@@ -35,24 +35,6 @@
   }
 }
 
-//  after
-//  -
-/// 设置伪元素 after
-/// - 快速切换单冒号和双冒号的目的
-/// @param {string} $content [''] 属性值
-/// @example
-///   @include after(a){
-///     z-index: 1;
-///   }
-@mixin after($content: ''){
-  $this-selector: if($gie > 8, $gchar-colons, $gchar-colon) + after;
-
-  &#{$this-selector}{
-    @include mcontent($content);
-    @content;
-  }
-}
-
 //  mkeyframes
 //  -
 /// @keyframes简写模式

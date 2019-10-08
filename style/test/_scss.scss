@@ -3,14 +3,14 @@
 
   display: flex;
 
-  @include after{
+  &::after{
     $this-width: .5em;
     $this-weight: 2px;
 
     // @include marrow($this-width, $this-weight, 45deg);
     // @include marrow($this-width, $this-weight, 2);
     @include marrow($this-width, $this-weight, var(--b));
-    display: block;
+    content: ''; display: block;
   }
 }
 
@@ -24,8 +24,9 @@
     content: '';
   }
 
-  @include after(){
+  &::after{
     @include mtriangle-equil($this-edge, 3);
+    content: '';
   }
 }
 
@@ -40,9 +41,9 @@
     content: '';
   }
 
-  @include after(){
+  &::after{
     @include mtriangle($this-edge, $this-height, 3);
-    margin-left: 1em;
+    margin-left: 1em; content: '';
   }
 }
 
@@ -93,7 +94,9 @@
 
   width: $this-width; line-height: 1em;
 
-  @include after('fcalc 测试');
+  &::after{
+    content: 'fcalc 测试';
+  }
 }
 
 //cssnext

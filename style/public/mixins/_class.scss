@@ -142,7 +142,7 @@
 /// @example
 ///   @include mc-float;
 @mixin mc-float{
-  @include after(null){
+  &::after{
     @extend %epseudo-table;
   }
 }
