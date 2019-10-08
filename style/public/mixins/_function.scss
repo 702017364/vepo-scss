@@ -1,40 +1,5 @@
 @import 'functions/for';
 
-//  mcontent
-//  -
-/// 设置 content 属性
-/// @param {string} $value ['']
-/// @example
-///   @include mcontent(content);
-@mixin mcontent($value: ''){
-  @if $value != null{
-    $this-native: false;
-
-    @if type-of($value) != string{
-      $value: '#{$value}';
-    } @else{
-      $this-native: $value == normal
-        or $value == none
-        or $value == inherit
-        or $value == initial
-        or $value == no-close-quote
-        or $value == no-open-quote
-        or $value == close-quote
-        or $value == open-quote
-        or f4native($value, url)
-        or f4native($value, attr)
-        or f4native($value, counter)
-        or f4native($value, counters);
-    }
-
-    @if $this-native == false{
-      $value: quote($value);
-    }
-
-    content: $value;
-  }
-}
-
 //  mkeyframes
 //  -
 /// @keyframes简写模式
