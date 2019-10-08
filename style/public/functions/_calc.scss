@@ -224,7 +224,7 @@ $gcalc-default-mode: 0; //mode 默认值
 
   @if f4empty($this-sum){
     $this-sum: 0;
-  } @else if type-of($this-sum) == string{
+  } @else if type-of($this-sum) == string and not(fcalc4var($this-sum)){
     $this-sum: unquote('calc(#{$this-sum})');
   }
 
