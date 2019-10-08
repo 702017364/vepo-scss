@@ -19,8 +19,9 @@
 
   display: flex;
 
-  @include before(){
+  &::before{
     @include mtriangle-equil($this-edge, 1);
+    content: '';
   }
 
   @include after(){
@@ -34,8 +35,9 @@
 
   display: flex;
 
-  @include before(){
+  &::before{
     @include mtriangle($this-edge, $this-height, 1);
+    content: '';
   }
 
   @include after(){
@@ -60,7 +62,9 @@
     ), $option: (rem: true),
   );
 
-  @include before('mquick 测试');
+  &::before{
+    content: 'mquick 测试';
+  }
 }
 
 .function-calc{
@@ -111,7 +115,9 @@
   text-indent: fcalc-single(--a);
   color: var($this-var);
 
-  @include before('cssnext => var 测试');
+  &::before{
+    content: 'cssnext => var 测试';
+  }
 
   &:hover{
     #{$this-var}: $gcolor-light;

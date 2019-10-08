@@ -6,7 +6,7 @@
       }
 
       @include contains{
-        @include before(null){
+        &::before{
           @extend %epseudo-table;
         }
       }

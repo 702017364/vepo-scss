@@ -131,7 +131,7 @@
 /// @example
 ///   @include mc-mtop;
 @mixin mc-mtop{
-  @include before(null){
+  &::before{
     @extend %epseudo-table;
   }
 }

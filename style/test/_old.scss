@@ -1,9 +1,11 @@
 .libsass3-5-0{
-  @include before('测试libsass@3.5.0新增的功能');
+  &::before{
+    content: '测试libsass@3.5.0新增的功能';
+  }
 
-  @include after('该宽度是通过科学计数法来定义'){
+  &::after{
     @extend %div-box;
-    width: 3e2px; display: block;
+    width: 3e2px; content: '该宽度是通过科学计数法来定义'; display: block;
   }
 
   &[custom-value='abc']{
