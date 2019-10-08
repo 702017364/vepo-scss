@@ -1,3 +1,7 @@
+#### 2.1.0
+  - 修复 fcalc 仅有一个 CSS var 时，输出值还带有 calc
+  - 抛弃 before、after、mcontent、$gie
+  - 文件目录变更
 #### 2.0.6-bate.5
   - 重构 gulp 环境
   - 删除 npm run server 命令

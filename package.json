@@ -1,7 +1,7 @@
 {
   "name": "@vope/scss",
   "description": "增加SCSS方法、内置多个强大的mixin",
-  "version": "2.0.6-bate.5",
+  "version": "2.1.0",
   "dependencies": {
     "mathsass": "^0.11.0"
   },
