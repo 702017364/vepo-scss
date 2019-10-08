@@ -44,7 +44,6 @@
 //  mtriangle
 //  -
 /// 制作三角形（等腰）
-/// - 受全局变量 $gie 的影响，会产生 ie8 和非 ie8 两种模式
 /// @param {number|string} $edge 三角形底边宽
 /// - string 类型的值为 calc 函数和 CSS var
 /// @param {number|string} $height [$edge] 三角形高度
@@ -69,24 +68,16 @@
 
   @include mratio(0);
 
-  @if $gie > 8 { //现代浏览器写法
-    $this-flow-anti: finverse-name($mode);
+  $this-flow-anti: finverse-name($mode);
 
-    border: solid transparent; border-width: $this-value-positive $this-value-negative;
-    @include mfast-pos($mode, 0, border, width);
-    @include mfast-pos($this-flow-anti, currentColor, border, color);
-  } @else { //兼容 ie8 写法
-    border: solid; border-width: $this-value-positive $this-value-negative;
-    @include mfast-pos($this-flow-positive, transparent, border, color);
-    @include mfast-pos($this-flow-negative, transparent, border, color);
-    @include mfast-pos($mode, 0, border, width);
-  }
+  border: solid transparent; border-width: $this-value-positive $this-value-negative;
+  @include mfast-pos($mode, 0, border, width);
+  @include mfast-pos($this-flow-anti, currentColor, border, color);
 }
 
 //  mtriangle-equil
 //  -
 /// 制作三角形（等边）
-/// - 受全局变量 $gie 的影响，会产生 ie8 和非 ie8 两种模式
 /// @param {number|string} $edge 三角形底边宽
 /// - string 类型的值为 calc 函数和 CSS var
 /// @param {1|2|3|4} $mode [1] 箭头方向

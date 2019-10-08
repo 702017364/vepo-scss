@@ -12,13 +12,7 @@
         $this-border-hypot: sqrt(pow($this-temp, 2) - pow($this-temp / 2, 2)) * fvector($this-value);
         $this-border-width: $this-border-hypot $this-value / 2;
 
-        width: 0; height: 0;
-
-        @if $gie > 8 {
-          border: solid transparent; border-width: $this-border-width; border-top-width: 0; border-bottom-color: currentColor;
-        } @else {
-          border: solid; border-width: $this-border-width; border-left-color: transparent; border-right-color: transparent; border-top-width: 0;
-        }
+        width: 0; height: 0; border: solid transparent; border-width: $this-border-width; border-top-width: 0; border-bottom-color: currentColor;
       }
     }
   }

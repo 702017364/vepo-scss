@@ -59,9 +59,6 @@ $g4cssnext-matches: true !default;
 /// - 2、由于第 1 点的原因，所以目前做兼容选择符样式时，都是单独成组
 $g4cssnext-group: false !default;
 
-/// 设置浏览器（IE）的关联版本
-$gie: 9 !default;
-
 /// 设置视窗单位（vw、vh、vmin、vmax）的计算基础（默认值为 iPhone 6 尺寸）
 $gviewport-width: 375px !default;
 
