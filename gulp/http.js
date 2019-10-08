@@ -22,10 +22,7 @@ export default (cb) => {
     server.init(option);
     return gulp
       .watch(files)
-      .on('change', () => {
-        log('文件有变化开始刷新');
-        server.reload();
-      });
+      .on('change', () => server.reload());
   } else{
     cb();
   }

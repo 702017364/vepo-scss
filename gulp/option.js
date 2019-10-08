@@ -5,13 +5,13 @@ export default minimist(process.argv.slice(2));
 
 export const refname = join(__dirname, '../');
 
-export const style = 'sass';
+export const style = 'style';
 
-export const src = 'code';
+export const src = 'src';
 
-export const dist = 'jscss';
+export const dist = 'dist';
 
-export const assets = 'images';
+export const assets = 'assets';
 
 export const output = 'Index.css';
 

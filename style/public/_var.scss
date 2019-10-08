@@ -88,7 +88,7 @@ $gvector: 1rem !default;
 $gbasic-family: 'Microsoft YaHei' !default;
 
 /// 设置（CSS）统一资源路径（一般都特指图片资源）
-$gbasic-path: unquote('images/') !default;
+$gbasic-path: unquote('assets/') !default;
 
 /// 设置（CSS）动画 duration 基本值
 $gbasic-duration: .3s !default;
