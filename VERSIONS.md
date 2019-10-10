@@ -1,3 +1,5 @@
+#### 2.1.1
+  - 修复包安装后无法正确找到 mathsass 库问题
 #### 2.1.0
   - 修复 fcalc 仅有一个 CSS var 时，输出值还带有 calc
   - 抛弃 before、after、mcontent、$gie
