@@ -1,0 +1,9 @@
+{
+  "version": "2.2.0",
+  "files": [
+    "style",
+    "package-lock.json",
+    "package.json",
+    "README.md"
+  ]
+}

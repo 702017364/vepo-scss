@@ -9,7 +9,8 @@
     "dev": "gulp --test --map --dev",
     "build": "gulp",
     "mocha": "gulp mocha",
-    "test": "mocha"
+    "test": "mocha",
+    "package": "babel-node publish.js"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -33,6 +34,7 @@
     "gulp-uglify": "^3.0.2",
     "gulp-util": "^3.0.8",
     "mocha": "^6.1.3",
+    "node-cmd": "^3.0.0",
     "node-sass": "^4.11.0",
     "sass-true": "^4.0.0"
   },
