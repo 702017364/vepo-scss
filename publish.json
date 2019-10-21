@@ -1,7 +1,9 @@
 {
   "version": "2.2.0",
   "files": [
-    "style",
+    "style/public",
+    "style/skin",
+    "style/main.scss",
     "package-lock.json",
     "package.json",
     "README.md"
