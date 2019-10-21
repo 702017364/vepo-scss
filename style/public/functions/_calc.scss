@@ -35,7 +35,7 @@ $gcalc-default-mode: 0; //mode 默认值
 /// @param {list} $multiples [()]
 /// - 空类型的值会被转换为一个空数组
 /// - 非空且非list类型值会被强制转换成长度为1的list类型
-/// - 如何对应的 mode 或 multiple 不存在，则使用全局默认值
+/// - 如果对应的 mode 或 multiple 不存在，则使用全局默认值
 /// @param {list} $modes [()] 同参数 $multiples
 /// @example
 ///   fcalc-list(
@@ -49,13 +49,23 @@ $gcalc-default-mode: 0; //mode 默认值
   $modes: f2list($modes);
 
   $through: length($list);
+  $length1: length($multiples);
+  $length2: length($modes);
   $array: ();
 
   @for $i from 1 through $through{
     $array: append($array, (
       exp: nth($list, $i),
-      multiple: nth($multiples, $i) or $gcalc-default-multiple,
-      mode: nth($modes, $i) or $gcalc-default-mode,
+      multiple: if(
+        $i <= $length1, 
+        nth($multiples, $i), 
+        $gcalc-default-multiple
+      ),
+      mode: if(
+        $i <= $length2,
+        nth($modes, $i),
+        $gcalc-default-mode,
+      ),
     ));
   }
 
@@ -70,7 +80,7 @@ $gcalc-default-mode: 0; //mode 默认值
 /// - 空类型的值会被转换为一个空数组
 /// - 非空且非list类型值会被强制转换成长度为1的list类型
 /// - 数组奇数位为 mode，偶数为为 multiple
-/// - 如何对应的 mode 或 multiple 不存在，则使用全局默认值
+/// - 如果对应的 mode 或 multiple 不存在，则使用全局默认值
 /// @example
 ///   fcalc-option(
 ///     (100% 5px --b calc(50vw - 2rem)),
@@ -81,13 +91,25 @@ $gcalc-default-mode: 0; //mode 默认值
   $option: f2list($option);
 
   $through: length($list);
+  $length: length($option);
   $array: ();
 
   @for $i from 1 through $through{
+    $i1: $i * 2;
+    $i2: $i1 - 1;
+
     $array: append($array, (
       exp: nth($list, $i),
-      multiple: nth($option, $i * 2) or $gcalc-default-multiple,
-      mode: nth($option, $i * 2 - 1) or $gcalc-default-mode,
+      multiple: if(
+        $i1 <= $length,
+        nth($option, $i1),
+        $gcalc-default-multiple
+      ),
+      mode: if(
+        $i2 <= $length,
+        nth($option, $i2),
+        $gcalc-default-mode
+      ),
     ));
   }
 
