@@ -22,9 +22,22 @@ const reset = () => {
   }
 };
 
+const re = /[\\\/]+/g;
+
 const clone = (list = []) => {
   for(let i = 0, j = list.length || 0; i < j; i++){
-    const file = list[i];
+    let file = list[i];
+    const splits = file.split(re);
+    const { length } = splits;
+    let cache = '';
+    for(let i = 0; i < length - 1; i++){
+      cache = join(cache, splits[i]);
+      const cache0 = join(dir, cache);
+      if(!fs.existsSync(cache0)){
+        fs.mkdirSync(cache0);
+      }
+    }
+    file = splits[length - 1] |> join(cache, ?);
     const stat = fs.statSync(file);
     if(stat.isDirectory()){
       const cache = join(dir, file);
