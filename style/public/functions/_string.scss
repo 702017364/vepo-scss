@@ -76,7 +76,8 @@
   $this-list: ();
   $this-option: fcreate();
   
-  @for $i from 1 through $this-length{
+  @for $i0 from 0 to $this-length{
+    $i: $i0 + 1;
     $this-item: nth($this-data, $i);
     $this-key: nth($this-item, 1);
     $this-value: nth($this-item, 2);

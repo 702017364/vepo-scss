@@ -47,25 +47,15 @@ $gcalc-default-mode: 0; //mode 默认值
   $list: f2list($list);
   $multiples: f2list($multiples);
   $modes: f2list($modes);
-
   $through: length($list);
-  $length1: length($multiples);
-  $length2: length($modes);
   $array: ();
 
-  @for $i from 1 through $through{
+  @for $i0 from 0 to $through{
+    $i: $i0 + 1;
     $array: append($array, (
       exp: nth($list, $i),
-      multiple: if(
-        $i <= $length1, 
-        nth($multiples, $i), 
-        $gcalc-default-multiple
-      ),
-      mode: if(
-        $i <= $length2,
-        nth($modes, $i),
-        $gcalc-default-mode,
-      ),
+      multiple: fget-nth($multiples, $i, $gcalc-default-multiple),
+      mode: fget-nth($modes, $i, $gcalc-default-mode),
     ));
   }
 
@@ -94,22 +84,13 @@ $gcalc-default-mode: 0; //mode 默认值
   $length: length($option);
   $array: ();
 
-  @for $i from 1 through $through{
-    $i1: $i * 2;
-    $i2: $i1 - 1;
+  @for $i0 from 0 to $through{
+    $i: $i0 + 1;
 
     $array: append($array, (
       exp: nth($list, $i),
-      multiple: if(
-        $i1 <= $length,
-        nth($option, $i1),
-        $gcalc-default-multiple
-      ),
-      mode: if(
-        $i2 <= $length,
-        nth($option, $i2),
-        $gcalc-default-mode
-      ),
+      multiple: fget-nth($option, $i * 2, $gcalc-default-multiple),
+      mode: fget-nth($option, $i * 2 - 1, $gcalc-default-mode),
     ));
   }
 
@@ -189,7 +170,8 @@ $gcalc-default-mode: 0; //mode 默认值
     }
 
     @if $this-through > 0{
-      @for $i from 1 through $this-through{ //拼接 multiple
+      @for $i0 from 0 to $this-through{ //拼接 multiple
+        $i: $i0 + 1;
         $this-index: $i * 2;
         $this-multiple: nth($this-option, $this-index);
   
@@ -496,15 +478,16 @@ $gcalc-default-mode: 0; //mode 默认值
     
     @if $this-exp != 0{ //exp 值为 0 的操作可以忽略，例：0 / x
       $this-option: map-get($value, option);
-      $this-through: length($this-option) / 2; //只有偶数项才是 multiple，所以只要查找 length / 2 次
+      $this-length: length($this-option);
+      $this-through: $this-length / 2; //只有偶数项才是 multiple，所以只要查找 length / 2 次
       $this-newOption: ();
       $this-exp4number: type-of($this-exp) == number;
       $this-multiples: 1;
 
-      @for $i from 1 through $this-through{
-        $this-index: $i * 2;
-        $this-multiple: nth($this-option, $this-index);
-        $this-mode: nth($this-option, $this-index - 1);
+      @for $i0 from 0 to $this-through{
+        $i: $i0 + 1;
+        $this-multiple: fget-nth($this-option, $i * 2, 1);
+        $this-mode: fget-nth($this-option, $i * 2 - 1, 1);
         $this-ignore: false; //是否忽略本次的 multiple
         $this-multiple4number: type-of($this-multiple) == number and fvector($this-multiple) != 1%; //百分比的值将被视为字符串
 
@@ -815,7 +798,8 @@ $gcalc-default-mode: 0; //mode 默认值
     $this-cache: fcalc-ast($this-exp);
     $this-length: length($this-cache);
     
-    @for $i from 1 through $this-length{
+    @for $i0 from 0 to $this-length{
+      $i: $i0 + 1;
       $this-self: nth($this-cache, $i);
       $this-self-option: map-get($this-self, option);
       $this-self-option: fconcat($this-option, $this-self-option);
@@ -957,10 +941,11 @@ $gcalc-default-mode: 0; //mode 默认值
       $this-through: length($this-option) / 2;
       $this-list: ();
 
-      @for $i from 1 through $this-through{
-        $this-index: $i * 2 - 1;
-        $this-multiple: nth($this-option, $this-index + 1);
-        $this-mode: nth($this-option, $this-index);
+      @for $i from 0 to $this-through{
+        $i: $i + 1;
+        $i1: $i * 2;
+        $this-multiple: nth($this-option, $i1);
+        $this-mode: nth($this-option, $i1 - 1);
         
         @if $mode == 0{ //组合式为除数，则分项除法变乘法、乘法变除法
           $this-mode: if($this-mode == 0, 1, 0);

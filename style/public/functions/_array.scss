@@ -9,8 +9,8 @@
   $this-list: ();
   $this-length: length($list);
 
-  @for $i from 1 through $this-length{
-    $this-item: nth($list, $this-length - $i + 1);
+  @for $i from 0 to $this-length{
+    $this-item: nth($list, $this-length - $i);
     $this-list: append($this-list, $this-item);
   }
 
@@ -117,7 +117,8 @@
       } @else{
         $this-list: ();
 
-        @for $i from 1 through $this-length{
+        @for $i0 from 0 to $this-length{
+          $i: $i0 + 1;
           $this-item: if($i == $n, $value, nth($list, $i));
           $this-list: append($this-list, $this-item);
         }
@@ -151,7 +152,7 @@
 //  fget-nth
 //  -
 /// 获取数组第 n 项，如果 n 大于数组长度则返回传入的默认值
-///   - 注意该方法跟 fset-nth 并不一样，并不是原生方法 get-nth 的兼容版
+///   - 注意该方法跟 fset-nth 并不一样，并不是原生方法 nth 的兼容版
 /// @param {list} $list -
 /// @param {number} $n -
 /// @param {object} $default 指针超出时使用的默认值

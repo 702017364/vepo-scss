@@ -72,7 +72,8 @@
     $this-bout: 0;
     $this-plus: true;
 
-    @for $i from 1 through $this-length{
+    @for $i0 from 0 to $this-length{
+      $i: $i0 + 1;
       $this-char: str-slice($value, $i, $i);
 
       @if $i == 1 and $this-char == '+'{

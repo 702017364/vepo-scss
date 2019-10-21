@@ -36,7 +36,8 @@
   $this-opts: fmatrix($prop);
   $this-length: length($mode);
 
-  @for $i from 1 through $this-length{
+  @for $i0 from 0 to $this-length{
+    $i: $i0 + 1;
     $this-mode: nth($mode, $i);
     $this-nth: nth($this-opts, $this-mode);
     $this-key: fcompose($this-nth, $this-prev, $this-next);

@@ -38,7 +38,8 @@
           $this-rule: $prefix + $key + $suffix;
 
           #{$this-rule}{
-            @for $i from 1 through $this-through{
+            @for $i0 from 0 to $this-through{
+              $i: $i0 + 1;
               $this-key: nth($list, $i);
               $this-value: nth($value, $i);
 

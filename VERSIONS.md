@@ -1,3 +1,7 @@
+#### 2.2.0
+  - 添加 f2list/fget-nth 方法
+  - 修复 fcalc-lis/fcalc-option 方法 mode/multiple 找不到对应位时报错
+  - 修复 @for 问题造成的报错
 #### 2.1.1
   - 修复包安装后无法正确找到 mathsass 库问题
 #### 2.1.0

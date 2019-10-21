@@ -123,7 +123,8 @@
         @if index($this-excludes, $key) == null{
           $this-list: if($this4list, $this-value, ($this-value,));
 
-          @for $i from 1 through length($this-list){
+          @for $i0 from 0 to length($this-list){
+            $i: $i0 + 1;
             $this-item: nth($this-list, $i);
 
             @if type-of($this-item) == number{
