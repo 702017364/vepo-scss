@@ -1,0 +1,22 @@
+@include describe('The f2list function =>'){
+  @include it('空值（默认设置）'){
+    @include assert-equal(
+      f2list(null),
+      ()
+    );
+  }
+
+  @include it('空值（$emptycase = false）'){
+    @include assert-equal(
+      f2list(null, false),
+      append((), null)
+    );
+  }
+
+  @include it('数组参数'){
+    @include assert-equal(
+      fconcat((1, 2)),
+      (1, 2)
+    );
+  }
+}
