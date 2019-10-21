@@ -1,0 +1,15 @@
+@include describe('The fget-nth function =>'){
+  @include it('正常获取'){
+    @include assert-equal(
+      fget-nth((1 2 3), 2, a),
+      2
+    );
+  }
+
+  @include it('指针超出获取'){
+    @include assert-equal(
+      fget-nth((1 2 3), 4, a),
+      a
+    );
+  }
+}

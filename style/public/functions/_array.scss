@@ -147,3 +147,20 @@
   }
   @return $value;
 }
+
+//  fget-nth
+//  -
+/// 获取数组第 n 项，如果 n 大于数组长度则返回传入的默认值
+///   - 注意该方法跟 fset-nth 并不一样，并不是原生方法 get-nth 的兼容版
+/// @param {list} $list -
+/// @param {number} $n -
+/// @param {object} $default 指针超出时使用的默认值
+/// @return {object}
+@function fget-nth($list, $n, $default){
+  $this-length: length($list);
+  @return if(
+    $n <= $this-length,
+    nth($list, $n),
+    $default
+  );
+}
