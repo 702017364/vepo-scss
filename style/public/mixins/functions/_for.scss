@@ -30,10 +30,7 @@
 
     @if $this-type == list{
       @each $key, $value in $opts{
-        @if type-of($value) != list{
-          $value: ($value,);
-        }
-
+        $value: f2list($value, false);
         $this-size: length($value);
         $this-through: min($this-size, $this-length);
 

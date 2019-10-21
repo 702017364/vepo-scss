@@ -10,10 +10,7 @@
 ///   fsplit(a1b2c3e, 1, 2, 3)  //(a b c e)
 ///   fsplit(a1b2c d2e3f, 1, 2, 3)  //(a b c d e f)
 @function fsplit($value, $separators...){
-  @if type-of($value) != list{
-    $value: append((), $value);
-  }
-
+  $value: f2list($value, false);
   $this-length: length($separators);
 
   @if $this-length == 0{

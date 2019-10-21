@@ -44,21 +44,9 @@ $gcalc-default-mode: 0; //mode 默认值
 ///     (1 1 0 0)
 ///   ) //calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
 @function fcalc-list($list, $multiples: (), $modes: ()){
-  @if type-of($list) != list{
-    $list: ($list,);
-  }
-
-  @if f4empty($multiples){
-    $multiples: ();
-  } @else if type-of($multiples) != list{
-    $multiples: ($multiples,);
-  }
-
-  @if f4empty($modes){
-    $modes: ();
-  } @else if type-of($modes) != list{
-    $modes: ($modes,);
-  }
+  $list: f2list($list);
+  $multiples: f2list($multiples);
+  $modes: f2list($modes);
 
   $through: length($list);
   $array: ();
@@ -89,15 +77,8 @@ $gcalc-default-mode: 0; //mode 默认值
 ///     (1 1 1 -1 0 2 0 5)
 ///   ) //calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
 @function fcalc-option($list, $option: ()){
-  @if type-of($list) != list{
-    $list: ($list,);
-  }
-
-  @if f4empty($option){
-    $option: ();
-  } @else if type-of($option) != list{
-    $option: ($option,);
-  }
+  $list: f2list($list);
+  $option: f2list($option);
 
   $through: length($list);
   $array: ();

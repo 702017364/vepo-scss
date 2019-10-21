@@ -129,3 +129,21 @@
 
   @return $list;
 }
+
+//  f2list
+//  -
+/// 转换为数组
+/// @param {object} $value -
+/// @param {bool} $emptycase [true] 空值是否返回空数组
+/// @return {list} -
+/// @example
+///   f2list(1) //(1,)
+///   f2list((1, 2)) //(1, 2)
+@function f2list($value, $emptycase: true){
+  @if $emptycase and f4empty($value){
+    @return ();
+  } @else if type-of($value) != list{
+    @return append((), $value);
+  }
+  @return $value;
+}
