@@ -85,6 +85,7 @@
 /// - 2：向右箭头
 /// - 3：向下箭头
 /// - 4：向左箭头
+/// @example
 ///   @include mtriangle-equil(2em);
 @mixin mtriangle-equil($edge, $mode: 1){
   $this-type: type-of($edge);
