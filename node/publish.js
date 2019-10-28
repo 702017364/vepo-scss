@@ -75,7 +75,7 @@ const increaseVersion = (version) => {
 const RE = /^((?:\d+\.){2}\d+)$/;
 
 const newVersion = (customVersion) => {
-  const packageVersion = require('./package.json').version;
+  const packageVersion = require('../package.json').version;
   return customVersion && RE.test(customVersion) && quiteVersion(customVersion, packageVersion) === true
     ? customVersion
     : increaseVersion(packageVersion);

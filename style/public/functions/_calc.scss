@@ -32,7 +32,7 @@ $gcalc-default-mode: 0; //mode 默认值
 //  -
 /// fcalc 列表模式
 /// @param {list} $list 非list类型值将会被强制转换成长度为1的list类型
-/// @param {list} $multiples [()]
+/// @param {list} $multiples [()] -
 /// - 空类型的值会被转换为一个空数组
 /// - 非空且非list类型值会被强制转换成长度为1的list类型
 /// - 如果对应的 mode 或 multiple 不存在，则使用全局默认值
@@ -66,7 +66,7 @@ $gcalc-default-mode: 0; //mode 默认值
 //  -
 /// fcalc 配置模式
 /// @param {list} $list 非list类型值将会被强制转换成长度为1的list类型
-/// @param {list} $option [()]
+/// @param {list} $option [()] -
 /// - 空类型的值会被转换为一个空数组
 /// - 非空且非list类型值会被强制转换成长度为1的list类型
 /// - 数组奇数位为 mode，偶数为为 multiple

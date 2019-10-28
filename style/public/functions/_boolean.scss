@@ -1,6 +1,6 @@
 //  f4empty
 //  -
-/// 返回检测值是否为空
+/// 检测是否为空值
 /// @param {object} $value -
 /// @return {bool} -
 /// @example
@@ -14,7 +14,7 @@
 
 //  f4px
 //  -
-/// 返回参数单位是否 px
+/// 检测单位是否为 px
 /// @param {object} $value -
 /// @return {bool} -
 /// @example
@@ -27,7 +27,7 @@
 
 //  f4var
 //  -
-/// 返回检测值是否符合 CSS 变量格式
+/// 检测值是否符合 CSS 变量格式
 /// @param {string} $value -
 /// @return {bool} -
 /// @example
