@@ -7,16 +7,20 @@
   },
   "scripts": {
     "dev": "gulp --test --map --dev",
-    "build": "gulp",
+    "build": "gulp & npm run scssdom",
     "mocha": "gulp mocha",
     "test": "mocha",
-    "package": "babel-node publish.js"
+    "package": "babel-node node/publish.js",
+    "scssdom": "babel-node node/scssdom.js"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/node": "^7.6.3",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-do-expressions": "^7.6.0",
     "@babel/plugin-proposal-partial-application": "^7.4.4",
     "@babel/plugin-proposal-pipeline-operator": "^7.5.0",
+    "@babel/plugin-proposal-private-methods": "^7.6.0",
     "@babel/preset-env": "^7.6.3",
     "@babel/register": "^7.6.2",
     "browser-sync": "^2.26.7",

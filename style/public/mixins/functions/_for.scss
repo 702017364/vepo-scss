@@ -5,7 +5,7 @@
 /// @param {map} $opts 数据（key：选择器，value：属性值）
 /// @param {string} $prefix [''] 添加到 key 之前，拼接成一个新选择器
 /// @param {string} $suffix [''] 添加到 key 之后，拼接成一个新选择器
-/// @param {string, list} $list [background-position] 属性列表，string 类型的值还会被自动转换为 list 类型，其和 value 一一对应
+/// @param {string|list} $list [background-position] 属性列表，string 类型的值还会被自动转换为 list 类型，其和 value 一一对应
 /// @example
 ///   @include mfor-style(
 ///     (a: 1, b: 2 (5px 6px), 3 50% .5),

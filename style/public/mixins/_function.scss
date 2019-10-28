@@ -4,7 +4,7 @@
 //  -
 /// @keyframes简写模式
 /// @param {string|number|list} $name [''] -
-/// - 检测是否为空值，如果为空值则随机分配一个值，以下三种情况会被认为是控制
+/// - 用于设置 @keyframes 名称，空值则随机进行分配（以下情况被视为空值）：
 /// - 1、空字符串或 null
 /// - 2、值类型为 number
 /// - 3、值类型为 list 且第一项类型不为 string 或空字符串或 null
@@ -55,7 +55,7 @@
 
 //  mquick
 //  -
-/// 快速创建一个基于 em 为单位的 CSS Module（传入的可转换属性，其值单位（为 px、rem、无单位）都会被转换成 em）
+/// 快速创建一个基于 em 为单位的 CSS Module，仅针对单位为 px/rem 或纯数字的属性
 /// @param {number} $font-size 当前环境的字体大小（支持单位 px、rem、无单位）
 /// @param {map} $props 要进行转换的属性集合
 /// @param {bool} $itself [true] 是否要在 mixin 中设置 font-size 属性

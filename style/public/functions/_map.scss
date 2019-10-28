@@ -7,7 +7,7 @@
 /// @param {string} $after [''] 添加到数据之后（$after + $content 模式）
 /// - 如果 $after 为非 string 类型，将会被强制转换成字符串
 /// @return {map} -
-/// @throw $data 不是 map or list 类型
+/// @throw $data 必须为 map 或 list 类型
 /// @example
 ///   fadjust((key1: abc, key2: 123), i-, '.png') //(key1: i-abc.png, key2: i-123.png)
 ///   fadjust(abc 123), i-, '.png') //(abc: i-abc.png, 123: i-123.png)
@@ -45,7 +45,7 @@
 
 //  fcreate
 //  -
-/// 返回一个空的 map类型 值
+/// 返回一个空的 map
 /// @return {map}
 /// @example
 ///   fcreate() //()

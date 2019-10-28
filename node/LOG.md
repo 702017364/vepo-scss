@@ -1,3 +1,6 @@
+#### 2.2.1
+  - 添加 API 发布功能
+  - 调整开发环境中部分文件的位置
 #### 2.2.0
   - 添加 f2list/fget-nth 方法
   - 修复 fcalc-lis/fcalc-option 方法 mode/multiple 找不到对应位时报错
