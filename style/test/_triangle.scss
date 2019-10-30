@@ -23,7 +23,7 @@
     @include mtriangle-equil($this-width);
     top: 0; transform-origin: $this-width / 2 sqrt(3) / 3 * $this-width;
 
-    @include mkeyframes(8s linear infinite backwards){
+    @include mkeyframes($other: 8s linear infinite backwards){
       0%{
         transform: rotate(0deg);
       }

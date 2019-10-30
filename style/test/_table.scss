@@ -9,7 +9,7 @@
       $this-args: .5s;
 
       &:nth-child(2n){
-        @include mkeyframes($this-args){
+        @include mkeyframes($other: $this-args){
           0%{
             transform: translate(-30%, 0); opacity: 0;
           }
@@ -20,7 +20,7 @@
       }
 
       &:nth-child(2n + 1){
-        @include mkeyframes($this-args){
+        @include mkeyframes($other: $this-args){
           0%{
             transform: translate(30%, 0); opacity: 0;
           }
@@ -33,7 +33,7 @@
       &:not(:last-child){
         > td{
           &:nth-child(2n){
-            @include mkeyframes($this-args){
+            @include mkeyframes($other: $this-args){
               0%{
                 transform: translate(0, 100%); opacity: 0;
               }
@@ -43,7 +43,7 @@
             }
           }
           &:nth-child(2n + 1){
-            @include mkeyframes($this-args){
+            @include mkeyframes($other: $this-args){
               0%{
                 transform: translate(0, -100%); opacity: 0;
               }

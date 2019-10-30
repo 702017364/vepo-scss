@@ -1,15 +1,17 @@
 @import 'functions/for';
 
-//  mkeyframes
-//  -
 /// @keyframes简写模式
-/// @param {string|number|list} $name [''] -
-/// - 用于设置 @keyframes 名称，空值则随机进行分配（以下情况被视为空值）：
-/// - 1、空字符串或 null
-/// - 2、值类型为 number
-/// - 3、值类型为 list 且第一项类型不为 string 或空字符串或 null
+/// - 同时设置 animation 属性
+/// - 当 $name 非空时，@content 为 @keyframes 的内容
+/// @param {string} $name [''] animation-name 属性值
+/// - 如果该值为空，则智能分配一个唯一值
+/// @param {list|number|string} $other [()] 其它 animation 属性值
+/// - 如果该值为空，则仅设置 animation-name 属性
+/// - 空字符及空数组都将被视为空值
+/// @throw 类型错误
+/// @throw 不能同时为空
 /// @example
-///   @include mkeyframes(abc){
+///   @include mkeyframes($other: 2s infinite backwards){
 ///     0%{
 ///       opacity: 0;
 ///     }
@@ -17,46 +19,42 @@
 ///       opacity: 1;
 ///     }
 ///   }
-@mixin mkeyframes($name: ''){
-  $this-default: $gbasic-duration;
-  $this-type: type-of($name);
-  $this-name: '';
-  $this-value: ();
+@mixin mkeyframes($name: '', $other: ()){
+  $this-type: type-of($other);
 
-  @if f4empty($name){
-    $this-name: unique-id();
-    $this-value: ($this-name $this-default);
-  } @else if $this-type == string{
-    $this-name: unquote($name);
-    $this-value: ($this-name $this-default);
-  } @else if $this-type == list{
-    $this-name: nth($name, 1);
-    
-    @if f4empty($this-name) or type-of($this-name) != string{
-      $this-name: unique-id();
-      $this-value: fconcat($this-name, $name);
-    } @else{
-      $this-name: unquote($this-name);
-      $this-value: $name;
-    }
-  } @else if $this-type == number{
-    $this-name: unique-id();
-    $this-value: ($this-name $name);
+  @if $this-type == number{
+    $other: ($other,);
+  } @else if $this-type == string and $other != ''{
+    $other: (unquote($other),);
+  } @else if $this-type != list{
+    @error 'Invalid type: "$other".';
+  } @else if length($other) == 0{
+    $other: null;
   }
 
-  @if f4empty($this-name) == false{
-    @keyframes #{$this-name}{
+  $isA: f4empty($name);
+  $isB: f4empty($other);
+
+  @if $isA and $isB{
+    @error '"$name" 和 "$other" 不能同时为空.';
+  } @else if $isA{
+    $name: unique-id();
+  }
+
+  @if $isB{
+    animation-name: $name;
+  } @else{
+    @keyframes #{$name}{
       @content;
     }
 
-    animation: $this-value;
+    animation: $name join($other, (), space);
   }
 }
 
-//  mquick
-//  -
-/// 快速创建一个基于 em 为单位的 CSS Module，仅针对单位为 px/rem 或纯数字的属性
-/// @param {number} $font-size 当前环境的字体大小（支持单位 px、rem、无单位）
+/// 快速创建一个基于 em 为单位的 CSS Module
+/// - 仅针对单位为 px/rem 或纯数字的属性
+/// @param {number} $font-size 当前环境的字体大小（支持单位 px/rem 或纯数字）
 /// @param {map} $props 要进行转换的属性集合
 /// @param {bool} $itself [true] 是否要在 mixin 中设置 font-size 属性
 /// - 值会进行 f2rem 函数转换

@@ -4,7 +4,7 @@
 
     @include mratio($this-ratio);
     position: relative; transform-style: preserve-3d;
-    @include mkeyframes(8s linear infinite backwards){
+    @include mkeyframes($other: 8s linear infinite backwards){
       0%{
         transform: rotateX(0deg) rotateY(0deg);
       }
@@ -48,7 +48,7 @@
 
     @include mratio($this-ratio);
     position: relative; transform-style: preserve-3d;
-    @include mkeyframes(8s linear infinite backwards){
+    @include mkeyframes($other: 8s linear infinite backwards){
       0%{
         transform: rotateX(0deg) rotateY(0deg);
       }

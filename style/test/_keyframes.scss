@@ -5,7 +5,7 @@
   --value: calc(var(#{$this-key}) * 3.6deg);
 
   @include mratio(200px);
-  @include mkeyframes(5s linear infinite){
+  @include mkeyframes($other: 5s linear infinite){
     @for $i from 1 through 100{
       #{$i}%{
         $this-value: $i;

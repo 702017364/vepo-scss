@@ -5,7 +5,7 @@
 
     @include mratio($this-ratio);
     position: relative; border-radius: 50%; transform-style: preserve-3d; color: #ccc;
-    @include mkeyframes(8s linear infinite backwards){
+    @include mkeyframes($other: 8s linear infinite backwards){
       0%{
         transform: rotateX(0deg) rotateY(30deg);
       }

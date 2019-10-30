@@ -2,7 +2,7 @@
   @include it('使用简写模式定义一个属性 animation'){
     @include assert{
       @include output{
-        @include mkeyframes(abc){
+        @include mkeyframes(abc, 2s infinite backwards){
           0%{
             opacity: 0;
           }
@@ -13,7 +13,7 @@
       }
 
       @include expect{
-        animation: abc $gbasic-duration;
+        animation: abc 2s infinite backwards;
 
         @keyframes abc{
           0%{
