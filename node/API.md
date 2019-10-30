@@ -67,16 +67,17 @@
 #### :triangular_flag_on_post: `mfor-style`
 
 ##### :bicyclist: 说明
-  1. 遍历输出 css 规则和属性
-  2. 如果属性为 background-image，会自动调用 furl 方法对值进行处理
+  1. 遍历输出 css 选择器和声明
+  2. background-image 属性会自动调用 furl 方法对值进行处理
+  3. @content 将被分配到每一个产生的选择器中
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
   -|:-:|:-:|-
-  `$opts`|map||:pushpin: 数据（key：选择器，value：属性值）
-  `$prefix`|string|**''**|:pushpin: 添加到 key 之前，拼接成一个新选择器
-  `$suffix`|string|**''**|:pushpin: 添加到 key 之后，拼接成一个新选择器
-  `$list`|string\|list|**background-position**|:pushpin: 属性列表，string 类型的值还会被自动转换为 list 类型，其和 value 一一对应
+  `$opts`|map||:pushpin: 格式（选择器：属性值 or 属性值列表）
+  `$prefix`|string|**''**|:pushpin: 添加到 $opts 的选择器之前，生成一个新选择器
+  `$suffix`|string|**''**|:pushpin: 添加到 $opts 的选择器之后，生成一个新选择器
+  `$list`|list\|string|**background-position**|:pushpin: 属性列表<br />:pushpin: string 类型的值会被自动转换为 list 类型<br />:pushpin: 列表值与 $opts 中属性值以角标形式对应，如果没有找到对应项则忽略
 
 ##### :bicyclist: 示例
 ```
@@ -95,15 +96,22 @@
 
 ##### :bicyclist: 说明
   1. @keyframes简写模式
+  2. 同时设置 animation 属性
+  3. 当 $name 非空时，@content 为 @keyframes 的内容
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
   -|:-:|:-:|-
-  `$name`|string\|number\|list|**''**|:pushpin: 用于设置 @keyframes 名称，空值则随机进行分配（以下情况被视为空值）：<br />:pushpin: 1、空字符串或 null<br />:pushpin: 2、值类型为 number<br />:pushpin: 3、值类型为 list 且第一项类型不为 string 或空字符串或 null
+  `$name`|string|**''**|:pushpin: animation-name 属性值<br />:pushpin: 如果该值为空，则智能分配一个唯一值
+  `$other`|list\|number\|string|**()**|:pushpin: 其它 animation 属性值<br />:pushpin: 如果该值为空，则仅设置 animation-name 属性<br />:pushpin: 空字符及空数组都将被视为空值
+
+##### :bicyclist: 错误
+  1. 类型错误
+  2. 不能同时为空
 
 ##### :bicyclist: 示例
 ```
-@include mkeyframes(abc){
+@include mkeyframes($other: 2s infinite backwards){
   0%{
     opacity: 0;
   }
@@ -117,12 +125,13 @@
 #### :triangular_flag_on_post: `mquick`
 
 ##### :bicyclist: 说明
-  1. 快速创建一个基于 em 为单位的 CSS Module，仅针对单位为 px/rem 或纯数字的属性
+  1. 快速创建一个基于 em 为单位的 CSS Module
+  2. 仅针对单位为 px/rem 或纯数字的属性
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
   -|:-:|:-:|-
-  `$font-size`|number||:pushpin: 当前环境的字体大小（支持单位 px、rem、无单位）
+  `$font-size`|number||:pushpin: 当前环境的字体大小（支持单位 px/rem 或纯数字）
   `$props`|map||:pushpin: 要进行转换的属性集合
   `$itself`|bool|**true**|:pushpin: 是否要在 mixin 中设置 font-size 属性<br />:pushpin: 值会进行 f2rem 函数转换
   `$option`|map|**$gquick-options**|:pushpin: 配置
@@ -146,7 +155,7 @@
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
   -|:-:|:-:|-
-  `$mode`|1\|2\|3\|4\|x\|y\|o\|list|**o**|:pushpin: 方位设置（所有的值都将被转换为 list 类型）<br />:pushpin: 1、2、3、4 分别对应 top、right、bottom、left<br />:pushpin: x：相当于 (2, 4)，为横向属性（right、left）<br />:pushpin: y：相当于 (1, 3)，为纵向属性（top、bottom）<br />:pushpin: o：相当于 (1, 2, 3, 4)，为所有属性
+  `$mode`|1\|2\|3\|4\|x\|y\|o\|list|**o**|:pushpin: 方位设置（所有的值都将被转换为 list 类型）<br />:pushpin: 1-4 分别对应 top、right、bottom、left<br />:pushpin: x：相当于 (2, 4)，为横向属性（right、left）<br />:pushpin: y：相当于 (1, 3)，为纵向属性（top、bottom）<br />:pushpin: o：相当于 (1, 2, 3, 4)，为所有属性
   `$value`|number|**0**|:pushpin: 属性值
   `$prop`|string|**''**|:pushpin: 方位前导值（拼接成一个新属性）
   `$type`|string|**''**|:pushpin: 方位后导值（拼接成一个新属性）
@@ -165,7 +174,7 @@
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
   -|:-:|:-:|-
-  `$mode`|tx\|ty\|to\|px\|py\|po|**to**|:pushpin: 居中方式<br />:pushpin: tx：使用 translateX 设置水平居中<br />:pushpin: ty：使用 translateY 设置垂直居中<br />:pushpin: to：使用 translate 设置水平和垂直居中<br />:pushpin: px：使用 margin 设置水平居中<br />:pushpin: py：使用 margin 设置垂直居中<br />:pushpin: po：使用 margin 设置水平和垂直居中
+  `$mode`|tx\|ty\|to\|px\|py\|po|**to**|:pushpin: 居中方式<br />:pushpin: tx：使用 translateX 水平居中<br />:pushpin: ty：使用 translateY 垂直居中<br />:pushpin: to：使用 translate 水平和垂直居中<br />:pushpin: px：使用 margin 水平居中<br />:pushpin: py：使用 margin 垂直居中<br />:pushpin: po：使用 margin 水平和垂直居中
   `$type`|string|**absolute**|:pushpin: 定位方式
 
 ##### :bicyclist: 示例
@@ -182,7 +191,7 @@
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
   -|:-:|:-:|-
-  `$value`|number|**$gbasic-icon**|:pushpin: 属性值<br />:pushpin: -1（负数）：仅设置 line-height 为高度属性<br />:pushpin: 0：同时设置 height 和 line-height<br />:pushpin: 1（正数）：仅设置 height 为高度属性
+  `$value`|number|**$gbasic-icon**|:pushpin: 属性值<br />:pushpin: -1：仅设置 line-height 为高度属性<br />:pushpin: 0：同时设置 height 和 line-height<br />:pushpin: 1：仅设置 height 为高度属性
   `$ratio`|number|**1**|:pushpin: 比例值（高度 / 宽度）
 
 ##### :bicyclist: 示例
@@ -236,7 +245,7 @@
 ##### :bicyclist: 说明
   1. 设置 ::placeholder 样式
   2. 当 $color 为无效的（color 类型）值时，将不设置 color 属性
-  3. 设置全局 $g4cssnext-group: true，可以将多个选择符以逗号分隔的方式并为组（这需要浏览器能正确识别不认识的选择器）
+  3. 设置全局 $g4cssnext-group: true，可以将多个选择器以逗号分隔的方式并为组（请参考兼容性谨慎设置）
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
@@ -376,13 +385,12 @@
 
 ##### :bicyclist: 说明
   1. 对指定长度后的小数进行四舍五入
-  2. 如果 $pow 为负数，则对整数位（从右向左）第 $pow * -1 位 进行四舍五入
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
   -|:-:|:-:|-
   `$value`|number||:pushpin: 进行运算的值
-  `$pow`|number|**0**|:pushpin: 保留小数的长度
+  `$pow`|number|**0**|:pushpin: 保留小数的长度<br />:pushpin: 如果值为负数，则对整数位（从右向左）第 $pow * -1 位进行四舍五入
 
 ##### :bicyclist: 返回值
   类型|描述
@@ -414,7 +422,7 @@ fround(2735, -2)  //2700
   number|:thumbsdown:
 
 ##### :bicyclist: 错误
-  1. $value（具体值）不是一个有效的字符串 number
+  1. $value 不是一个有效的字符串 number
 
 ##### :bicyclist: 示例
 ```
@@ -554,6 +562,17 @@ f2list((1, 2)) //(1, 2)
   `$list`|list||:thumbsdown:
   `$n`|number||:thumbsdown:
   `$default`|object||:pushpin: 指针超出时使用的默认值
+
+##### :bicyclist: 返回值
+  类型|描述
+  :-:|-
+  object|:thumbsdown:
+
+##### :bicyclist: 示例
+```
+fget-nth((1 2 3), 2, a) //2
+fget-nth((1 2 3), 4, a) //a
+```
 <br />
 
 #### :triangular_flag_on_post: `fmatrix`
@@ -806,10 +825,11 @@ fcompose(top, border, width)  //border-top-width
 #### :triangular_flag_on_post: `fline`
 
 ##### :bicyclist: 说明
-  1. 返回一个优化过的 line-height 值，从而避免转换后造成的误差（在进行单位转换的过程中，部分值会在转换过程中造成精度损失，而由于部分浏览器针对 line-height 使用的是去尾处理，结果就是造成实际应用值比我们预期设置的值少 1px）
-  2. 该方法主要测试浏览器为 Google Chrome（73.0.3683.86）
-  3. 需要设置全局变量 $g4major-line: true （允许进行优化）
-  4. 由于百分比值在各个浏览器中计算方式存在更大差异，所以尽量避免发生百分比值优化
+  1. 返回一个优化过的 line-height 值，从而避免转换后造成的误差
+  2. 在进行单位转换的过程中，部分值会在转换过程中造成精度损失，而由于部分浏览器针对 line-height 使用的是去尾处理，结果就是造成实际应用值比我们预期设置的值少 1px
+  3. 该方法主要测试浏览器为 Google Chrome（73.0.3683.86）
+  4. 需要设置全局变量 $g4major-line: true （允许进行优化）
+  5. 由于百分比值在各个浏览器中计算方式存在较大差异，所以尽量避免发生百分比值优化
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
@@ -902,7 +922,8 @@ f4var(a)        //false
 #### :triangular_flag_on_post: `f4native`
 
 ##### :bicyclist: 说明
-  1. 返回检测值是否满足 CSS 原生函数的格式（提供非空 $name 值时，则同时检测是否为该值所指的函数）
+  1. 返回检测值是否满足 CSS 原生函数的格式
+  2. 提供非空 $name 值时，则同时检测是否为该值所指的函数
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述
@@ -929,7 +950,8 @@ f4native(url(), $meet: 0) //true
 #### :triangular_flag_on_post: `fsplit`
 
 ##### :bicyclist: 说明
-  1. 将一个字符串分割为子字符串（如果是数组类型，则会依次对每一项进行分割），然后将结果作为字符串数组返回
+  1. 将一个字符串分割为子字符串，然后将结果作为字符串数组返回
+  2. 如果是数组类型，则会依次对每一项进行分割
 
 ##### :bicyclist: 参数
   名称|类型|默认值|描述

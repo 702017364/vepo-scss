@@ -1,5 +1,3 @@
-//  fmatrix
-//  -
 /// 返回查找矩阵属性（有关于 top、right、bottom、left）得到的一个列表
 /// @param {string} $name [''] 索引名称
 /// @return {list} -
@@ -11,8 +9,6 @@
   @return if(f4empty($this-value), $gmatix-basic, $this-value);
 }
 
-//  finverse-name
-//  -
 /// 返回一个属性（以在矩阵列表中的角标表示）的对立属性（以在矩阵列表中的角标表示）
 /// @param {number} $mode [1] -
 /// @param {string} $prop [''] -
@@ -26,8 +22,6 @@
   @return finverse-index($mode, $this-length);
 }
 
-//  finverse-index
-//  -
 /// 返回一个数字在取值范围内的对立数字
 /// @param {number} $value -
 /// @param {number} $range [4] 取值范围

@@ -1,5 +1,3 @@
-//  fadjust
-//  -
 /// 统一调整所有的项
 /// @param {map|list} $data -
 /// @param {string} $before [''] 添加到数据之前（$before + $content 模式）
@@ -43,8 +41,6 @@
   @error '$data 不是 map or list 类型';
 }
 
-//  fcreate
-//  -
 /// 返回一个空的 map
 /// @return {map}
 /// @example

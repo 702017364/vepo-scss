@@ -1,5 +1,3 @@
-//  f4rational
-//  -
 /// 返回两数运算结果是否为有理数（值是否可以除尽）
 /// - 在 sass 中由于小数取值长度的问题，有理数的定义为小数5位数，超过则为无理数
 /// @param {number} $first -
@@ -27,8 +25,6 @@
   @return f2num('#{$this-value}') == $this-value;
 }
 
-//  f4rational-reciprocal
-//  -
 /// 返回一个数的倒数是否为有理数
 /// - 在 sass 中由于小数取值长度的问题，有理数的定义为小数5位数，超过则为无理数
 /// @param {number} $num -

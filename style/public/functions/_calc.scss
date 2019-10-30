@@ -3,8 +3,6 @@ $gcalc-right: ')'; //字符：右括号
 $gcalc-default-multiple: 1; //multiple 默认值
 $gcalc-default-mode: 0; //mode 默认值
 
-//  fcalc
-//  -
 /// 对原生函数 calc 添加计算功能
 /// @param {number|string|list|map<list>} $list -
 /// @return {number|string} -
@@ -28,8 +26,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return fcalc-output($this-classify);
 }
 
-//  fcalc-list
-//  -
 /// fcalc 列表模式
 /// @param {list} $list 非list类型值将会被强制转换成长度为1的list类型
 /// @param {list} $multiples [()] -
@@ -62,8 +58,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return fcalc($array);
 }
 
-//  fcalc-option
-//  -
 /// fcalc 配置模式
 /// @param {list} $list 非list类型值将会被强制转换成长度为1的list类型
 /// @param {list} $option [()] -
@@ -97,8 +91,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return fcalc($array);
 }
 
-//  fcalc-single
-//  -
 /// fcalc 单例模式
 /// @param {number|string|list|map} $value -
 /// @param {number|string} $multiple [$gcalc-default-multiple] 除数（或乘数）
@@ -113,8 +105,6 @@ $gcalc-default-mode: 0; //mode 默认值
   ));
 }
 
-//  fcalc-output
-//  -
 /// 输出
 /// @access private
 /// @param {map} $classify -
@@ -216,8 +206,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-sum;
 }
 
-//  fcalc-merge8exp
-//  -
 /// 合并相同表达式
 /// @access private
 /// @param {list} $list -
@@ -348,8 +336,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-list;
 }
 
-//  fcalc-merge8option
-//  -
 /// 将相同 option 项归类在一起
 /// @access private
 /// @param {map} $classify -
@@ -381,8 +367,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-classify;
 }
 
-//  fcalc-merge8unit
-//  -
 /// 合并相同单位的项
 /// @access private
 /// @param {map} $classify
@@ -424,8 +408,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-classify;
 }
 
-//  fcalc-classify8option
-//  -
 /// 将列表通过 option 进行归类
 /// @access private
 /// @param {list} $list -
@@ -462,8 +444,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-classify;
 }
 
-//  fcalc-merge8quantity
-//  -
 /// 合并 multiple
 /// @access private
 /// @param {list} $list -
@@ -534,8 +514,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-list;
 }
 
-//  fcalc-quite2length
-//  -
 /// 比较数与其倒数的（字符）长度，取长度短的进行操作
 /// @access private
 /// @param {number} $value -
@@ -555,8 +533,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return ($mode $value);
 }
 
-//  fcalc-conver
-//  -
 /// 转换表达式
 /// @access private
 /// @param {list} $list 表达式集合
@@ -589,8 +565,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-list;
 }
 
-//  fcalc-converMap
-//  -
 /// 转换 map 表达式
 /// @access private
 /// @param {map} -
@@ -626,8 +600,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-list;
 }
 
-//  fcalc-pushOption
-//  -
 /// 往表达式中添加配置项，并返回新的表达式
 /// @access private
 /// @param {map} $value 表达式
@@ -652,8 +624,6 @@ $gcalc-default-mode: 0; //mode 默认值
   }
 }
 
-//  fcalc-converString
-//  -
 /// 转换 string 表达式
 /// @access private
 /// @param {string} -
@@ -682,8 +652,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-value;
 }
 
-//  fcalc-ast
-//  -
 /// 解析（字符串）为抽象语法树
 /// @access private
 /// @param {string} $value 字符串表达式
@@ -819,8 +787,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-list;
 }
 
-//  fcalc4Minusexp
-//  -
 /// 返回当前子表达式是否为减法运算
 /// @access private
 /// @param {string} $value -
@@ -838,8 +804,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return false;
 }
 
-//  fcalc-multipleQuery
-//  -
 /// 返回查找出除数（或乘数）信息
 /// @access private
 /// @param {string} $value -
@@ -895,8 +859,6 @@ $gcalc-default-mode: 0; //mode 默认值
   );
 }
 
-//  fcalc-splitOption8push
-//  -
 /// 截取除数（或乘数）信息并加入到列表中，并返回一个新列表
 /// @access private
 /// @param {list} $list 已有列表
@@ -915,8 +877,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return fconcat($list, $this-option);
 }
 
-//  fcalc-multipleConver
-//  -
 /// 对字符串除数（或乘数）进行转换
 /// @access private
 /// @param {string} $multiple 除数（或乘数）
@@ -964,8 +924,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-list;
 }
 
-//  fcalc4next
-//  -
 /// 返回之后的项是否为同级别的表达式
 /// @access private
 /// @param {string} $value -
@@ -981,8 +939,6 @@ $gcalc-default-mode: 0; //mode 默认值
     and str-slice($value, $this-next, $this-next) == ' ';
 }
 
-//  fcalc-next4multiple
-//  -
 /// 返回之后的项是否为对应的除数（或乘数）
 /// @access private
 /// @param {string} $value -
@@ -996,8 +952,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $this-item == '*' or $this-item == '/';
 }
 
-//  fcalc-bracketsQuery
-//  -
 /// 返回对应右括号的位置
 /// @access private
 /// @param {string} $value -
@@ -1037,8 +991,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return $i;
 }
 
-//  fcalc4calc
-//  -
 /// 返回字符串是否为 calc 表达式格式
 /// @access private
 /// @param {string} $value -
@@ -1050,8 +1002,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return f4native($value, calc, 1);
 }
 
-//  fcalc4var
-//  -
 /// 返回字符串是否为 CSS var 格式
 /// @access private
 /// @param {string} $value -
@@ -1072,8 +1022,6 @@ $gcalc-default-mode: 0; //mode 默认值
   }
 }
 
-//  fcalc6operator
-//  -
 /// 返回字符串是否含有（加减乘除）运算符
 /// @access private
 /// @param {string} $value -
@@ -1094,8 +1042,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return false;
 }
 
-//  fcalc6joiner
-//  -
 /// 返回字符串是否包含某种运算符
 /// @access private
 /// @param {string} $value -
@@ -1107,8 +1053,6 @@ $gcalc-default-mode: 0; //mode 默认值
   @return str-index($value, ' #{$joiner} ') != null;
 }
 
-//  fcalc-default
-//  -
 /// 返回一个表达式
 /// @access private
 /// @param {number|string|list|map} $exp [0] -

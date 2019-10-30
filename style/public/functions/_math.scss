@@ -1,9 +1,7 @@
-//  fround
-//  -
 /// 对指定长度后的小数进行四舍五入
-/// - 如果 $pow 为负数，则对整数位（从右向左）第 $pow * -1 位 进行四舍五入
 /// @param {number} $value 进行运算的值
 /// @param {number} $pow [0] 保留小数的长度
+/// - 如果值为负数，则对整数位（从右向左）第 $pow * -1 位进行四舍五入
 /// @return {number} -
 /// @example
 ///   fround(2.733, 2)  //2.73
@@ -15,14 +13,12 @@
   @return round($num * $this-mul) / $this-mul;
 }
 
-//  f2num
-//  -
 /// 返回由字符串数字转换得到的数字
 /// @param {string} $value -
 /// @param {bool} $withUnit [false] 是否进行单位转换
 /// - 如果值为 true 的话，则会启用带单位转换功能
 /// @return {number} -
-/// @throw $value（具体值）不是一个有效的字符串 number
+/// @throw $value 不是一个有效的字符串 number
 /// @example
 ///   f2num('123')    //123
 ///   f2num('.123')   //0.123
@@ -32,7 +28,7 @@
 ///   f2num('1.23cm') //报错：$withUnit = false 时不带单位转换功能
 ///   f2num('1.23cmc')  //报错：cmc 不是一个有效的单位
 @function f2num($value, $withUnit: false){
-  $this-error: '\'#{$value}\' 不是一个有效的字符串 number';
+  $this-error: '"#{$value}" 不是一个有效的字符串 number';
   $this-length: str-length($value);
 
   @if $withUnit{

@@ -1,8 +1,6 @@
-//  mfast-pos
-//  -
 /// 快捷设置属性（含有 top、right、bottom、left）
 /// @param {1|2|3|4|x|y|o|list} $mode [o] 方位设置（所有的值都将被转换为 list 类型）
-/// - 1、2、3、4 分别对应 top、right、bottom、left
+/// - 1-4 分别对应 top、right、bottom、left
 /// - x：相当于 (2, 4)，为横向属性（right、left）
 /// - y：相当于 (1, 3)，为纵向属性（top、bottom）
 /// - o：相当于 (1, 2, 3, 4)，为所有属性
@@ -46,16 +44,14 @@
   }
 }
 
-//  mcenter
-//  -
 /// 设置居中
 /// @param {tx|ty|to|px|py|po} $mode [to] 居中方式
-/// - tx：使用 translateX 设置水平居中
-/// - ty：使用 translateY 设置垂直居中
-/// - to：使用 translate 设置水平和垂直居中
-/// - px：使用 margin 设置水平居中
-/// - py：使用 margin 设置垂直居中
-/// - po：使用 margin 设置水平和垂直居中
+/// - tx：使用 translateX 水平居中
+/// - ty：使用 translateY 垂直居中
+/// - to：使用 translate 水平和垂直居中
+/// - px：使用 margin 水平居中
+/// - py：使用 margin 垂直居中
+/// - po：使用 margin 水平和垂直居中
 /// @param {string} $type [absolute] 定位方式
 /// @example
 ///   @include mcenter(tx, fixed);
@@ -85,14 +81,12 @@
   }
 }
 
-//  mratio
-//  -
 /// 设置相同的宽高
 /// @param {number} $value [$gbasic-icon] 属性值
-/// @param {负数|0|正数} $mode [1] 属性模式
-/// - -1（负数）：仅设置 line-height 为高度属性
+/// @param {-1|0|1} $mode [1] 属性模式
+/// - -1：仅设置 line-height 为高度属性
 /// - 0：同时设置 height 和 line-height
-/// - 1（正数）：仅设置 height 为高度属性
+/// - 1：仅设置 height 为高度属性
 /// @param {number} $ratio [1] 比例值（高度 / 宽度）
 /// @example
 ///   @include mratio(5px, 0, 2);
@@ -110,8 +104,6 @@
   }
 }
 
-//  mheight
-//  -
 /// 设置高度和行高（倍数关系）
 /// - mixin 有做 line-height 值优化
 /// @param {number} $value -
@@ -126,8 +118,6 @@
   height: $this-height; line-height: $this-line;
 }
 
-//  mc-mtop
-//  -
 /// 清除 first-child 上边距影响
 /// @example
 ///   @include mc-mtop;
@@ -137,8 +127,6 @@
   }
 }
 
-//  mc-float
-//  -
 /// 清除子元素设置浮动对父元素的影响
 /// @example
 ///   @include mc-float;
@@ -148,11 +136,9 @@
   }
 }
 
-//  mplaceholder
-//  -
 /// 设置 ::placeholder 样式
 /// - 当 $color 为无效的（color 类型）值时，将不设置 color 属性
-/// - 设置全局 $g4cssnext-group: true，可以将多个选择符以逗号分隔的方式并为组（这需要浏览器能正确识别不认识的选择器）
+/// - 设置全局 $g4cssnext-group: true，可以将多个选择器以逗号分隔的方式并为组（请参考兼容性谨慎设置）
 /// @param {color} $color [$gcolor-placeholder] 颜色值
 /// @example
 ///   @include mplaceholder(#ccc);
@@ -212,8 +198,6 @@
   }
 }
 
-//  mellipsis
-//  -
 /// 多行超出（省略号效果）
 /// @param {number} $line [1] 行数
 /// @example
@@ -234,8 +218,6 @@
   }
 }
 
-//  mappearance
-//  -
 /// 清除浏览器默认设置
 /// @example
 ///   @include mappearance;

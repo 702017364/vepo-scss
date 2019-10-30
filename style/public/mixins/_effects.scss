@@ -1,5 +1,3 @@
-//  marrow
-//  -
 /// 制作箭头
 /// @param {number} $width [$gicon-arrow] 箭头所属盒子的大小
 /// - 纯数字的值将被转换成以 -45deg 起始，90deg 作为一个添加单位的计算值（这是为了保证当值为 1 时，箭头的方向垂直朝上）
@@ -41,8 +39,6 @@
   }
 }
 
-//  mtriangle
-//  -
 /// 制作三角形（等腰）
 /// @param {number|string} $edge 三角形底边宽
 /// - string 类型的值为 calc 函数和 CSS var
