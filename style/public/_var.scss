@@ -55,8 +55,7 @@ $g4cssnext-not: true !default;
 $g4cssnext-matches: true !default;
 
 /// 设置是否启用将多个选择符以逗号分隔的方式并为组
-/// - 1、浏览器在解析 CSS 时遇到不识别的选择符时，会舍弃该组选择符（即使其他选择符是识别的）
-/// - 2、由于第 1 点的原因，所以目前做兼容选择符样式时，都是单独成组
+/// - 请参考浏览器兼容性，谨慎设置
 $g4cssnext-group: false !default;
 
 /// 设置视窗单位（vw、vh、vmin、vmax）的计算基础（默认值为 iPhone 6 尺寸）
@@ -93,12 +92,12 @@ $gbasic-duration: .3s !default;
 /// 设置特殊矩阵属性映射表
 /// - 特殊矩阵指新属性不是由 属性名-方向（如 border-left） 组合得到
 $gmatix-table: (
-  radius: (top-left top-right bottom-right bottom-left), //border-radius
+  radius: (top-left top-right bottom-right bottom-left), //表示 border-radius
 ) !default;
 
 /// 配置（全局） mixin mquick
 $gquick-options: (
-  rem: false, //是否对单位为 rem 的值进行转换
+  rem: false, //表示是否对单位为 rem 的值进行转换
 ) !default;
 
 /// 冒号（半角）

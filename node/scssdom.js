@@ -90,6 +90,24 @@ const util = {
     });
     return caches.join(WRAP);
   },
+  catalog(data){
+    const column = 6;
+    const list = [];
+    const thead = 'one,two,three,four,five,six,seven,eight,nine,keycap_ten'.split(',');
+    for(let i = 0, j = data.length; i < j; i += column){
+      if(!i){
+        const num = Math.min(column, j);
+        thead.slice(0, num).map((value) => `:${value}:`).join('|') |> list.push;
+        new Array(num).fill('-').join('|') |> list.push;
+      }
+      data.slice(i, i + column).map(({ name, note }) => {
+        let { label } = note;
+        label == '-' && (label = '');
+        return `[${name}](#triangular_flag_on_post-${name} "${label || ':thumbsdown:'}")`;
+      }).join('|') |> list.push;
+    }
+    return list.map((value) => `${INDENT}${value}`).join(WRAP);
+  },
 };
 
 class ScssDom{
@@ -112,25 +130,32 @@ class ScssDom{
   }
 
   #var2layout(title, list){
-    return this.#layout(title, list, ({ name, value, note, items }) => {
+    return this.#layout(title, list, ({ name, value, note, items }, index) => {
       const list = [];
-      const [cache, rows] = ScssDom.extractLineComment(name, value);
-      if(rows && rows.length){
-        items = items ? rows.concat(items) : rows;
+      if(!index){
+        list.push(`名称|默认值|说明`);
+        list.push(`-|-|-`);
       }
-      value = ScssDom.formatValue(cache);
-      `+ \`${name}\` **${value}** ${note}` |> list.push;
-      (items || []).forEach((value, index) => {
+      const [cache, rows] = ScssDom.extractLineComment(name, value);
+      const explan = [note].concat(items || [], rows).map((value) => {
         value = value.replace(RE_LIST, '');
-        `${INDENT}${index + 1}. ${value}` |> list.push;
-      });
-      return list.join(WRAP);
+        return `:pushpin: ${value}`;
+      }).join('<br />') || ':thumbsdown:';
+      value = ScssDom.formatValue(cache);
+      `\`${name}\`|**${value}**|${explan}` |> list.push;
+      return list.map((value) => `${INDENT}${value}`).join(WRAP);
     });
   }
 
   #extend2layout(title, list){
-    return this.#layout(title, list, ({ name, note }) => {
-      return `+ \`${name}\` ${note}`;
+    return this.#layout(title, list, ({ name, note }, index) => {
+      const list = [];
+      if(!index){
+        list.push(`名称|说明`);
+        list.push(`-|-`);
+      }
+      `\`${name}\`|${note || ':thumbsdown:'}` |> list.push;
+      return list.map((value) => `${INDENT}${value}`).join(WRAP);
     });
   }
 
@@ -174,7 +199,12 @@ class ScssDom{
       { label: '方法', data: this.method2list, method: this.#mixin2layout },
     ];
     const list = ['### 目录'];
-    data.forEach(({ label }, index) => list.push(`${index + 1}. [${label}](#${label})`));
+    data.forEach(({ label, data }, index) => {
+      list.push(`${index + 1}. [${label}](#${label})`);
+      const first = data[0];
+      if(!first || !first.option) return;
+      util.catalog(data) |> list.push;
+    });
     list.push('***');
     data.forEach(({ label, data, method }) => {
       method.call(this, label, data) |> list.push;
@@ -190,7 +220,7 @@ class ScssDom{
     const list = [];
     value = value.replace(ScssDom.RE_ROW, ($0, $1, $2, $3) => {
       if(!$2) return $0;
-      $3 && list.push(`\`${name}.${$1}\` 注：${$3}`);
+      $3 && list.push(`\`${name}.${$1}\` ${$3}`);
       return $0.replace($2, '');
     });
     return [value, list];
@@ -312,8 +342,17 @@ class ScssDom{
   static RE_FORMAT = do{
     const RE_WRAP = /\s{2,}/g;
     new Map([
-      [/^(\.\d+)/, (value) => `0${value}`],
-      [/^\(\s*([\w\W]+?),?\s*\)$/, (value) => value.replace(RE_WRAP, '\u0020')],
+      [/^(\.\d+)([a-z]*)/i, ($1, $2) => `0${$1}${$2}`],
+      [/^unquote\(([^\)]*)\)/, (value) => value],
+      [/^\(\s*([\w\W]+?),?\s*\)$/, (value) => {
+        const list = ['('];
+        value.replace(RE_WRAP, '\u0020')
+          .split(',')
+          .map((value) => '&emsp;' + value.trim())
+          .join(`,<br />`) |> list.push;
+        list.push(')');
+        return list.join('<br />');
+      }],
     ])
   };
 

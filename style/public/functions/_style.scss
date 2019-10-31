@@ -26,7 +26,7 @@
 
     $this-value: str-slice($this-value, 1, -2);
     $this-value: $this-value + $this-name + $this-split + nth($this-list, $this-length);
-    $this-path: $gbasic-path;
+    $this-path: unquote($gbasic-path);
     $this-fragment: unquote('/');
 
     @if str-slice($this-path, -1) != $this-fragment{

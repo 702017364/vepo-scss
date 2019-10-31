@@ -6,62 +6,74 @@
 
 3. [混合](#混合)
 
+  :one:|:two:|:three:|:four:|:five:|:six:
+  -|-|-|-|-|-
+  [mfor-style](#triangular_flag_on_post-mfor-style "遍历输出 css 选择器和声明")|[mkeyframes](#triangular_flag_on_post-mkeyframes "@keyframes简写模式")|[mquick](#triangular_flag_on_post-mquick "快速创建一个基于 em 为单位的 CSS Module")|[mfast-pos](#triangular_flag_on_post-mfast-pos "快捷设置属性（含有 top、right、bottom、left）")|[mcenter](#triangular_flag_on_post-mcenter "设置居中")|[mratio](#triangular_flag_on_post-mratio "设置相同的宽高")
+  [mheight](#triangular_flag_on_post-mheight "设置高度和行高（倍数关系）")|[mc-mtop](#triangular_flag_on_post-mc-mtop "清除 first-child 上边距影响")|[mc-float](#triangular_flag_on_post-mc-float "清除子元素设置浮动对父元素的影响")|[mplaceholder](#triangular_flag_on_post-mplaceholder "设置 ::placeholder 样式")|[mellipsis](#triangular_flag_on_post-mellipsis "多行超出（省略号效果）")|[mappearance](#triangular_flag_on_post-mappearance "清除浏览器默认设置")
+  [marrow](#triangular_flag_on_post-marrow "制作箭头")|[mtriangle](#triangular_flag_on_post-mtriangle "制作三角形（等腰）")|[mtriangle-equil](#triangular_flag_on_post-mtriangle-equil "制作三角形（等边）")|[mnot](#triangular_flag_on_post-mnot ":not() level 4（多重选择器）")|[mmatches](#triangular_flag_on_post-mmatches ":matches 伪类")
+
 4. [方法](#方法)
+
+  :one:|:two:|:three:|:four:|:five:|:six:
+  -|-|-|-|-|-
+  [fround](#triangular_flag_on_post-fround "对指定长度后的小数进行四舍五入")|[f2num](#triangular_flag_on_post-f2num "返回由字符串数字转换得到的数字")|[freverse](#triangular_flag_on_post-freverse "返回一个元素顺序被反转的 list 对象")|[fconcat](#triangular_flag_on_post-fconcat "返回一个新数组，这个新数组是由多数组组合而成")|[fslice](#triangular_flag_on_post-fslice "返回一个数组的一段")|[fset-nth](#triangular_flag_on_post-fset-nth "替换列表中的第 n 项")
+  [f2list](#triangular_flag_on_post-f2list "转换为数组")|[fget-nth](#triangular_flag_on_post-fget-nth "获取数组第 n 项，如果 n 大于数组长度则返回传入的默认值")|[fmatrix](#triangular_flag_on_post-fmatrix "返回查找矩阵属性（有关于 top、right、bottom、left）得到的一个列表")|[finverse-name](#triangular_flag_on_post-finverse-name "返回一个属性（以在矩阵列表中的角标表示）的对立属性（以在矩阵列表中的角标表示）")|[finverse-index](#triangular_flag_on_post-finverse-index "返回一个数字在取值范围内的对立数字")|[f2all](#triangular_flag_on_post-f2all "单位转换（总接口）")
+  [f2rem](#triangular_flag_on_post-f2rem "返回一个将 px 单位转换为 rem 的值")|[f2viewport](#triangular_flag_on_post-f2viewport "返回一个将 px 单位转换为视窗单位（vw、vh、vmin、vmax）的值")|[f2px](#triangular_flag_on_post-f2px "返回一个（非 0 纯数字）添加了 px 单位的值")|[fless](#triangular_flag_on_post-fless "返回一个去除单位后的纯数字")|[fvector](#triangular_flag_on_post-fvector "返回单位向量")|[furl](#triangular_flag_on_post-furl "增强原生 CSS 方法 url（可全局设置统一路径）")
+  [fcompose](#triangular_flag_on_post-fcompose "返回一个由多个属性拼接成的一个新属性")|[fline](#triangular_flag_on_post-fline "返回一个优化过的 line-height 值，从而避免转换后造成的误差")|[f4empty](#triangular_flag_on_post-f4empty "检测是否为空值")|[f4px](#triangular_flag_on_post-f4px "检测单位是否为 px")|[f4var](#triangular_flag_on_post-f4var "检测值是否符合 CSS 变量格式")|[f4native](#triangular_flag_on_post-f4native "返回检测值是否满足 CSS 原生函数的格式")
+  [fsplit](#triangular_flag_on_post-fsplit "将一个字符串分割为子字符串，然后将结果作为字符串数组返回")|[fspace](#triangular_flag_on_post-fspace "返回一个空格的 Unicode 表示形式")|[fadjust](#triangular_flag_on_post-fadjust "统一调整所有的项")|[fcreate](#triangular_flag_on_post-fcreate "返回一个空的 map")|[f4rational](#triangular_flag_on_post-f4rational "返回两数运算结果是否为有理数（值是否可以除尽）")|[f4rational-reciprocal](#triangular_flag_on_post-f4rational-reciprocal "返回一个数的倒数是否为有理数")
+  [fcalc](#triangular_flag_on_post-fcalc "对原生函数 calc 添加计算功能")|[fcalc-list](#triangular_flag_on_post-fcalc-list "fcalc 列表模式")|[fcalc-option](#triangular_flag_on_post-fcalc-option "fcalc 配置模式")|[fcalc-single](#triangular_flag_on_post-fcalc-single "fcalc 单例模式")
 
 ***
 
 ### 常量
-+ `$g4import-reset` **true** 设置是否导入 reset 样式
-+ `$g4major-line` **true** 设置是否开启 line-height 优化处理
-+ `$g4cssnext-not` **true** 设置是否开启 :not 多重选择器的降级处理
-+ `$g4cssnext-matches` **true** 设置是否开启 :matches 多重选择器的降级处理
-+ `$g4cssnext-group` **false** 设置是否启用将多个选择符以逗号分隔的方式并为组
-  1. 浏览器在解析 CSS 时遇到不识别的选择符时，会舍弃该组选择符（即使其他选择符是识别的）
-  2. 由于第 1 点的原因，所以目前做兼容选择符样式时，都是单独成组
-+ `$gviewport-width` **375px** 设置视窗单位（vw、vh、vmin、vmax）的计算基础（默认值为 iPhone 6 尺寸）
-+ `$gviewport-vector` **1vmin** 设置视窗向量（相关视窗方法的基础单位）
-+ `$gviewport-column` **100** 设置视窗栅格（转换视窗单位时，要将窗口分成的份数）
-+ `$gdpr` **1** 设置物理像素和设备像素比值（devicePixelRatio）
-+ `$gdpr-table` **2: '@2x', 3: '@3x'** 不同 devicePixelRatio 环境下使用的图片映射
-+ `$gvector` **1rem** 设置基础向量
-  1. 基础向量决定了方法 f2all 的输出单位
-+ `$gbasic-family` **'Microsoft YaHei'** 设置（CSS）基础字体
-+ `$gbasic-path` **unquote('assets/')** 设置（CSS）统一资源路径（一般都特指图片资源）
-+ `$gbasic-duration` **0.3** 设置（CSS）动画 duration 基本值
-+ `$gmatix-table` **radius: (top-left top-right bottom-right bottom-left)** 设置特殊矩阵属性映射表
-  1. `$gmatix-table.radius` 注：border-radius
-  2. 特殊矩阵指新属性不是由 属性名-方向（如 border-left） 组合得到
-+ `$gquick-options` **rem: false** 配置（全局） mixin mquick
-  1. `$gquick-options.rem` 注：是否对单位为 rem 的值进行转换
-+ `$gbasic-size` **16px** 基础（CSS）字体大小
-  1. 该值是很多方法的计算基础值，只能使用 px 单位
-+ `$gbasic-line` **null** 基础（CSS）行高
-+ `$gsize-h1` **$gbasic-size * 1.375** 标签 h1 的字体大小
-+ `$gsize-h2` **$gbasic-size * 1.25** 标签 h2 的字体大小
-+ `$gsize-h3` **$gbasic-size * 1.125** 标签 h3 的字体大小
-+ `$gsize-h4` **$gbasic-size * 1** 标签 h4 的字体大小
-+ `$gsize-h5` **$gbasic-size * .875** 标签 h5 的字体大小
-+ `$gsize-h6` **$gbasic-size * .75** 标签 h6 的字体大小
-+ `$gsize-body` **$gbasic-size** 标签 body 的字体大小
-+ `$gbasic-color` **#333** 基础（CSS）色值
-+ `$gcolor-light` **#666** 高亮色值
-+ `$gcolor-dark` **#000** 暗色色值
-+ `$gcolor-warn` **#ff0** 警告色值
-+ `$gcolor-danger` **#ff0** 危险色值
-+ `$gcolor-hover` **#189cd8** hover 状态色值
-+ `$gcolor-active` **#189cd8** active 状态色值
-+ `$gcolor-disabled` **#ccc** disabled 状态色值
-+ `$gcolor-placeholder` **#ddd** placeholder 伪类色值
-+ `$gbasic-bgcolor` **#eee** 基础（CSS）背景色
-+ `$gbasic-icon` **28px** 基础（CSS）图标大小
-+ `$gicon-arrow` **8px** 箭头图标大小
+  名称|默认值|说明
+  -|-|-
+  `$g4import-reset`|**true**|:pushpin: 设置是否导入 reset 样式
+  `$g4major-line`|**true**|:pushpin: 设置是否开启 line-height 优化处理
+  `$g4cssnext-not`|**true**|:pushpin: 设置是否开启 :not 多重选择器的降级处理
+  `$g4cssnext-matches`|**true**|:pushpin: 设置是否开启 :matches 多重选择器的降级处理
+  `$g4cssnext-group`|**false**|:pushpin: 设置是否启用将多个选择符以逗号分隔的方式并为组<br />:pushpin: 请参考浏览器兼容性，谨慎设置
+  `$gviewport-width`|**375px**|:pushpin: 设置视窗单位（vw、vh、vmin、vmax）的计算基础（默认值为 iPhone 6 尺寸）
+  `$gviewport-vector`|**1vmin**|:pushpin: 设置视窗向量（相关视窗方法的基础单位）
+  `$gviewport-column`|**100**|:pushpin: 设置视窗栅格（转换视窗单位时，要将窗口分成的份数）
+  `$gdpr`|**1**|:pushpin: 设置物理像素和设备像素比值（devicePixelRatio）
+  `$gdpr-table`|**(<br />&emsp;2: '@2x',<br />&emsp;3: '@3x'<br />)**|:pushpin: 不同 devicePixelRatio 环境下使用的图片映射
+  `$gvector`|**1rem**|:pushpin: 设置基础向量<br />:pushpin: 基础向量决定了方法 f2all 的输出单位
+  `$gbasic-family`|**'Microsoft YaHei'**|:pushpin: 设置（CSS）基础字体
+  `$gbasic-path`|**'assets/'**|:pushpin: 设置（CSS）统一资源路径（一般都特指图片资源）
+  `$gbasic-duration`|**0.3s**|:pushpin: 设置（CSS）动画 duration 基本值
+  `$gmatix-table`|**(<br />&emsp;radius: (top-left top-right bottom-right bottom-left)<br />)**|:pushpin: 设置特殊矩阵属性映射表<br />:pushpin: 特殊矩阵指新属性不是由 属性名-方向（如 border-left） 组合得到<br />:pushpin: `$gmatix-table.radius` 表示 border-radius
+  `$gquick-options`|**(<br />&emsp;rem: false<br />)**|:pushpin: 配置（全局） mixin mquick<br />:pushpin: `$gquick-options.rem` 表示是否对单位为 rem 的值进行转换
+  `$gbasic-size`|**16px**|:pushpin: 基础（CSS）字体大小<br />:pushpin: 该值是很多方法的计算基础值，只能使用 px 单位
+  `$gbasic-line`|**null**|:pushpin: 基础（CSS）行高
+  `$gsize-h1`|**$gbasic-size * 1.375**|:pushpin: 标签 h1 的字体大小
+  `$gsize-h2`|**$gbasic-size * 1.25**|:pushpin: 标签 h2 的字体大小
+  `$gsize-h3`|**$gbasic-size * 1.125**|:pushpin: 标签 h3 的字体大小
+  `$gsize-h4`|**$gbasic-size * 1**|:pushpin: 标签 h4 的字体大小
+  `$gsize-h5`|**$gbasic-size * .875**|:pushpin: 标签 h5 的字体大小
+  `$gsize-h6`|**$gbasic-size * .75**|:pushpin: 标签 h6 的字体大小
+  `$gsize-body`|**$gbasic-size**|:pushpin: 标签 body 的字体大小
+  `$gbasic-color`|**#333**|:pushpin: 基础（CSS）色值
+  `$gcolor-light`|**#666**|:pushpin: 高亮色值
+  `$gcolor-dark`|**#000**|:pushpin: 暗色色值
+  `$gcolor-warn`|**#ff0**|:pushpin: 警告色值
+  `$gcolor-danger`|**#ff0**|:pushpin: 危险色值
+  `$gcolor-hover`|**#189cd8**|:pushpin: hover 状态色值
+  `$gcolor-active`|**#189cd8**|:pushpin: active 状态色值
+  `$gcolor-disabled`|**#ccc**|:pushpin: disabled 状态色值
+  `$gcolor-placeholder`|**#ddd**|:pushpin: placeholder 伪类色值
+  `$gbasic-bgcolor`|**#eee**|:pushpin: 基础（CSS）背景色
+  `$gbasic-icon`|**28px**|:pushpin: 基础（CSS）图标大小
+  `$gicon-arrow`|**8px**|:pushpin: 箭头图标大小
 
 ### 继承
-+ `%eellipsis` 超出隐藏省略号效果（单行）
-+ `%eomitted` 超出隐藏省略号效果（多行）
-+ `%eappearance` 清除浏览器默认设置
-+ `%epseudo-table` 可用于清除浮动造成的影响
-+ `%ereset-h` 重置 h1-6 标签样式
+  名称|说明
+  -|-
+  `%eellipsis`|超出隐藏省略号效果（单行）
+  `%eomitted`|超出隐藏省略号效果（多行）
+  `%eappearance`|清除浏览器默认设置
+  `%epseudo-table`|可用于清除浮动造成的影响
+  `%ereset-h`|重置 h1-6 标签样式
 
 ### 混合
 #### :triangular_flag_on_post: `mfor-style`
