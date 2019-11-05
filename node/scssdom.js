@@ -187,7 +187,7 @@ class ScssDom{
       if(example && example.length){
         mixinTitle('示例') |> util.example(?, example) |> push;
       }
-      return list.join(WRAP + WRAP) + WRAP + '<br />' + WRAP;
+      return list.join(WRAP + WRAP) + WRAP + '[查看目录](#目录)' + WRAP;
     });
   }
 
@@ -341,6 +341,8 @@ class ScssDom{
 
   static RE_FORMAT = do{
     const RE_WRAP = /\s{2,}/g;
+    const RE_LIST = /^(\S+)\s*\(\s*([\w\W]+)\s*\)$/;
+    const RE_SPLIT = /\s+|\s*,\s*/g;
     new Map([
       [/^(\.\d+)([a-z]*)/i, ($1, $2) => `0${$1}${$2}`],
       [/^unquote\(([^\)]*)\)/, (value) => value],
@@ -348,7 +350,16 @@ class ScssDom{
         const list = ['('];
         value.replace(RE_WRAP, '\u0020')
           .split(',')
-          .map((value) => '&emsp;' + value.trim())
+          .map((value) => {
+            const indent = '&emsp;'
+            value = value.trim();
+            const [, front, content] = value.match(RE_LIST) || [];
+            if(!front) return indent + value;
+            const list = content.split(RE_SPLIT);
+            if(list.length < 2) return indent + value;
+            value = list.map((value) => `${indent}&ensp;${value}`).join(',<br />');
+            return `${indent}${front} (<br />${value}`;
+          })
           .join(`,<br />`) |> list.push;
         list.push(')');
         return list.join('<br />');

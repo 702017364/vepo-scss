@@ -42,7 +42,7 @@
   `$gbasic-family`|**'Microsoft YaHei'**|:pushpin: 设置（CSS）基础字体
   `$gbasic-path`|**'assets/'**|:pushpin: 设置（CSS）统一资源路径（一般都特指图片资源）
   `$gbasic-duration`|**0.3s**|:pushpin: 设置（CSS）动画 duration 基本值
-  `$gmatix-table`|**(<br />&emsp;radius: (top-left top-right bottom-right bottom-left)<br />)**|:pushpin: 设置特殊矩阵属性映射表<br />:pushpin: 特殊矩阵指新属性不是由 属性名-方向（如 border-left） 组合得到<br />:pushpin: `$gmatix-table.radius` 表示 border-radius
+  `$gmatix-table`|**(<br />&emsp;radius: (<br />&emsp;&ensp;top-left,<br />&emsp;&ensp;top-right,<br />&emsp;&ensp;bottom-right,<br />&emsp;&ensp;bottom-left<br />)**|:pushpin: 设置特殊矩阵属性映射表<br />:pushpin: 特殊矩阵指新属性不是由 属性名-方向（如 border-left） 组合得到<br />:pushpin: `$gmatix-table.radius` 表示 border-radius
   `$gquick-options`|**(<br />&emsp;rem: false<br />)**|:pushpin: 配置（全局） mixin mquick<br />:pushpin: `$gquick-options.rem` 表示是否对单位为 rem 的值进行转换
   `$gbasic-size`|**16px**|:pushpin: 基础（CSS）字体大小<br />:pushpin: 该值是很多方法的计算基础值，只能使用 px 单位
   `$gbasic-line`|**null**|:pushpin: 基础（CSS）行高
@@ -102,7 +102,7 @@
   z-index: 1;  
 } 
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mkeyframes`
 
@@ -132,7 +132,7 @@
   }
 }
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mquick`
 
@@ -157,7 +157,7 @@
   (rem: true)
 );
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mfast-pos`
 
@@ -176,7 +176,7 @@
 ```
 @include mfast-pos(1 4, 0, border, width);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mcenter`
 
@@ -193,7 +193,7 @@
 ```
 @include mcenter(tx, fixed);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mratio`
 
@@ -210,7 +210,7 @@
 ```
 @include mratio(5px, 0, 2);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mheight`
 
@@ -228,7 +228,7 @@
 ```
 @include mheight(1em, 2);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mc-mtop`
 
@@ -239,7 +239,7 @@
 ```
 @include mc-mtop;
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mc-float`
 
@@ -250,7 +250,7 @@
 ```
 @include mc-float;
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mplaceholder`
 
@@ -268,7 +268,7 @@
 ```
 @include mplaceholder(#ccc);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mellipsis`
 
@@ -285,7 +285,7 @@
 @include mellipsis;
 @include mellipsis(2);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mappearance`
 
@@ -296,7 +296,7 @@
 ```
 @include mappearance;
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `marrow`
 
@@ -316,7 +316,7 @@
 @include marrow(1em, 2px, 2);
 @include marrow(1em, 2px, var(--b));
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mtriangle`
 
@@ -334,7 +334,7 @@
 ```
 @include mtriangle(2em);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mtriangle-equil`
 
@@ -351,7 +351,7 @@
 ```
 @include mtriangle-equil(2em);
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mnot`
 
@@ -370,7 +370,7 @@
   z-index: 1;  
 }
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `mmatches`
 
@@ -389,7 +389,7 @@
   z-index: 1;  
 }
 ```
-<br />
+[查看目录](#目录)
 
 
 ### 方法
@@ -415,7 +415,7 @@ fround(2.733, 2)  //2.73
 fround(2.735, 2)  //2.74
 fround(2735, -2)  //2700
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f2num`
 
@@ -446,7 +446,7 @@ f2num('1.2.3')  //报错：只能有一个小数点
 f2num('1.23cm') //报错：$withUnit = false 时不带单位转换功能
 f2num('1.23cmc')  //报错：cmc 不是一个有效的单位
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `freverse`
 
@@ -462,7 +462,7 @@ f2num('1.23cmc')  //报错：cmc 不是一个有效的单位
 ```
 freverse(1 2 3) //(3 2 1)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fconcat`
 
@@ -487,7 +487,7 @@ fconcat()     //()
 fconcat(1px)  //(1px,)
 fconcat((1 2), (a, b, c), f, (z x y)) //(1 2 a b c f z x y)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fslice`
 
@@ -512,7 +512,7 @@ fconcat((1 2), (a, b, c), f, (z x y)) //(1 2 a b c f z x y)
 fslice(a b c d, 0, 2)   //(a b c)
 fslice(a b c d, 1, -3)  //(b,)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fset-nth`
 
@@ -537,7 +537,7 @@ fslice(a b c d, 1, -3)  //(b,)
 ```
 fset-nth(1 2 3, 2, a) //1 a 3
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f2list`
 
@@ -560,7 +560,7 @@ fset-nth(1 2 3, 2, a) //1 a 3
 f2list(1) //(1,)
 f2list((1, 2)) //(1, 2)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fget-nth`
 
@@ -585,7 +585,7 @@ f2list((1, 2)) //(1, 2)
 fget-nth((1 2 3), 2, a) //2
 fget-nth((1 2 3), 4, a) //a
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fmatrix`
 
@@ -606,7 +606,7 @@ fget-nth((1 2 3), 4, a) //a
 ```
 fmatrix(raduis) //(top-left top-right bottom-right bottom-left)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `finverse-name`
 
@@ -628,7 +628,7 @@ fmatrix(raduis) //(top-left top-right bottom-right bottom-left)
 ```
 finverse-name(1)  //3
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `finverse-index`
 
@@ -651,7 +651,7 @@ finverse-name(1)  //3
 finverse-index(3, 4)  //1
 finverse-index(3, 6)  //6
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f2all`
 
@@ -674,7 +674,7 @@ finverse-index(3, 6)  //6
 ```
 f2all(32px, 1rem)   //2rem
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f2rem`
 
@@ -697,7 +697,7 @@ f2all(32px, 1rem)   //2rem
 ```
 f2rem(20) //1.25rem
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f2viewport`
 
@@ -723,7 +723,7 @@ f2viewport(75, 1vmax) //20vmax
 f2viewport(75, 1vh)   //20vh
 f2viewport(75, 1vw)   //20vw
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f2px`
 
@@ -740,7 +740,7 @@ f2viewport(75, 1vw)   //20vw
   类型|描述
   :-:|-
   number|:thumbsdown:
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fless`
 
@@ -763,7 +763,7 @@ fless(3px)    //3
 fless(2.1%)  //2.1
 fless(5)      //5
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fvector`
 
@@ -785,7 +785,7 @@ fless(5)      //5
 fvector(3px)    //1px
 fvector(2.1vw)  //1vw
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `furl`
 
@@ -808,7 +808,7 @@ fvector(2.1vw)  //1vw
 furl('abc.png')     //url(images/abc.png)
 furl('abc.png', 2)  //url(images/abc@2x.png)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fcompose`
 
@@ -832,7 +832,7 @@ furl('abc.png', 2)  //url(images/abc@2x.png)
 fcompose(top, border)         //border-top
 fcompose(top, border, width)  //border-top-width
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fline`
 
@@ -860,7 +860,7 @@ fline(18 / 17, 17px)    //1.05883
 fline(18em / 17, 17px)  //1.05883em
 fline(percentage(18 / 17), 17px)  //106%
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f4empty`
 
@@ -884,7 +884,7 @@ f4empty(false)  //false
 f4empty(null)   //true
 f4empty('')     //true
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f4px`
 
@@ -907,7 +907,7 @@ f4px(4)     //false
 f4px('4px') //false
 f4px(4px)   //true
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f4var`
 
@@ -929,7 +929,7 @@ f4px(4px)   //true
 f4var(var(--a)) //true
 f4var(a)        //false
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f4native`
 
@@ -957,7 +957,7 @@ f4native(url(1), src) //false
 f4native(url(1), url) //true
 f4native(url(), $meet: 0) //true
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fsplit`
 
@@ -982,7 +982,7 @@ fsplit(a1b2c3e) //(a1b2c3e,)
 fsplit(a1b2c3e, 1, 2, 3)  //(a b c e)
 fsplit(a1b2c d2e3f, 1, 2, 3)  //(a b c d e f)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fspace`
 
@@ -998,7 +998,7 @@ fsplit(a1b2c d2e3f, 1, 2, 3)  //(a b c d e f)
 ```
 fspace(1)   //'\0020'
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fadjust`
 
@@ -1025,7 +1025,7 @@ fspace(1)   //'\0020'
 fadjust((key1: abc, key2: 123), i-, '.png') //(key1: i-abc.png, key2: i-123.png)
 fadjust(abc 123), i-, '.png') //(abc: i-abc.png, 123: i-123.png)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fcreate`
 
@@ -1036,7 +1036,7 @@ fadjust(abc 123), i-, '.png') //(abc: i-abc.png, 123: i-123.png)
 ```
 fcreate() //()
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f4rational`
 
@@ -1063,7 +1063,7 @@ f4rational(5, 1 / 2, 1) //true
 f4rational(5, 1 / 3, 1) //false
 f4rational(0.001, 0.001, 1) //false
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `f4rational-reciprocal`
 
@@ -1086,7 +1086,7 @@ f4rational(0.001, 0.001, 1) //false
 f4rational(2) //true
 f4rational(3) //false
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fcalc`
 
@@ -1112,7 +1112,7 @@ f4rational(3) //false
 ```
 fcalc((exp: 5px, multiple: var(-b)))  //calc(5px / var(-b))
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fcalc-list`
 
@@ -1134,7 +1134,7 @@ fcalc-list(
   (1 1 0 0)
 ) //calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fcalc-option`
 
@@ -1154,7 +1154,7 @@ fcalc-option(
   (1 1 1 -1 0 2 0 5)
 ) //calc(100% - 5px + 10vw - 0.4rem + var(--b) / 2)
 ```
-<br />
+[查看目录](#目录)
 
 #### :triangular_flag_on_post: `fcalc-single`
 
@@ -1172,7 +1172,7 @@ fcalc-option(
 ```
 fcalc-single(5px 6%, 2) //calc(2.5px + 3%)
 ```
-<br />
+[查看目录](#目录)
 
 
 ***
