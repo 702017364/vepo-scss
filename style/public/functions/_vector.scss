@@ -78,8 +78,8 @@
 /// @param {object} $base [null] 无实际意义，只为了方便 function f2all 内部调用而设置
 /// @return {number} -
 /// @example
-///   @f2px(2)  //2px
-///   @f2px(0)  //0
+///   f2px(2)  //2px
+///   f2px(0)  //0
 @function f2px($value, $basic: null){
   $this-if: type-of($value) == number
     and $value != 0

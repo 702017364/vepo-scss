@@ -740,6 +740,12 @@ f2viewport(75, 1vw)   //20vw
   类型|描述
   :-:|-
   number|:thumbsdown:
+
+##### :bicyclist: 示例
+```
+f2px(2)  //2px
+f2px(0)  //0
+```
 [查看目录](#目录)
 
 #### :triangular_flag_on_post: `fless`
