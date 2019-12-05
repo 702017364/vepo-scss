@@ -1,16 +1,15 @@
 {
   "name": "@vope/scss",
   "description": "增加SCSS方法、内置多个强大的mixin",
-  "version": "2.1.1",
+  "version": "2.4.0",
   "dependencies": {
     "mathsass": "^0.11.0"
   },
   "scripts": {
-    "dev": "gulp --test --map --dev",
-    "build": "gulp & npm run scssdom",
-    "mocha": "gulp mocha",
+    "dev": "template-node",
+    "build": "template-node --production & npm run scssdom",
     "test": "mocha",
-    "package": "babel-node node/publish.js",
+    "test:dev": "gulp",
     "scssdom": "babel-node node/scssdom.js"
   },
   "devDependencies": {
@@ -23,22 +22,10 @@
     "@babel/plugin-proposal-private-methods": "^7.6.0",
     "@babel/preset-env": "^7.6.3",
     "@babel/register": "^7.6.2",
-    "browser-sync": "^2.26.7",
+    "@vope/template-node": "^1.1.0",
     "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-clean-css": "^4.0.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-if": "^3.0.0",
-    "gulp-load-plugins": "^1.6.0",
-    "gulp-notify": "^3.2.0",
-    "gulp-plumber": "^1.2.1",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2",
-    "gulp-util": "^3.0.8",
+    "minimist": "^1.2.0",
     "mocha": "^6.2.1",
-    "node-cmd": "^3.0.0",
     "node-sass": "^4.11.0",
     "sass-true": "^4.0.0"
   },
@@ -50,6 +37,11 @@
   "keywords": [
     "scss",
     "function"
+  ],
+  "files": [
+    "style/public",
+    "style/skin",
+    "style/main.scss"
   ],
   "author": "vope",
   "license": "ISC",

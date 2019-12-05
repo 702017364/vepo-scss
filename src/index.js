@@ -1,3 +1,5 @@
+import farmatDate from './date';
+
 (() => { //自动添加列表
   const $box = document.querySelector('.ui-list');
   const $text = $box.querySelector('span');
