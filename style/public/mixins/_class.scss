@@ -122,7 +122,8 @@
 /// @example
 ///   @include mc-mtop;
 @mixin mc-mtop{
-  &::before{
+  $selector: this();
+  @at-root #{$selector}::before{
     @extend %epseudo-table;
   }
 }
@@ -131,7 +132,8 @@
 /// @example
 ///   @include mc-float;
 @mixin mc-float{
-  &::after{
+  $selector: this();
+  @at-root #{$selector}::after{
     @extend %epseudo-table;
   }
 }
@@ -143,6 +145,7 @@
 /// @example
 ///   @include mplaceholder(#ccc);
 @mixin mplaceholder($color: $gcolor-placeholder){
+  $selector: this();
   $this4color: type-of($color) == color
     or color == inherit
     or color == initial
@@ -161,10 +164,10 @@
     @each $key, $list in $this-opts{
       $this-first: f4empty($this-rules);
       $this-separator: if($this-first, '', ', ');
-      $this-rules: '#{$this-rules}#{$this-separator}&#{$key}';
+      $this-rules: '#{$this-rules}#{$this-separator}#{$selector}#{$key}';
       
       @if f4empty($list) == false{
-        &#{$key}{
+        @at-root #{$selector}#{$key}{
           @each $key, $value in $list{
             #{$key}: $value;
           }
@@ -172,7 +175,7 @@
       }
     }
 
-    #{$this-rules}{
+    @at-root #{$this-rules}{
       @if $this4color{
         color: $color;
       }
@@ -181,7 +184,7 @@
     }
   } @else{
     @each $key, $list in $this-opts{
-      &#{$key}{
+      @at-root #{$selector}#{$key}{
         @if $this4color{
           color: $color;
         }

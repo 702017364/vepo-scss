@@ -6,8 +6,8 @@
 ///     z-index: 1;  
 ///   }
 @mixin mnot($args...){
+  $selector: this();
   $this-length: length($args);
-
   $this-rules: '';
 
   @if $this-length > 0{
@@ -23,7 +23,7 @@
 
   $this-rules: unquote($this-rules);
 
-  &#{$this-rules}{
+  @at-root #{$selector}#{$this-rules}{
     @content;
   }
 }

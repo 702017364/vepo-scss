@@ -1,0 +1,5 @@
+/// 处理福选择为空的情况
+/// @access private
+@function this(){
+  @return & or '';
+}

@@ -6,6 +6,7 @@
 ///     z-index: 1;  
 ///   }
 @mixin mmatches($args...){
+  $selector: this();
   $this-length: length($args);
   
   @if $this-length > 0{
@@ -14,11 +15,11 @@
   
       @for $i from 1 to $this-length{
         $this-item: nth($args, $i);
-        $this-rules: '#{$this-rules}&#{$this-item}, ';
+        $this-rules: '#{$this-rules}#{$selector}#{$this-item}, ';
       }
   
       $this-last: nth($args, $this-length);
-      $this-rules: '#{$this-rules}&#{$this-last}';
+      $this-rules: '#{$this-rules}#{$selector}#{$this-last}';
   
       @at-root #{$this-rules}{
         @content;
@@ -28,7 +29,7 @@
       $this-join: join($args, (), comma);
       $this-rules: unquote(':matches(#{$this-join})');
   
-      &#{$this-rules}{
+      @at-root #{$selector}#{$this-rules}{
         @content;
       }
     }
