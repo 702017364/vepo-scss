@@ -217,7 +217,7 @@ $gcalc-default-mode: 0; //mode 默认值
   @each $value in $list{
     $this-exp: map-get($value, exp);
     $this-option: map-get($value, option);
-    $this-key: unquote('#{$this-exp}');
+    $this-key: ftoString($this-exp);
     $this4merge: false; //是否可以合并
 
     //合并相同项
@@ -348,7 +348,7 @@ $gcalc-default-mode: 0; //mode 默认值
     
     @if $this-value != 0{
       $this-option: map-get($value, option);
-      $this-key: unquote('#{$this-option}');
+      $this-key: ftoString($this-option);
       $this-cache: map-get($this-classify, $this-key) or (
         list: (),
         option: $this-option,
@@ -426,7 +426,7 @@ $gcalc-default-mode: 0; //mode 默认值
   @each $value in $list{ //通过 option 信息进行归类
     $this-exp: map-get($value, exp);
     $this-option: map-get($value, option);
-    $this-key: unquote('#{$this-option}');
+    $this-key: ftoString($this-option);
 
     $this-value: map-get($this-classify, $this-key) or (
       option: $this-option,

@@ -1,0 +1,8 @@
+@include describe('The ftoString function =>'){
+  @include it('将 map 类型转换为 string'){
+    @include assert-equal(
+      ftoString((k1: 1, k2: 1 '2', k3: (1, "2"))),
+      '(k1: 1, k2: 1 "2", k3: 1, "2")'
+    );
+  }
+}

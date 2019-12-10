@@ -97,3 +97,61 @@
 
   @return $this-value;
 }
+
+/// 将任意值转换为字符串
+/// - 用于修复 dart-sass 版本中，将 map 或空 list 对象转换为字符串时报错问题
+/// @param {any} $value -
+/// @param {boolean} $quote [false] -
+/// - true： 对值进行 quote 方法调用
+/// - false： 对值进行 unquote 方法调用
+/// @return {string}
+/// @example
+///   ftoString((k1: 1, k2: 1 '2', k3: (1, "2"))) //(k1: 1, k2: 1 "2", k3: 1, "2")
+@function ftoString($value, $quote: false){
+  $type: type-of($value);
+
+  @if $type == list {
+    $list: ();
+    $separator: list-separator($value);
+
+    @each $val in $value {
+      $val: ftoString($val, null);
+      $list: append($list, $val);
+    }
+
+    $value: join((), $list, $separator);
+  } @else if $type == map {
+    $list: ();
+    $empty: true;
+
+    @each $key, $val in $value {
+      $empty: false;
+      $val: ftoString($val, null);
+      $list: append($list, unquote('#{$key}: #{$val}'), comma);
+    }
+
+    @if $empty {
+      $value: $list;
+    } @else {
+      $value: unquote('#{$value}');
+    }
+  } @else if $type != string {
+    $value: unquote('#{$value}');
+  }
+
+  @if type-of($value) == list {
+    @if length($value) == 0 {
+      $value: '';
+    } @else {
+      $value: unquote('#{$value}');
+    }
+  }
+
+  @if $quote == true {
+    @return quote('#{$value}');
+  } @else if $quote == false {
+    @return unquote('#{$value}');
+  }
+
+  @return $value;
+}

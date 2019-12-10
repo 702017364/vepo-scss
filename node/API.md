@@ -20,8 +20,8 @@
   [f2list](#triangular_flag_on_post-f2list "转换为数组")|[fget-nth](#triangular_flag_on_post-fget-nth "获取数组第 n 项，如果 n 大于数组长度则返回传入的默认值")|[fmatrix](#triangular_flag_on_post-fmatrix "返回查找矩阵属性（有关于 top、right、bottom、left）得到的一个列表")|[finverse-name](#triangular_flag_on_post-finverse-name "返回一个属性（以在矩阵列表中的角标表示）的对立属性（以在矩阵列表中的角标表示）")|[finverse-index](#triangular_flag_on_post-finverse-index "返回一个数字在取值范围内的对立数字")|[f2all](#triangular_flag_on_post-f2all "单位转换（总接口）")
   [f2rem](#triangular_flag_on_post-f2rem "返回一个将 px 单位转换为 rem 的值")|[f2viewport](#triangular_flag_on_post-f2viewport "返回一个将 px 单位转换为视窗单位（vw、vh、vmin、vmax）的值")|[f2px](#triangular_flag_on_post-f2px "返回一个（非 0 纯数字）添加了 px 单位的值")|[fless](#triangular_flag_on_post-fless "返回一个去除单位后的纯数字")|[fvector](#triangular_flag_on_post-fvector "返回单位向量")|[furl](#triangular_flag_on_post-furl "增强原生 CSS 方法 url（可全局设置统一路径）")
   [fcompose](#triangular_flag_on_post-fcompose "返回一个由多个属性拼接成的一个新属性")|[fline](#triangular_flag_on_post-fline "返回一个优化过的 line-height 值，从而避免转换后造成的误差")|[f4empty](#triangular_flag_on_post-f4empty "检测是否为空值")|[f4px](#triangular_flag_on_post-f4px "检测单位是否为 px")|[f4var](#triangular_flag_on_post-f4var "检测值是否符合 CSS 变量格式")|[f4native](#triangular_flag_on_post-f4native "返回检测值是否满足 CSS 原生函数的格式")
-  [fsplit](#triangular_flag_on_post-fsplit "将一个字符串分割为子字符串，然后将结果作为字符串数组返回")|[fspace](#triangular_flag_on_post-fspace "返回一个空格的 Unicode 表示形式")|[fadjust](#triangular_flag_on_post-fadjust "统一调整所有的项")|[fcreate](#triangular_flag_on_post-fcreate "返回一个空的 map")|[f4rational](#triangular_flag_on_post-f4rational "返回两数运算结果是否为有理数（值是否可以除尽）")|[f4rational-reciprocal](#triangular_flag_on_post-f4rational-reciprocal "返回一个数的倒数是否为有理数")
-  [fcalc](#triangular_flag_on_post-fcalc "对原生函数 calc 添加计算功能")|[fcalc-list](#triangular_flag_on_post-fcalc-list "fcalc 列表模式")|[fcalc-option](#triangular_flag_on_post-fcalc-option "fcalc 配置模式")|[fcalc-single](#triangular_flag_on_post-fcalc-single "fcalc 单例模式")
+  [fsplit](#triangular_flag_on_post-fsplit "将一个字符串分割为子字符串，然后将结果作为字符串数组返回")|[fspace](#triangular_flag_on_post-fspace "返回一个空格的 Unicode 表示形式")|[ftoString](#triangular_flag_on_post-ftoString "将任意值转换为字符串")|[fadjust](#triangular_flag_on_post-fadjust "统一调整所有的项")|[fcreate](#triangular_flag_on_post-fcreate "返回一个空的 map")|[f4rational](#triangular_flag_on_post-f4rational "返回两数运算结果是否为有理数（值是否可以除尽）")
+  [f4rational-reciprocal](#triangular_flag_on_post-f4rational-reciprocal "返回一个数的倒数是否为有理数")|[fcalc](#triangular_flag_on_post-fcalc "对原生函数 calc 添加计算功能")|[fcalc-list](#triangular_flag_on_post-fcalc-list "fcalc 列表模式")|[fcalc-option](#triangular_flag_on_post-fcalc-option "fcalc 配置模式")|[fcalc-single](#triangular_flag_on_post-fcalc-single "fcalc 单例模式")
 
 ***
 
@@ -1003,6 +1003,24 @@ fsplit(a1b2c d2e3f, 1, 2, 3)  //(a b c d e f)
 ##### :bicyclist: 示例
 ```
 fspace(1)   //'\0020'
+```
+[查看目录](#目录)
+
+#### :triangular_flag_on_post: `ftoString`
+
+##### :bicyclist: 说明
+  1. 将任意值转换为字符串
+  2. 用于修复 dart-sass 版本中，将 map 或空 list 对象转换为字符串时报错问题
+
+##### :bicyclist: 参数
+  名称|类型|默认值|描述
+  -|:-:|:-:|-
+  `$value`|any||:thumbsdown:
+  `$quote`|boolean|**false**|:pushpin: true： 对值进行 quote 方法调用<br />:pushpin: false： 对值进行 unquote 方法调用
+
+##### :bicyclist: 示例
+```
+ftoString((k1: 1, k2: 1 '2', k3: (1, "2"))) //(k1: 1, k2: 1 "2", k3: 1, "2")
 ```
 [查看目录](#目录)
 
