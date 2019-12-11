@@ -16,14 +16,8 @@ const data = [
 
 export default () => {
   const list = ['### 目录'];
-  data.forEach(({ label, data }, index) => {
-    list.push(`${index + 1}. [${label}](#${label})`);
-    const first = data[0];
-    if(!first || !first.option) return;
-    catalog(data) |> list.push;
-  });
-  list.push('***');
-  data.forEach(({ label, data, method }) => {
+  const caches = [];
+  data.forEach(({ label, data, method }, index) => {
     data.sort(({ name: first }, { name: second }) => {
       if(first === second){
         return 0;
@@ -31,10 +25,16 @@ export default () => {
         return 1;
       }
       return -1;
-    })
-      |> method(label, ?)
-      |> list.push;
+    });
+    list.push(`${index + 1}. [${label}](#${label})`);
+    const first = data[0];
+    if(first && first.option){
+      catalog(data) |> list.push;
+    }
+    method(label, data) |> caches.push;
   });
+  list.push('***');
+  list.push(...caches);
   list.push('***');
   list.push('[回到顶部](#readme)');
   list.join(WRAP + WRAP) |> writeFileSync('node/API.md', ?);
