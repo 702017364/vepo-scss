@@ -24,7 +24,16 @@ export default () => {
   });
   list.push('***');
   data.forEach(({ label, data, method }) => {
-    method(label, data) |> list.push;
+    data.sort(({ name: first }, { name: second }) => {
+      if(first === second){
+        return 0;
+      } else if(first > second){
+        return 1;
+      }
+      return -1;
+    })
+      |> method(label, ?)
+      |> list.push;
   });
   list.push('***');
   list.push('[回到顶部](#readme)');
